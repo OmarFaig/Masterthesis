@@ -14,8 +14,9 @@ Date: 2022-5-31
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from torch import einsum
-from utils.model_utils import vTransformer, PointNet_SA_Module_KNN, MLP_Res, MLP_CONV, fps_subsample, query_knn, \
+from models.utils import vTransformer, PointNet_SA_Module_KNN, MLP_Res, MLP_CONV, fps_subsample, query_knn, \
     grouping_operation, get_nearest_index, indexing_neighbor
 
 

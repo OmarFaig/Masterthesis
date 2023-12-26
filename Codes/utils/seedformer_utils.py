@@ -1,11 +1,15 @@
 
 import torch
 from torch import nn, einsum
-from utils.PointNet_utils import furthest_point_sample, \
+from pointnet2_ops.pointnet2_utils import furthest_point_sample, \
     gather_operation, ball_query, three_nn, three_interpolate, grouping_operation
 
 
 class Conv1d(nn.Module):
+    '''
+    - 1D convolution with Batch Normalization
+    Note : if_bn for batch normalization layer in the forward pass
+    '''
     def __init__(self,
                  in_channel,
                  out_channel,
@@ -34,6 +38,10 @@ class Conv1d(nn.Module):
 
 
 class Conv2d(nn.Module):
+    '''
+    - 2D convolution with Batch Normalization
+    Note : if_bn for batch normalization layer in the forward pass
+    '''
     def __init__(self,
                  in_channel,
                  out_channel,
