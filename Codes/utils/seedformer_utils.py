@@ -1,8 +1,33 @@
 
 import torch
 from torch import nn, einsum
-from pointnet_utils import furthest_point_sample, \
-    gather_operation, ball_query, three_nn, three_interpolate, grouping_operation
+from pytorch3d.ops import sample_farthest_points, ball_query, knn_points
+#from pointnet_utils import furthest_point_sample, \
+#    gather_operation, ball_query, three_nn, three_interpolate, grouping_operation
+from pointnet_utils import gather_operation, ball_query, three_nn, three_interpolate, grouping_operation,index_points,absolute_or_relative
+
+
+def query_ball_point(radius, nsample, xyz, new_xyz, return_pts_count=False):
+    """
+    Input:
+        radius: local region radius
+        nsample: max sample number in local region
+        xyz: all points, [B, N, 3]
+        new_xyz: query points, [B, S, 3]
+    Return:
+        group_idx: grouped points index, [B, S, nsample]
+    """
+    group_idx = ball_query(p1=new_xyz, p2=xyz, K=nsample, radius=radius).idx  # (B, S, nsample)
+    group_first = group_idx[..., 0:1].expand_as(group_idx)  # (B, S, nsample)
+    mask = group_idx == -1
+
+    group_idx[mask] = group_first[mask]
+
+    if return_pts_count:
+        pts_per_ball = torch.sum(~mask, dim=-1)
+        return group_idx, pts_per_ball
+    else:
+        return group_idx
 
 
 class Conv1d(nn.Module):
@@ -155,7 +180,7 @@ def sample_and_group(xyz, points, npoint, nsample, radius, use_xyz=True):
     """
     xyz_flipped = xyz.permute(0, 2, 1).contiguous()  # (B, N, 3)
     new_xyz = gather_operation(xyz,
-                               furthest_point_sample(xyz_flipped,
+                               sample_farthest_points(xyz_flipped,
                                                      npoint))  # (B, 3, npoint)
 
     idx = ball_query(radius, nsample, xyz_flipped,
@@ -251,28 +276,115 @@ class PointNet_SA_Module(nn.Module):
 
         self.mlp_conv = nn.Sequential(*self.mlp_conv)
 
-    def forward(self, xyz, points):
+    def _sample(self, xyz, npoint):
         """
-        Args:
-            xyz: Tensor, (B, 3, N)
-            points: Tensor, (B, f, N)
+        Input:
+            xyz: input points position data, [B, C, N]
+        Return:
+            new_xyz: sampled points position data, [B, C, S]
+        """
+        if npoint is None:
+            return None
 
-        Returns:
-            new_xyz: Tensor, (B, 3, npoint)
-            new_points: Tensor, (B, mlp[-1], npoint)
-        """
-        if self.group_all:
-            new_xyz, new_points, idx, grouped_xyz = sample_and_group_all(
-                xyz, points, self.use_xyz)
+        N = xyz.shape[-1]
+        S = absolute_or_relative(npoint, N)  # TODO: Could move the code here, so everything is together
+
+        if N == S:
+            new_xyz = xyz  # (B, C, S)
+        elif N > S:
+            new_xyz = sample_farthest_points(xyz.transpose(-2, -1), K=S, random_start_point=True)[0].transpose(-2, -1)  # (B, C, S)
         else:
-            new_xyz, new_points, idx, grouped_xyz = sample_and_group(
-                xyz, points, self.npoint, self.nsample, self.radius,
-                self.use_xyz)
+            raise RuntimeError(f"can't sample more points than are in point cloud: {N} < {S}")
 
-        new_points = self.mlp_conv(new_points)
-        new_points = torch.max(new_points, 3)[0]
+        return new_xyz
+
+    def _group(self, xyz, points, new_xyz):
+        """
+        Input:
+            xyz: input points position data, [B, C, N]
+            points: input points data, [B, D, N]
+            new_xyz: sampled points position data, [B, C, S], or None
+        Return:
+            grouped_points: grouped points position + feature data, [B, C+D, S, K]
+        """
+        assert (self.nsample is None) == (new_xyz is None)
+
+        if self.nsample is not None:
+            if self.radius is None:
+                # KNN
+                group_idx = knn_points(new_xyz.transpose(-2, -1), xyz.transpose(-2, -1), K=self.nsample, return_sorted=False).idx  # (B, S, K)
+                grouped_xyz = index_points(xyz.transpose(-2, -1), group_idx).movedim(-1, -3)  # (B, C, S, K)
+                grouped_xyz -= new_xyz.unsqueeze(-1)  # (B, C, S, 1)
+            else:
+                # Radius query
+                group_idx = query_ball_point(self.radius, self.nsample, xyz.transpose(-2, -1), new_xyz.transpose(-2, -1))  # (B, S, K)
+                grouped_xyz = index_points(xyz.transpose(-2, -1), group_idx).movedim(-1, -3)  # (B, C, S, K)
+                grouped_xyz -= new_xyz.unsqueeze(-1)  # (B, C, S, 1)
+                grouped_xyz /= self.radius
+
+            if points is not None:
+                grouped_points = index_points(points.transpose(-2, -1), group_idx).movedim(-1, -3)  # (B, C, S, K)
+                grouped_points = torch.cat([grouped_points, grouped_xyz], dim=-3)  # (B, C+D, S, K)
+            else:
+                grouped_points = grouped_xyz  # (B, C, S, K)
+        else:
+            # Group all
+            grouped_xyz = xyz.unsqueeze(-2)  # (B, C, 1, N)
+
+            if points is not None:
+                grouped_points = points.unsqueeze(-2)  # (B, C, 1, N)
+                grouped_points = torch.cat([grouped_points, grouped_xyz], dim=-3)  # (B, C+D, 1, K)
+            else:
+                grouped_points = grouped_xyz  # (B, C, 1, K)
+
+        return grouped_points
+    def forward(self, xyz, points=None, new_xyz=None, npoint=None):
+        """
+        Input:
+            xyz: input points position data, [B, C, N]
+            points: input points data, [B, D, N]
+        Return:
+            new_points: sample points feature data, [B, D', S]
+            new_xyz: sampled points position data, [B, C, S]
+        """
+        assert (npoint is None) or (self.npoint is None)
+        if npoint is None:
+            npoint = self.npoint
+        assert (npoint is None) == (self.nsample is None)  # both None => group all, otherwise sample and group
+
+        if new_xyz is None:
+            new_xyz = self._sample(xyz, npoint)  # (B, C, S)
+        grouped_points = self._group(xyz, points, new_xyz)  # (B, C+D, S, K)
+
+        for conv, norm in zip(self.convs, self.norms):
+            grouped_points = self.activation(norm(conv(grouped_points)))
+        grouped_points = self.last_conv(grouped_points)
+        new_points = torch.max(grouped_points, -1)[0]  # (B, D', S)
 
         return new_xyz, new_points
+
+  # def forward(self, xyz, points):
+  #     """
+  #     Args:
+  #         xyz: Tensor, (B, 3, N)
+  #         points: Tensor, (B, f, N)
+
+  #     Returns:
+  #         new_xyz: Tensor, (B, 3, npoint)
+  #         new_points: Tensor, (B, mlp[-1], npoint)
+  #     """
+  #     if self.group_all:
+  #         new_xyz, new_points, idx, grouped_xyz = self._sample(xyz, points)
+  #             #(                xyz, points, self.use_xyz))
+  #     else:
+  #         new_xyz, new_points, idx, grouped_xyz = sample_and_group(
+  #             xyz, points, self.npoint, self.nsample, self.radius,
+  #             self.use_xyz)
+
+  #     new_points = self.mlp_conv(new_points)
+  #     new_points = torch.max(new_points, 3)[0]
+
+  #     return new_xyz, new_points
 
 
 class PointNet_FP_Module(nn.Module):
@@ -389,7 +501,7 @@ def sample_and_group_knn(xyz, points, npoint, k, use_xyz=True, idx=None):
     """
     xyz_flipped = xyz.permute(0, 2, 1).contiguous()  # (B, N, 3)
     new_xyz = gather_operation(xyz,
-                               furthest_point_sample(xyz_flipped,
+                               sample_farthest_points(xyz_flipped,
                                                      npoint))  # (B, 3, npoint)
     if idx is None:
         idx = query_knn(k, xyz_flipped, new_xyz.permute(0, 2, 1).contiguous())
@@ -489,7 +601,7 @@ def fps_subsample(pcd, n_points=2048):
                 n_points, pcd.shape[1]))
     new_pcd = gather_operation(
         pcd.permute(0, 2, 1).contiguous(),
-        furthest_point_sample(pcd, n_points))
+        sample_farthest_points(pcd, n_points))
     new_pcd = new_pcd.permute(0, 2, 1).contiguous()
     return new_pcd
 
