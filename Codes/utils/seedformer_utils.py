@@ -1,7 +1,7 @@
 
 import torch
 from torch import nn, einsum
-from pointnet2_ops.pointnet2_utils import furthest_point_sample, \
+from pointnet_utils import furthest_point_sample, \
     gather_operation, ball_query, three_nn, three_interpolate, grouping_operation
 
 
@@ -70,6 +70,10 @@ class Conv2d(nn.Module):
 
 
 class MLP(nn.Module):
+    '''
+    MLP - Multi-Layer Perceptron with nn.Sequential
+    bn -  batch normalization
+    '''
     def __init__(self, in_channel, layer_dims, bn=None):
         super(MLP, self).__init__()
         layers = []
@@ -88,6 +92,9 @@ class MLP(nn.Module):
 
 
 class MLP_CONV(nn.Module):
+    '''
+    MLP_CONV - Multi-Layer Perceptron with 1D Convolutional Neural Network
+    '''
     def __init__(self, in_channel, layer_dims, bn=None):
         super(MLP_CONV, self).__init__()
         layers = []
@@ -106,6 +113,11 @@ class MLP_CONV(nn.Module):
 
 
 class MLP_Res(nn.Module):
+    '''
+    MLP_Res -  Multi-Layer Perceptron with 1D Convolutional Neural Network and
+    a shortcut(skip connection ?)
+    '''
+
     def __init__(self, in_dim=128, hidden_dim=None, out_dim=128):
         super(MLP_Res, self).__init__()
         if hidden_dim is None:
@@ -198,6 +210,11 @@ def sample_and_group_all(xyz, points, use_xyz=True):
 
 
 class PointNet_SA_Module(nn.Module):
+    '''
+    PointNet_SA_Module -  PointeNet Set of Abstraction layer
+    https://proceedings.neurips.cc/paper_files/paper/2017/file/d8bf84be3800d12f74d8b05e9b89836f-Paper.pdf
+    https://medium.com/@sanketgujar95/https-medium-com-sanketgujar95-pointnetplus-5d2642560c0d
+    '''
     def __init__(self,
                  npoint,
                  nsample,
@@ -259,6 +276,9 @@ class PointNet_SA_Module(nn.Module):
 
 
 class PointNet_FP_Module(nn.Module):
+    '''
+    PointNet feature Propagation layer
+    '''
     def __init__(self,
                  in_channel,
                  mlp,
