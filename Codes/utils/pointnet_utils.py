@@ -22,6 +22,22 @@ def index_points(points, idx):
     view_shape = [B] + [1] * d
     batch_idx = torch.arange(B, dtype=torch.long, device=idx.device).view(view_shape).expand_as(idx)
     return points[batch_idx, idx, :]
+def gather_operation(points, index):
+    """Gathers the indexed K points.
+
+    Parameters
+    ----------
+    points: tensor with shape (B, C, N)
+    index: tensor (long) with shape (B, K)
+
+    Returns
+    -------
+    points_indexed : tensor with shape (B, C, K)
+    """
+    index_expanded = index.unsqueeze(-2).expand(-1, points.shape[-2], -1)  # (B, C, K)
+    points_indexed = torch.gather(points, -1, index_expanded)
+    return points_indexed
+
 
 def grouping_operation(features, idx):
     """

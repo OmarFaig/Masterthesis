@@ -4,8 +4,70 @@ from torch import nn, einsum
 from pytorch3d.ops import sample_farthest_points, ball_query, knn_points
 #from pointnet_utils import furthest_point_sample, \
 #    gather_operation, ball_query, three_nn, three_interpolate, grouping_operation
-from pointnet_utils import gather_operation, ball_query, three_nn, three_interpolate, grouping_operation,index_points,absolute_or_relative
+#from pointnet_utils import gather_operation, grouping_operation,index_points,absolute_or_relative
+from pytorch3d.ops import knn_points, sample_farthest_points
 
+def index_points(points, idx):
+    """
+    NOTE: Similar to `gather` and `knn_gather` in this module, but with
+    - different order of dimensions
+    - arbitrary number of indexed dimensions
+    - apparently much faster (cuda, backward pass, determinsic algorithms)
+
+    Parameters
+    -----------
+    points: tensor with shape (B, N, C)
+    idx: tensor (long) with shape (B, S_1, ... S_d)
+
+    Returns
+    -------
+    points_indexed: tensor (long) with shape (B, S_1, ..., S_d, C)
+    """
+    B = points.shape[0]
+    d = len(idx.shape) - 1
+    view_shape = [B] + [1] * d
+    batch_idx = torch.arange(B, dtype=torch.long, device=idx.device).view(view_shape).expand_as(idx)
+    return points[batch_idx, idx, :]
+def gather_operation(points, index):
+    """Gathers the indexed K points.
+
+    Parameters
+    ----------
+    points: tensor with shape (B, C, N)
+    index: tensor (long) with shape (B, K)
+
+    Returns
+    -------
+    points_indexed : tensor with shape (B, C, K)
+    """
+    index_expanded = index.unsqueeze(-2).expand(-1, points.shape[-2], -1)  # (B, C, K)
+    points_indexed = torch.gather(points, -1, index_expanded)
+    return points_indexed
+
+
+def grouping_operation(features, idx):
+    """
+    Parameters
+    ----------
+    features : torch.Tensor
+        (B, C, N) tensor of features to group
+    idx : torch.Tensor
+        (B, npoint, nsample) tensor containing the indicies of features to group with
+
+    Returns
+    -------
+    torch.Tensor
+        (B, C, npoint, nsample) tensor
+    """
+    return index_points(features.transpose(-2, -1), idx).movedim(-1, -3)
+def absolute_or_relative(value, total):
+    """Returns the value if integer or multiplies it with total and converts the result to type(total) if float."""
+    if isinstance(value, int):
+        return value
+    elif isinstance(value, float):
+        return type(total)(value * total)
+    else:
+        raise ValueError(f"Absolute or relative value must be of type int or float, but is: {type(value)}")
 
 def query_ball_point(radius, nsample, xyz, new_xyz, return_pts_count=False):
     """
@@ -430,15 +492,39 @@ class PointNet_FP_Module(nn.Module):
         Returns:MLP_CONV
             new_points: Tensor, (B, mlp[-1], N)
         """
-        dist, idx = three_nn(
+        N = xyz1.shape[-1]
+        S = xyz2.shape[-1]
+        K = 3
+
+     #   if N <= S:
+     #       warnings.warn(f"Fine level doesn't have more points than coarse level: {N} <= {K}")
+     #   if S < K:
+     #       raise ValueError(f"Passed fewer points (in coarse level) than are required for interpolation (to fine level): {S} < {K}")
+
+        # Flip feature and spatial dimensions
+        xyz1_flipped = xyz1.transpose(-2, -1)  # (B, N, C)
+        xyz2_flipped = xyz2.transpose(-2, -1)  # (B, N, C)
+        points1_flipped = points1.transpose(-2, -1)  # (B, N, D1)
+        points2_flipped = points2.transpose(-2, -1)  # (B, N, D2)
+
+        # For each point in the finer level find points in the coarse level for feature interpolation
+        dist, idx, _ = knn_points(xyz1_flipped, xyz2_flipped, K=K, return_sorted=False)  # (B, N, K), (B, N, K)
+        nn_points_flipped = index_points(points2_flipped, idx)  # (B, N, K, D2)
+        nn_points = nn_points_flipped.movedim(-1, -3)   # (B, D2, N, K)
+
+        dist, idx = knn_points(
             xyz1.permute(0, 2, 1).contiguous(),
-            xyz2.permute(0, 2, 1).contiguous())
+            xyz2.permute(0, 2, 1).contiguous(),K=3)
         dist = torch.clamp_min(dist, 1e-10)  # (B, N, 3)
         recip_dist = 1.0 / dist
         norm = torch.sum(recip_dist, 2, keepdim=True).repeat((1, 1, 3))
         weight = recip_dist / norm
-        interpolated_points = three_interpolate(points2, idx,
-                                                weight)  # B, in_channel, N
+       #interpolated_points = three_interpolate(points2, idx,
+       #                                        weight)  # B, in_channel, N
+        dist_recip = 1.0 / (dist + 1e-8)  # (B, N, K)
+        norm = torch.sum(dist_recip, dim=-1, keepdim=True)  # (B, N, 1)
+        weight = dist_recip / norm  # (B, N, K)
+        interpolated_points = torch.sum(nn_points * weight.unsqueeze(-3), dim=-1)  # (B, D2, N)
 
         if self.use_points1:
             new_points = torch.cat([interpolated_points, points1], 1)
@@ -585,7 +671,7 @@ class PointNet_SA_Module_KNN(nn.Module):
             return new_xyz, new_points
 
 
-def fps_subsample(pcd, n_points=2048):
+def fps_subsample(pcd, n_points=2048):#Not so correct !!!
     """
     Args
         pcd: (b, 16384, 3)
