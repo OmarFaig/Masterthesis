@@ -588,7 +588,7 @@ def sample_and_group_knn(xyz, points, npoint, k, use_xyz=True, idx=None):
     xyz_flipped = xyz.permute(0, 2, 1).contiguous()  # (B, N, 3)
     new_xyz = gather_operation(xyz,
                                sample_farthest_points(xyz_flipped,
-                                                     npoint))  # (B, 3, npoint)
+                                                     npoint))  # (B, 3, npoint) wrong
     if idx is None:
         idx = query_knn(k, xyz_flipped, new_xyz.permute(0, 2, 1).contiguous())
     grouped_xyz = grouping_operation(xyz, idx)  # (B, 3, npoint, nsample)

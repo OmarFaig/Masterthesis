@@ -347,7 +347,7 @@ def seedformer_dim128(**kwargs):
 if __name__ == '__main__':
     model = seedformer_dim128(up_factors=[1, 2, 2])
     model = model.cuda()
-    print(model)
+    #print(model)
 
     x = torch.rand(8, 2048, 3)
     x = x.cuda()
