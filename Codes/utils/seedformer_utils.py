@@ -586,12 +586,14 @@ def sample_and_group_knn(xyz, points, npoint, k, use_xyz=True, idx=None):
 
     """
     xyz_flipped = xyz.permute(0, 2, 1).contiguous()  # (B, N, 3)
-    new_xyz = gather_operation(xyz,
-                               sample_farthest_points(xyz_flipped,
-                                                     npoint))  # (B, 3, npoint) wrong
+   # new_xyz = gather_operation(xyz,                               sample_farthest_points(xyz_flipped,                                                     K=npoint,random_start_point=True))  # (B, 3, npoint) wrong
+    new_xyz=xyz_flipped
     if idx is None:
-        idx = query_knn(k, xyz_flipped, new_xyz.permute(0, 2, 1).contiguous())
+        #idx = query_knn(k, xyz_flipped, new_xyz.permute(0, 2, 1).contiguous())
+        idx = query_knn(k, xyz_flipped, new_xyz)
+
     grouped_xyz = grouping_operation(xyz, idx)  # (B, 3, npoint, nsample)
+    grouped_xyz -= new_xyz.unsqueeze(3).repeat(1, 1, 1, k)
     grouped_xyz -= new_xyz.unsqueeze(3).repeat(1, 1, 1, k)
 
     if points is not None:
@@ -659,8 +661,10 @@ class PointNet_SA_Module_KNN(nn.Module):
             new_xyz, new_points, idx, grouped_xyz = sample_and_group_all(
                 xyz, points, self.use_xyz)
         else:
-            new_xyz, new_points, idx, grouped_xyz = sample_and_group_knn(
-                xyz, points, self.npoint, self.nsample, self.use_xyz, idx=idx)
+            new_xyz, new_points, idx, grouped_xyz = sample_and_group_all(
+                xyz, points, self.use_xyz)
+          #  new_xyz, new_points, idx, grouped_xyz = sample_and_group_knn(
+          #      xyz, points, self.npoint, self.nsample, self.use_xyz, idx=idx)
 
         new_points = self.mlp_conv(new_points)
         new_points = torch.max(new_points, 3)[0]
