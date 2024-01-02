@@ -23,7 +23,20 @@ class PointNet_SA(nn.Module):
         #logger.debug(call_str())
         super().__init__()
         self.radius_ball = radius_ball
-        pass
+        self.in_channel = in_channel
+        self.num_point = num_point
+        self.num_point_centroid_K =num_point_centroid_K
+        self.convs = nn.ModuleList()
+        self.norms = nn.ModuleList()
+        last_channel = in_channel
+        for out_channel in mlp_channels[:-1]:
+            self.convs.append(nn.Conv2d(last_channel, out_channel, 1))
+            # self.norms.append(Wrapper2d(pointnorm(out_channel)))  # Originally: BatchNorm
+            self.norms.append(nn.Identity())  # Originally: BatchNorm
+            last_channel = out_channel
+        self.last_conv = nn.Conv2d(last_channel, mlp_channels[-1], 1)
+        self.activation = activation
+        #pass
 
 
     def _sample(self,xyz,num_points):
@@ -62,13 +75,37 @@ class PointNet_SA(nn.Module):
         :return:
         groupped_xyz : grouped points [B,C,S]
         '''
+        if num_points_centroid_K is not None:
         #Ball query
-        if self.radius_ball is not None:
-            grouped_xyz_idx = ball_query(p1 = sam_xyz.transpose(-2,-1),radius = self.radius_ball, p2 = xyz.transpose(-2,-1),K = num_points_centroid_K).idx # indices of the centroid groups [B,S,K]
-            grouped_xyz = index_points(xyz.transpose(-2,-1),grouped_xyz_idx).movedim(-1,-3) # B,C,S,K
-            grouped_xyz -= sam_xyz.unsqueeze(-1) # subtract the sampled centroids #  B,C,S,1
-            grouped_xyz /= self.radius_ball
+            if self.radius_ball is not None:
+                grouped_xyz_idx = ball_query(p1 = sam_xyz.transpose(-2,-1),radius = self.radius_ball, p2 = xyz.transpose(-2,-1),K = num_points_centroid_K).idx # indices of the centroid groups [B,S,K]
+                grouped_xyz = index_points(xyz.transpose(-2,-1),grouped_xyz_idx).movedim(-1,-3) # B,C,S,K
+                grouped_xyz -= sam_xyz.unsqueeze(-1) # subtract the sampled centroids #  B,C,S,1
+                grouped_xyz /= self.radius_ball
+            else:
+                #KNN
+                grouped_xyz_idx = knn_points(sam_xyz.transpose(-2,-1),xyz.transpose(-2,-1),K = num_points_centroid_K,return_sorted=False).idx
+                grouped_xyz = index_points(xyz.transpose(-2,-1),grouped_xyz_idx).movedim(-1,-3)
+                grouped_xyz -=sam_xyz.unsqueeze(-1)
+        else:#missing casses !!!!
+            grouped_xyz = xyz.unsqueeze(-2,-1)
 
+            grouped_points = grouped_xyz  # (B, C, 1, K)
+        return grouped_points
+    def forward(self,xyz,points=None,sam_xyz=None,num_point=None):
+        """
+        Input :
+        xyz : (B, N, 3) Tensor
 
-    def forward(self):
-        pass
+        :return:
+        """
+        if sam_xyz is None:
+            sam_xyz = self._sample(xyz,num_point)
+        grouped_points=self._group(xyz,points,sam_xyz)
+
+        for conv, norm in zip(self.convs, self.norms):
+            grouped_points = self.activation(norm(conv(grouped_points)))
+        grouped_points = self.last_conv(grouped_points)
+        new_points = torch.max(grouped_points, -1)[0]  # (B, D', S)
+
+        return sam_xyz, new_points
