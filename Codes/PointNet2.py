@@ -17,6 +17,14 @@ def absolute_or_relative(value, total):
 
 
 class PointNet_SA_Layer(nn.Module):
-    def __init__(self)
+    def __init__(self):
         super(PointNet_SA_Layer, self).__init__()
+        pass
+
+    def _group(self):
+        pass
+    def _sample(self):
+        pass
+    def forward(self):
+        #test
         pass
