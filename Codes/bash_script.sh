@@ -5,7 +5,7 @@ export GIT_USERNAME="OmarFaig"
 export GIT_TOKEN="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"
 
 # Set the remote URL with credentials
-git remote set-url origin "https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/your_username/your_repository.git"
+git remote set-url origin "https://${GIT_USERNAME}:${GIT_TOKEN}@github.com/OmarFaig/Masterarbeit.git"
 
 # Perform Git operations
 git status
