@@ -10,6 +10,5 @@ git add .
 git commit -m "daily updates"
 
 # Use the environment variables for Git push
-git push -u origin master
-
 git push
+
