@@ -78,7 +78,7 @@ class PointNet_SA_Layer(nn.Module):
     based on paper : [1] PointNet++: Deep Hierarchical Feature Learning on Point Sets in a Metric Space - https://arxiv.org/abs/1706.02413
 
     '''
-    def __init__(self,in_channel,mlp_channels,*,npoints=None,nsample=None,radius=None,activation=F.relu()):
+    def __init__(self,in_channel,mlp_channels,*,npoints=None,nsample=None,radius=None,activation=F.relu):
         super(PointNet_SA_Layer, self).__init__()
 #activation relu ?!
         self.npoints = npoints
