@@ -14,11 +14,11 @@ class FeatureExtractor(nn.Module):
         """Encoder that encodes information of partial point cloud
         """
         super(FeatureExtractor, self).__init__()
-        self.sa_module_1 = PointNet_SA_Layer(512, 16, 3, [64, 128], group_all=False, if_bn=False, if_idx=True)
+        self.sa_module_1 = PointNet_SA_Layer(512, 16, 3, [64, 128],  )
         self.transformer_1 = vTransformer(128, dim=64, n_knn=n_knn)
-        self.sa_module_2 = PointNet_SA_Layer(128, 16, 128, [128, 256], group_all=False, if_bn=False, if_idx=True)
+        self.sa_module_2 = PointNet_SA_Layer(128, 16, 128, [128, 256])
         self.transformer_2 = vTransformer(256, dim=64, n_knn=n_knn)
-        self.sa_module_3 = PointNet_SA_Layer(None, None, 256, [512, out_dim], group_all=True, if_bn=False)
+        self.sa_module_3 = PointNet_SA_Layer(None, None, 256, [512, out_dim])
 
     def forward(self, partial_cloud):
         """
@@ -240,3 +240,101 @@ class UpLayer(nn.Module):
         pcd_new = pcd_new + delta
 
         return pcd_new, K_curr
+
+
+class SeedFormer(nn.Module):
+    """
+    SeedFormer Point Cloud Completion with Patch Seeds and Upsample Transformer
+    """
+    def __init__(self, feat_dim=512, embed_dim=128, num_p0=512, n_knn=20, radius=1, up_factors=None, seed_factor=2, interpolate='three', attn_channel=True):
+        """
+        Args:
+            feat_dim: dimension of global feature
+            embed_dim: dimension of embedding feature
+            num_p0: number of P0 coarse point cloud
+            up_factors: upsampling factors
+            seed_factor: seed generation factor
+            interpolate: interpolate seed features (nearest/three)
+            attn_channel: transformer self-attention dimension (channel/point)
+        """
+        super(SeedFormer, self).__init__()
+        self.num_p0 = num_p0
+
+        # Seed Generator
+        self.feat_extractor = FeatureExtractor(out_dim=feat_dim, n_knn=n_knn)
+        self.seed_generator = SeedGenerator(feat_dim=feat_dim, seed_dim=embed_dim, n_knn=n_knn, factor=seed_factor, attn_channel=attn_channel)
+
+        # Upsample layers
+        up_layers = []
+        for i, factor in enumerate(up_factors):
+            up_layers.append(UpLayer(dim=embed_dim, seed_dim=embed_dim, up_factor=factor, i=i, n_knn=n_knn, radius=radius,
+                             interpolate=interpolate, attn_channel=attn_channel))
+        self.up_layers = nn.ModuleList(up_layers)
+
+    def forward(self, partial_cloud):
+        """
+        Args:
+            partial_cloud: (B, N, 3)
+        """
+        # Encoder
+        feat, patch_xyz, patch_feat = self.forward_encoder(partial_cloud)
+
+        # Decoder
+        pred_pcds = self.forward_decoder(feat, partial_cloud, patch_xyz, patch_feat)
+
+        return pred_pcds
+
+    def forward_encoder(self, partial_cloud):
+        # feature extraction
+        partial_cloud = partial_cloud.permute(0, 2, 1).contiguous()
+        feat, patch_xyz, patch_feat = self.feat_extractor(partial_cloud) # (B, feat_dim, 1)
+
+        return feat, patch_xyz, patch_feat
+
+    def forward_decoder(self, feat, partial_cloud, patch_xyz, patch_feat):
+        """
+        Args:
+            feat: Tensor, (B, feat_dim, 1)
+            partial_cloud: Tensor, (B, N, 3)
+            patch_xyz: (B, 3, 128)
+            patch_feat: (B, seed_dim, 128)
+        """
+        pred_pcds = []
+
+        # Generate Seeds
+        seed, seed_feat = self.seed_generator(feat, patch_xyz, patch_feat)
+        seed = seed.permute(0, 2, 1).contiguous() # (B, num_pc, 3)
+        pred_pcds.append(seed)
+
+        # Upsample layers
+        pcd = fps_subsample(torch.cat([seed, partial_cloud], 1), self.num_p0) # (B, num_p0, 3)
+        K_prev = None
+        pcd = pcd.permute(0, 2, 1).contiguous() # (B, 3, num_p0)
+        seed = seed.permute(0, 2, 1).contiguous() # (B, 3, 256)
+        for layer in self.up_layers:
+            pcd, K_prev = layer(pcd, seed, seed_feat, K_prev)
+            pred_pcds.append(pcd.permute(0, 2, 1).contiguous())
+
+        return pred_pcds
+
+
+###########################
+# Recommended Architectures
+###########################
+
+def seedformer_dim128(**kwargs):
+    model = SeedFormer(feat_dim=512, embed_dim=128, n_knn=20, **kwargs)
+    return model
+
+
+if __name__ == '__main__':
+
+    model = seedformer_dim128(up_factors=[1, 2, 2])
+    model = model.cuda()
+    print(model)
+
+    x = torch.rand(8, 2048, 3)
+    x = x.cuda()
+
+    y = model(x)
+    print([pc.size() for pc in y])
