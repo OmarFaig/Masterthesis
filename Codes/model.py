@@ -14,11 +14,11 @@ class FeatureExtractor(nn.Module):
         """Encoder that encodes information of partial point cloud
         """
         super(FeatureExtractor, self).__init__()
-        self.sa_module_1 = PointNet_SA_Layer(512, 16, 3, [64, 128],  )
+        self.sa_module_1 = PointNet_SA_Layer(npoints=512,nsample=16,in_channel=3,mlp_channels=[64,128] )
         self.transformer_1 = vTransformer(128, dim=64, n_knn=n_knn)
-        self.sa_module_2 = PointNet_SA_Layer(128, 16, 128, [128, 256])
+        self.sa_module_2 = PointNet_SA_Layer(npoints=128,nsample=16,in_channel=128,mlp_channels=[128,256])
         self.transformer_2 = vTransformer(256, dim=64, n_knn=n_knn)
-        self.sa_module_3 = PointNet_SA_Layer(None, None, 256, [512, out_dim])
+        self.sa_module_3 = PointNet_SA_Layer(npoints=None,nsample=None,in_channel=256,mlp_channels=[512,out_dim])
 
     def forward(self, partial_cloud):
         """
@@ -31,9 +31,9 @@ class FeatureExtractor(nn.Module):
         l0_xyz = partial_cloud
         l0_points = partial_cloud
 
-        l1_xyz, l1_points, idx1 = self.sa_module_1(l0_xyz, l0_points)  # (B, 3, 512), (B, 128, 512)
+        l1_xyz, l1_points = self.sa_module_1(l0_xyz, l0_points)  # (B, 3, 512), (B, 128, 512)
         l1_points = self.transformer_1(l1_points, l1_xyz)
-        l2_xyz, l2_points, idx2 = self.sa_module_2(l1_xyz, l1_points)  # (B, 3, 128), (B, 256, 128)
+        l2_xyz, l2_points = self.sa_module_2(l1_xyz, l1_points)  # (B, 3, 128), (B, 256, 128)
         l2_points = self.transformer_2(l2_points, l2_xyz)
         l3_xyz, l3_points = self.sa_module_3(l2_xyz, l2_points)  # (B, 3, 1), (B, out_dim, 1)
 

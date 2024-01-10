@@ -88,9 +88,9 @@ class PointNet_SA_Layer(nn.Module):
         self.convs = nn.ModuleList()
         self.norms = nn.ModuleList()
         last_channel = in_channel
-        for out_channel in mlp_channels[-1]:
-            self.convs.append(nn.Conv1d(last_channel, out_channel, 1))
-            self.norms.append(nn.BatchNorm1d())#nn.Identity()
+        for out_channel in mlp_channels[:-1]:
+            self.convs.append(nn.Conv2d(last_channel, out_channel, 1))
+            self.norms.append(nn.Identity())#nn.BatchNorm1d()
             last_channel = out_channel
         self.last_conv = nn.Conv2d(last_channel,mlp_channels[-1],1 )
 
@@ -107,6 +107,11 @@ class PointNet_SA_Layer(nn.Module):
             sampled_xyz : sampled points [B,C(3),npoints]
 
         '''
+        print("xyz.shape ",xyz.shape)
+        print("npoints: -  ",npoints)
+
+        if npoints is None:
+            return None
         N = xyz.shape[-1]
         if N==npoints:
             sampled_xyz = xyz # sample all the points [B,C,npoints]
@@ -132,14 +137,14 @@ class PointNet_SA_Layer(nn.Module):
         if self.nsample is not None:#sample and group by ball query or knn
             if self.radius is not None:
                 # Ball Query
-                group_idx=ball_query(p1=sampled_xyz, p2=xyz, K=self.nsample, radius=self.radius).idx
+                group_idx=ball_query(p1=sampled_xyz.transpose(-2,-1), p2=xyz.transpose(-2,-1), K=self.nsample, radius=self.radius).idx
                 grouped_xyz = index_points(xyz.transpose(-2,-1), group_idx).movedim(-1,-3)
                 grouped_xyz -= sampled_xyz.unsqueeze(-1)
                 grouped_xyz /= self.radius
             else:
                 #KNN
-                grouped_xyz = knn_points(sampled_xyz.transpose(-2,-1),xyz.transpose(-2,-1), K=self.nsample,return_sorted=False).idx
-                grouped_xyz = index_points(xyz.transpose(-2,-1),grouped_xyz).movedim(-1,-3)
+                group_idx = knn_points(sampled_xyz.transpose(-2,-1),xyz.transpose(-2,-1), K=self.nsample,return_sorted=False).idx
+                grouped_xyz = index_points(xyz.transpose(-2,-1),group_idx).movedim(-1,-3)
                 grouped_xyz -=sampled_xyz.unsqueeze(-1)
 
             if points is not None:
@@ -157,9 +162,9 @@ class PointNet_SA_Layer(nn.Module):
         return grouped_points
 
 
-    def forward(self):
+    #def forward(self):
         #test
-        def forward(self, xyz, points=None, sampled_xyz=None, npoint=None):
+    def forward(self, xyz, points=None, sampled_xyz=None, npoints=None):
             """
             Args:
                 xyz: Tensor, (B, 3, N)
@@ -169,13 +174,18 @@ class PointNet_SA_Layer(nn.Module):
                 new_xyz: Tensor, (B, 3, npoint)
                 new_points: Tensor, (B, mlp[-1], npoint)
             """
-            if npoint is None:
-                npoint = self.npoint
-            assert (npoint is None) == (self.nsample is None)  # both None => group all, otherwise sample and group
+            print(f'npoints: {npoints}, self.nsample: {self.nsample}')
+
+            assert (npoints is None) or (self.npoints is None)
+            if npoints is None:
+                npoints = self.npoints
+            assert (npoints is None) == (self.nsample is None)  # both None => group all, otherwise sample and group
 
             if sampled_xyz is None:
-                sampled_xyz = self._sample(xyz, npoint)  # (B, C, S)
+                sampled_xyz = self._sample(xyz, npoints)  # (B, C, S)
             grouped_points = self._group(xyz, points, sampled_xyz)  # (B, C+D, S, K)
+            #grouped_points = grouped_points.reshape(grouped_points.size(0), -1, grouped_points.size(-1))
+
             for conv, norm in zip(self.convs, self.norms):
                 grouped_points = self.activation(norm(conv(grouped_points)))
             grouped_points = self.last_conv(grouped_points)
