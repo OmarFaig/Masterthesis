@@ -107,8 +107,8 @@ class PointNet_SA_Layer(nn.Module):
             sampled_xyz : sampled points [B,C(3),npoints]
 
         '''
-        print("xyz.shape ",xyz.shape)
-        print("npoints: -  ",npoints)
+        print("sample xyz.shape ",xyz.shape)
+        print("sample npoints: -  ",npoints)
 
         if npoints is None:
             return None
@@ -149,14 +149,14 @@ class PointNet_SA_Layer(nn.Module):
 
             if points is not None:
                 grouped_points = index_points(points.transpose(-2,-1),group_idx).movedim(-1,-3)
-                grouped_points = torch.cat([grouped_points, grouped_xyz],dim=-3)
+                grouped_points = torch.cat([grouped_points, grouped_xyz],dim=1)
             else:
                 grouped_points = grouped_xyz
         else:#group all
             grouped_xyz = xyz.unsqueeze(-2)
             if points is not None:
-                grouped_points =points.unsqueeze(-2)
-                grouped_points = torch.cat([grouped_points,grouped_xyz],dim=-3)
+                grouped_points =points.unsqueeze(2)
+                grouped_points = torch.cat([grouped_points,grouped_xyz],dim=1)
             else:
                 grouped_points = grouped_xyz
         return grouped_points
@@ -174,7 +174,7 @@ class PointNet_SA_Layer(nn.Module):
                 new_xyz: Tensor, (B, 3, npoint)
                 new_points: Tensor, (B, mlp[-1], npoint)
             """
-            print(f'npoints: {npoints}, self.nsample: {self.nsample}')
+            print(f'forward - npoints: {npoints}, self.nsample: {self.nsample}')
 
             assert (npoints is None) or (self.npoints is None)
             if npoints is None:

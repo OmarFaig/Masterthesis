@@ -4,7 +4,9 @@ import torch.nn.functional as F
 from torch import einsum
 import warnings
 import logging
-from pytorch3d.ops import  knn_points
+from pytorch3d.ops import  knn_points,sample_farthest_points
+
+from Codes.utils.seedformer_utils import fps_subsample
 from PointNet2 import MLP_Res,MLP_CONV, PointNet_SA_Layer,vTransformer,grouping_operation
 logger = logging.getLogger(__name__)
 
@@ -13,12 +15,13 @@ class FeatureExtractor(nn.Module):
     def __init__(self, out_dim=1024, n_knn=20):
         """Encoder that encodes information of partial point cloud
         """
+        #in_channel values are not correct needs to be investigated
         super(FeatureExtractor, self).__init__()
-        self.sa_module_1 = PointNet_SA_Layer(npoints=512,nsample=16,in_channel=3,mlp_channels=[64,128] )
+        self.sa_module_1 = PointNet_SA_Layer(npoints=512,nsample=16,in_channel=6,mlp_channels=[64,128] )
         self.transformer_1 = vTransformer(128, dim=64, n_knn=n_knn)
-        self.sa_module_2 = PointNet_SA_Layer(npoints=128,nsample=16,in_channel=128,mlp_channels=[128,256])
+        self.sa_module_2 = PointNet_SA_Layer(npoints=128,nsample=16,in_channel=131,mlp_channels=[128,256])
         self.transformer_2 = vTransformer(256, dim=64, n_knn=n_knn)
-        self.sa_module_3 = PointNet_SA_Layer(npoints=None,nsample=None,in_channel=256,mlp_channels=[512,out_dim])
+        self.sa_module_3 = PointNet_SA_Layer(npoints=None,nsample=None,in_channel=259,mlp_channels=[512,out_dim])
 
     def forward(self, partial_cloud):
         """
@@ -38,8 +41,6 @@ class FeatureExtractor(nn.Module):
         l3_xyz, l3_points = self.sa_module_3(l2_xyz, l2_points)  # (B, 3, 1), (B, out_dim, 1)
 
         return l3_points, l2_xyz, l2_points
-
-
 
 class SeedGenerator(nn.Module):
     def __init__(self, feat_dim=512, seed_dim=128, n_knn=20, factor=2, attn_channel=True):
@@ -307,7 +308,8 @@ class SeedFormer(nn.Module):
         pred_pcds.append(seed)
 
         # Upsample layers
-        pcd = fps_subsample(torch.cat([seed, partial_cloud], 1), self.num_p0) # (B, num_p0, 3)
+        #pcd = fps_subsample(torch.cat([seed, partial_cloud], 1), self.num_p0) # (B, num_p0, 3)
+        pcd,_=sample_farthest_points(torch.cat([seed, partial_cloud], 1), K=self.num_p0,random_start_point=True)
         K_prev = None
         pcd = pcd.permute(0, 2, 1).contiguous() # (B, 3, num_p0)
         seed = seed.permute(0, 2, 1).contiguous() # (B, 3, 256)

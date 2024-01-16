@@ -675,7 +675,7 @@ class PointNet_SA_Module_KNN(nn.Module):
             return new_xyz, new_points
 
 
-def fps_subsample(pcd, n_points=2048):#Not so correct !!!
+def fps_subsample(pcd, n_points=512):
     """
     Args
         pcd: (b, 16384, 3)
@@ -689,12 +689,13 @@ def fps_subsample(pcd, n_points=2048):#Not so correct !!!
         raise ValueError(
             'FPS subsampling receives a larger n_points: {:d} > {:d}'.format(
                 n_points, pcd.shape[1]))
+    #indices = sample_farthest_points(pcd, K=n_points)
+
     new_pcd = gather_operation(
         pcd.permute(0, 2, 1).contiguous(),
-        sample_farthest_points(pcd, n_points))
+        sample_farthest_points(pcd, K=n_points))
     new_pcd = new_pcd.permute(0, 2, 1).contiguous()
     return new_pcd
-
 
 def get_nearest_index(target, source, k=1, return_dis=False):
     """
