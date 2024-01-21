@@ -17,9 +17,9 @@ class FeatureExtractor(nn.Module):
         """
         #in_channel values are not correct needs to be investigated
         super(FeatureExtractor, self).__init__()
-        self.sa_module_1 = PointNet_SA_Layer(npoints=512,nsample=16,in_channel=6,mlp_channels=[64,128] )
+        self.sa_module_1 = PointNet_SA_Layer(npoints=24,nsample=2,in_channel=6,mlp_channels=[64,128] )
         self.transformer_1 = vTransformer(128, dim=64, n_knn=n_knn)
-        self.sa_module_2 = PointNet_SA_Layer(npoints=128,nsample=16,in_channel=131,mlp_channels=[128,256])
+        self.sa_module_2 = PointNet_SA_Layer(npoints=12,nsample=4,in_channel=131,mlp_channels=[128,256])
         self.transformer_2 = vTransformer(256, dim=64, n_knn=n_knn)
         self.sa_module_3 = PointNet_SA_Layer(npoints=None,nsample=None,in_channel=259,mlp_channels=[512,out_dim])
 
@@ -335,8 +335,8 @@ if __name__ == '__main__':
     model = model.cuda()
     print(model)
 
-    x = torch.rand(8, 2048, 3)
-    x = x.cuda()
+    #x = torch.rand(8, 2048, 3)
+    #x = x.cuda()
 
-    y = model(x)
+    #y = model(x)
     print([pc.size() for pc in y])

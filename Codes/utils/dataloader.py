@@ -23,7 +23,9 @@ class RacingDataset(Dataset):
 dataset = RacingDataset(root_dir="/home/omar/TUM/Data/cropped/sim")
 dataloader = DataLoader(dataset,batch_size=1,shuffle=False,num_workers=2)
 
-for i in dataset:
-    print(i.shape)
-
-print(len(dataloader))
+#for i in dataset:
+#    #pcd = o3d.io.read_point_cloud(i)
+#    print(i.shape)
+#
+#print(len(dataloader))
+#
