@@ -70,8 +70,6 @@ class MLP_Res(nn.Module):
         return out
 
 
-
-
 class PointNet_SA_Layer(nn.Module):
     '''
     PointNet set of abstraction layer : sampling + grouping + PointNet layers
@@ -128,8 +126,8 @@ class PointNet_SA_Layer(nn.Module):
         flexible number of points into a fixed length local region feature vector.
         3 ways of grouping : KNN -  Ball Query -  group all
         Input:
-        xyz: inout points(positions) [B,C(3),N] or (Nx(d+C)
-        points : inout points [B,D,N]  - features
+        xyz: input points(positions) [B,C(3),N] or (Nx(d+C)
+        points : input points [B,D,N]  - features
         sampled_xyz: points to be grouped (coordinates of the centroids)
         :return
         grouped_points : grouped points positions + feature data , [B,C+D,S,K]

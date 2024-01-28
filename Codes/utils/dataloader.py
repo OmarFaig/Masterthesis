@@ -17,11 +17,14 @@ class RacingDataset(Dataset):
         pcd = o3d.io.read_point_cloud(pcd_path)
 
         points = torch.tensor(pcd.points, dtype=torch.float32)
-       # if points.shape[0]<50:
-       #     return None,None
+
         return points,pcd_path
 
     def filter_list(self):
+        '''
+        Filter the inputs so that only pcds with more than 50 points are included in the training
+        :return:
+        '''
         filtered_list=[]
         for filename in self.file_list:
             pcd = o3d.io.read_point_cloud(os.path.join(self.root_dir,filename))
@@ -29,8 +32,8 @@ class RacingDataset(Dataset):
             if len(points)>=50:
                 filtered_list.append(filename)
         return filtered_list
-dataset = RacingDataset(root_dir="/home/omar/TUM/Data/cropped/sim")
-dataloader = DataLoader(dataset,batch_size=1,shuffle=False,num_workers=2)
+#dataset = RacingDataset(root_dir="/home/omar/TUM/Data/cropped/sim")
+#dataloader = DataLoader(dataset,batch_size=1,shuffle=False,num_workers=2)
 
 #for i in dataset:
 #    #pcd = o3d.io.read_point_cloud(i)
