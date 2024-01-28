@@ -16,7 +16,7 @@ def visualize(pcl):
     vis.run()
     vis.destroy_window()
 
-def crop_bbox(pcd,bbox_coordinates,save_path,num_random_points):
+def crop_bbox(pcd,bbox_coordinates,save_path):#num_random_points):
     orientation_angle=float(bbox_coordinates[-1])
     #print(orientation_angle)
     h,w,l=bbox_coordinates[8:11]
@@ -29,11 +29,11 @@ def crop_bbox(pcd,bbox_coordinates,save_path,num_random_points):
     bbox=o3d.geometry.OrientedBoundingBox(center=center,R=rotation_mat_z,extent=[ l,w,h])
     bbox_crop=pcd.crop(bbox)
     # generate random points uniformly
-    random_points=np.random.uniform(-0.5,0.5,size=(num_random_points,3))
-    random_points= np.dot(random_points,bbox.R.T)+bbox.center
-    combined_points=np.vstack((np.asarray(bbox_crop.points),random_points))
-    combined_pcd = o3d.geometry.PointCloud()
-    combined_pcd.points = o3d.utility.Vector3dVector(combined_points)
+   # random_points=np.random.uniform(-0.5,0.5,size=(num_random_points,3))
+    #random_points= np.dot(random_points,bbox.R.T)+bbox.center
+    #combined_points=np.vstack((np.asarray(bbox_crop.points),random_points))
+    #combined_pcd = o3d.geometry.PointCloud()
+    #combined_pcd.points = o3d.utility.Vector3dVector(combined_points)
  #  o3d.io.write_point_cloud(save_path,combined_pcd)
 
     o3d.io.write_point_cloud(save_path,bbox_crop)

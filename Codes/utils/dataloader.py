@@ -7,19 +7,28 @@ class RacingDataset(Dataset):
     def __init__(self,root_dir):
         self.root_dir = root_dir
         self.file_list = os.listdir(root_dir)
-
+        self.filter_file_list = self.filter_list()
 
     def __len__(self):
-        return len(self.file_list)
+        return len(self.filter_file_list)
 
     def __getitem__(self,index):
-        pcd_path = os.path.join(self.root_dir,self.file_list[index])
+        pcd_path = os.path.join(self.root_dir,self.filter_file_list[index])
         pcd = o3d.io.read_point_cloud(pcd_path)
 
         points = torch.tensor(pcd.points, dtype=torch.float32)
-        return points
+       # if points.shape[0]<50:
+       #     return None,None
+        return points,pcd_path
 
-
+    def filter_list(self):
+        filtered_list=[]
+        for filename in self.file_list:
+            pcd = o3d.io.read_point_cloud(os.path.join(self.root_dir,filename))
+            points = torch.tensor(pcd.points, dtype=torch.float32)
+            if len(points)>=50:
+                filtered_list.append(filename)
+        return filtered_list
 dataset = RacingDataset(root_dir="/home/omar/TUM/Data/cropped/sim")
 dataloader = DataLoader(dataset,batch_size=1,shuffle=False,num_workers=2)
 
