@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 
 # parser and cfg
 
-dataset = RacingDataset(root_dir="/home/omar/TUM/Data/cropped/sim")
-dataloader = DataLoader(dataset,batch_size=1,shuffle=False,num_workers=2)
+dataset = RacingDataset(root_dir="/home/omar/TUM/Data/cropped/real")
+dataloader = DataLoader(dataset,batch_size=2,shuffle=False,num_workers=2)
 model = seedformer_dim128(up_factors=[1, 2, 2])
 model = model.cuda()
 num_points_pcd={}
