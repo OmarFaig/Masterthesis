@@ -316,8 +316,11 @@ class SeedFormer(nn.Module):
         for layer in self.up_layers:
             pcd, K_prev = layer(pcd, seed, seed_feat, K_prev)
             pred_pcds.append(pcd.permute(0, 2, 1).contiguous())
-
-        return pred_pcds
+            print("len - pred_pcds," , len(pred_pcds))
+            print("len - pcd,",pcd.shape)
+        #print("shape of pred_pcds[:1]",pred_pcds[-1].shape())
+        #return pcd,pred_pcds[:-1]
+        return pred_pcds[-1]
 
 
 ###########################
@@ -325,7 +328,7 @@ class SeedFormer(nn.Module):
 ###########################
 
 def seedformer_dim128(**kwargs):
-    model = SeedFormer(feat_dim=512, embed_dim=128, n_knn=20, **kwargs)
+    model = SeedFormer(feat_dim=128, embed_dim=64, n_knn=10, **kwargs)
     return model
 
 
