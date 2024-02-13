@@ -17,9 +17,9 @@ class FeatureExtractor(nn.Module):
         """
         #in_channel values are not correct needs to be investigated
         super(FeatureExtractor, self).__init__()
-        self.sa_module_1 = PointNet_SA_Layer(npoints=40,nsample=4,in_channel=6,mlp_channels=[64,128] )
+        self.sa_module_1 = PointNet_SA_Layer(npoints=500,nsample=16,in_channel=6,mlp_channels=[64,128] )
         self.transformer_1 = vTransformer(128, dim=64, n_knn=n_knn)
-        self.sa_module_2 = PointNet_SA_Layer(npoints=20,nsample=8,in_channel=131,mlp_channels=[128,256])
+        self.sa_module_2 = PointNet_SA_Layer(npoints=250,nsample=8,in_channel=131,mlp_channels=[128,256])
         self.transformer_2 = vTransformer(256, dim=64, n_knn=n_knn)
         self.sa_module_3 = PointNet_SA_Layer(npoints=None,nsample=None,in_channel=259,mlp_channels=[512,out_dim])
 
