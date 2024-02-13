@@ -316,8 +316,8 @@ class SeedFormer(nn.Module):
         for layer in self.up_layers:
             pcd, K_prev = layer(pcd, seed, seed_feat, K_prev)
             pred_pcds.append(pcd.permute(0, 2, 1).contiguous())
-            print("len - pred_pcds," , len(pred_pcds))
-            print("len - pcd,",pcd.shape)
+           # print("len - pred_pcds," , len(pred_pcds))
+          #  print("len - pcd,",pcd.shape)
         #print("shape of pred_pcds[:1]",pred_pcds[-1].shape())
         #return pcd,pred_pcds[:-1]
         return pred_pcds[-1]
@@ -336,7 +336,7 @@ if __name__ == '__main__':
 
     model = seedformer_dim128(up_factors=[1, 2, 2])
     model = model.cuda()
-    print(model)
+    #print(model)
 
    # x= torch.rand(8, 2048, 3)
    # x = x.cuda()

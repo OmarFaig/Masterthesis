@@ -105,8 +105,8 @@ class PointNet_SA_Layer(nn.Module):
             sampled_xyz : sampled points [B,C(3),npoints]
 
         '''
-        print("sample xyz.shape ",xyz.shape)
-        print("sample npoints: -  ",npoints)
+        #print("sample xyz.shape ",xyz.shape)
+       # print("sample npoints: -  ",npoints)
 
         if npoints is None:
             return None
@@ -172,7 +172,7 @@ class PointNet_SA_Layer(nn.Module):
                 new_xyz: Tensor, (B, 3, npoint)
                 new_points: Tensor, (B, mlp[-1], npoint)
             """
-            print(f'forward - npoints: {npoints}, self.nsample: {self.nsample}')
+           # print(f'forward - npoints: {npoints}, self.nsample: {self.nsample}')
 
             assert (npoints is None) or (self.npoints is None)
             if npoints is None:
