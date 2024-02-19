@@ -47,3 +47,18 @@ def crop_bbox(pcd,bbox_coordinates,save_path):#num_random_points):
 
 
    # o3d.visualization.draw_geometries([pcd,bbox_line_set])
+
+def crop_invert_stitch(original_pcd,bbox_coords):
+    orientation_angle = float(bbox_coords[-1])
+    # print(orientation_angle)
+    h, w, l = bbox_coords[8:11]
+    rotation_mat_z = np.array([
+        [np.cos(orientation_angle), -np.sin(orientation_angle), 0.0],
+        [np.sin(orientation_angle), np.cos(orientation_angle), 0.0],
+        [0.0, 0.0, 1.0]
+    ])
+    center = bbox_coords[11:14]
+    bbox = o3d.geometry.OrientedBoundingBox(center=center, R=rotation_mat_z, extent=[l, w, h])
+    orignal_crop_invert = original_pcd.crop(bbox,invert=True)
+    return orignal_crop_invert
+
