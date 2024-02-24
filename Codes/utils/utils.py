@@ -48,7 +48,7 @@ def crop_bbox(pcd,bbox_coordinates,save_path):#num_random_points):
 
    # o3d.visualization.draw_geometries([pcd,bbox_line_set])
 
-def crop_invert_stitch(original_pcd,bbox_coords):
+def crop_invert_stitch(original_pcd, bbox_coords):
     orientation_angle = float(bbox_coords[-1])
     # print(orientation_angle)
     h, w, l = bbox_coords[8:11]
@@ -59,6 +59,11 @@ def crop_invert_stitch(original_pcd,bbox_coords):
     ])
     center = bbox_coords[11:14]
     bbox = o3d.geometry.OrientedBoundingBox(center=center, R=rotation_mat_z, extent=[l, w, h])
-    orignal_crop_invert = original_pcd.crop(bbox,invert=True)
-    return orignal_crop_invert
+    # orignal_crop_invert =o3d.geometry.PointCloud.crop(original_pcd,bbox)
+    inliers_indices = bbox.get_point_indices_within_bounding_box(original_pcd.points)
+
+    inliers_pcd = original_pcd.select_by_index(inliers_indices, invert=False)  # select inside points = cropped
+    outliers_pcd = original_pcd.select_by_index(inliers_indices, invert=True)  # select outside points
+
+    return outliers_pcd
 
