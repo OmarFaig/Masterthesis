@@ -2,10 +2,17 @@ import open3d as o3d
 import numpy as np
 
 def visualize(pcl,bbox_coordinates):
+    '''
+    Function for visualizing the point cloud and bbox
+
+    :param pcl:
+    :param bbox_coordinates:
+    :return: visualized point cloud
+    '''
     vis = o3d.visualization.Visualizer()
     vis.create_window(visible=True)
     h, w, l = bbox_coordinates[8:11]
-    orientation_angle=float(bbox_coordinates[-1])
+    orientation_angle = float(bbox_coordinates[-1])
 
     rotation_mat_z = np.array([
         [np.cos(orientation_angle), -np.sin(orientation_angle), 0.0],
