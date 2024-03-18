@@ -41,24 +41,24 @@ def visualize(pcl,bbox_coordinates):
     vis.destroy_window()
 
 def crop_bbox(pcd,bbox_coordinates,save_path):#num_random_points):
+    '''
+    Crop the bbox out of pcd and save it
+    :param pcd:
+    :param bbox_coordinates:
+    :param save_path:
+    :return:
+    '''
     orientation_angle=float(bbox_coordinates[-1])
-    #print(orientation_angle)
     h,w,l=bbox_coordinates[8:11]
     rotation_mat_z=np.array([
         [np.cos(orientation_angle),-np.sin(orientation_angle),0.0],
         [np.sin(orientation_angle),np.cos(orientation_angle),0.0],
         [0.0,0.0,1.0]
     ])
-    center=bbox_coordinates[11:14]
-    bbox=o3d.geometry.OrientedBoundingBox(center=center,R=rotation_mat_z,extent=[ l,w,h])
-    bbox_crop=pcd.crop(bbox)
-    # generate random points uniformly
-   # random_points=np.random.uniform(-0.5,0.5,size=(num_random_points,3))
-    #random_points= np.dot(random_points,bbox.R.T)+bbox.center
-    #combined_points=np.vstack((np.asarray(bbox_crop.points),random_points))
-    #combined_pcd = o3d.geometry.PointCloud()
-    #combined_pcd.points = o3d.utility.Vector3dVector(combined_points)
- #  o3d.io.write_point_cloud(save_path,combined_pcd)
+    center = bbox_coordinates[11:14]
+    bbox = o3d.geometry.OrientedBoundingBox(center=center,R=rotation_mat_z,extent=[ l,w,h])
+    bbox_crop = pcd.crop(bbox)
+
 
     o3d.io.write_point_cloud(save_path,bbox_crop)
     bbox_line_set=o3d.geometry.LineSet.create_from_oriented_bounding_box(bbox)
@@ -70,11 +70,14 @@ def crop_bbox(pcd,bbox_coordinates,save_path):#num_random_points):
     bbox_line_set.colors = o3d.utility.Vector3dVector(colors)
 
 
-   # o3d.visualization.draw_geometries([pcd,bbox_line_set])
-
 def crop_invert_stitch(original_pcd, bbox_coords):
+    '''
+    Crop the bbox from  original pcd and return rest(not bbox)
+    :param original_pcd:
+    :param bbox_coords:
+    :return:
+    '''
     orientation_angle = float(bbox_coords[-1])
-    # print(orientation_angle)
     h, w, l = bbox_coords[8:11]
     rotation_mat_z = np.array([
         [np.cos(orientation_angle), -np.sin(orientation_angle), 0.0],
@@ -83,38 +86,31 @@ def crop_invert_stitch(original_pcd, bbox_coords):
     ])
     center = bbox_coords[11:14]
     bbox = o3d.geometry.OrientedBoundingBox(center=center, R=rotation_mat_z, extent=[l, w, h])
-    # orignal_crop_invert =o3d.geometry.PointCloud.crop(original_pcd,bbox)
     inliers_indices = bbox.get_point_indices_within_bounding_box(original_pcd.points)
 
-    inliers_pcd = original_pcd.select_by_index(inliers_indices, invert=False)  # select inside points = cropped
+    #inliers_pcd = original_pcd.select_by_index(inliers_indices, invert=False)  # select inside points = cropped
     outliers_pcd = original_pcd.select_by_index(inliers_indices, invert=True)  # select outside points
 
     return outliers_pcd
 
 def correct_bbox_label(bbox_list):
-    name = bbox_list.strip().split()
-    #print(name)
+    '''
+    adjust the given bbox coordinates acccording to KITTi format
+    :param bbox_list:
+    :return:
+    '''
+    name = bbox_list.strip().split()     #'Car'
 
-    del name[1:8]
-    name.append(name.pop(0))
-    #print(name)
+    del name[1:8]    # delete unnecessary zeros inbetween
+    name.append(name.pop(0))   # append 'Car' to the back
     dx, dy, dz = name[0:3]
-    #print(dx, dy, dz)
     temp = dx
     dx = dz
     dz = temp
-    #print(dx, dy, dz)
     x, y, z = name[3:6]
-   # print(x, y, z)
-    #t = x
-    #x = z
-    #z = t
-    #print(x, y, z)
-#
-    name[3:6] = dx, dy, dz
-    ##
-#
-    name[0:3] = x, y, z
-    # print(dx,dy,dz)
-    #print(name)
+
+    name[3:6] = dx, dy, dz #  replce dx and dz
+
+    name[0:3] = x, y, z  #  just move x,y,z to the front of the list
+
     return name
