@@ -1,17 +1,34 @@
 import open3d as o3d
 import numpy as np
 
-def visualize(pcl):
+def visualize(pcl,bbox_coordinates):
     vis = o3d.visualization.Visualizer()
     vis.create_window(visible=True)
-    # Call only after creating visualizer window.
+    h, w, l = bbox_coordinates[8:11]
+    orientation_angle=float(bbox_coordinates[-1])
+
+    rotation_mat_z = np.array([
+        [np.cos(orientation_angle), -np.sin(orientation_angle), 0.0],
+        [np.sin(orientation_angle), np.cos(orientation_angle), 0.0],
+        [0.0, 0.0, 1.0]
+    ])
+    center = bbox_coordinates[11:14]
+    bbox = o3d.geometry.OrientedBoundingBox(center=center, R=rotation_mat_z, extent=[l, w, h])
     opt = vis.get_render_option()
     opt.show_coordinate_frame = True
   #  opt.background_color = np.asarray([0, 0, 0])
     view_control = vis.get_view_control()
     view_control.set_up([0, 0, 1])  # Lock the view up direction along the z-axis
     #opt.show_grid=True
+    bbox_line_set = o3d.geometry.LineSet.create_from_oriented_bounding_box(bbox)
+    color = (1, 0, 0)
 
+    colors = [color for _ in range(len(bbox_line_set.lines))]
+
+    # Assign colors to the LineSet
+    bbox_line_set.colors = o3d.utility.Vector3dVector(colors)
+
+    o3d.visualization.draw_geometries([pcl,bbox_line_set])
     vis.add_geometry(pcl)
     vis.run()
     vis.destroy_window()
@@ -67,3 +84,30 @@ def crop_invert_stitch(original_pcd, bbox_coords):
 
     return outliers_pcd
 
+def correct_bbox_label(bbox_list):
+    name = bbox_list.strip().split()
+    #print(name)
+
+    del name[1:8]
+    name.append(name.pop(0))
+    #print(name)
+    dx, dy, dz = name[0:3]
+    #print(dx, dy, dz)
+    temp = dx
+    dx = dz
+    dz = temp
+    #print(dx, dy, dz)
+    x, y, z = name[3:6]
+   # print(x, y, z)
+    #t = x
+    #x = z
+    #z = t
+    #print(x, y, z)
+#
+    name[3:6] = dx, dy, dz
+    ##
+#
+    name[0:3] = x, y, z
+    # print(dx,dy,dz)
+    #print(name)
+    return name
