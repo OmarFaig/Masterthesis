@@ -88,6 +88,8 @@ class PointNet_SA_Layer(nn.Module):
         last_channel = in_channel
         for out_channel in mlp_channels[:-1]:
             self.convs.append(nn.Conv2d(last_channel, out_channel, 1))
+          #  self.norms.append(nn.BatchNorm1d(out_channel))  # Adding BatchNorm1d layer
+
             self.norms.append(nn.Identity())#nn.BatchNorm1d()
             last_channel = out_channel
         self.last_conv = nn.Conv2d(last_channel,mlp_channels[-1],1 )
@@ -105,8 +107,8 @@ class PointNet_SA_Layer(nn.Module):
             sampled_xyz : sampled points [B,C(3),npoints]
 
         '''
-        #print("sample xyz.shape ",xyz.shape)
-       # print("sample npoints: -  ",npoints)
+        print("sample xyz.shape ",xyz.shape)
+        print("sample npoints: -  ",npoints)
 
         if npoints is None:
             return None

@@ -12,16 +12,16 @@ logger = logging.getLogger(__name__)
 
 
 class FeatureExtractor(nn.Module):
-    def __init__(self, out_dim=1024, n_knn=20):
+    def __init__(self, out_dim=2048, n_knn=10):
         """Encoder that encodes information of partial point cloud
         """
         #in_channel values are not correct needs to be investigated
         super(FeatureExtractor, self).__init__()
-        self.sa_module_1 = PointNet_SA_Layer(npoints=1000,nsample=16,in_channel=6,mlp_channels=[64,128] )
-        self.transformer_1 = vTransformer(128, dim=64, n_knn=n_knn)
-        self.sa_module_2 = PointNet_SA_Layer(npoints=500,nsample=8,in_channel=131,mlp_channels=[128,256])
-        self.transformer_2 = vTransformer(256, dim=64, n_knn=n_knn)
-        self.sa_module_3 = PointNet_SA_Layer(npoints=None,nsample=None,in_channel=259,mlp_channels=[512,out_dim])
+        self.sa_module_1 = PointNet_SA_Layer(npoints=2000,nsample=16,in_channel=6,mlp_channels=[64,256] )
+        self.transformer_1 = vTransformer(256, dim=64, n_knn=n_knn)
+        self.sa_module_2 = PointNet_SA_Layer(npoints=1000,nsample=8,in_channel=259,mlp_channels=[256,512])
+        self.transformer_2 = vTransformer(512, dim=128, n_knn=n_knn)
+        self.sa_module_3 = PointNet_SA_Layer(npoints=None,nsample=None,in_channel=515,mlp_channels=[512,out_dim])
 
     def forward(self, partial_cloud):
         """
@@ -43,12 +43,12 @@ class FeatureExtractor(nn.Module):
         return l3_points, l2_xyz, l2_points
 
 class SeedGenerator(nn.Module):
-    def __init__(self, feat_dim=512, seed_dim=128, n_knn=20, factor=2, attn_channel=True):
+    def __init__(self, feat_dim=512, seed_dim=256, n_knn=20, factor=2, attn_channel=True):
         super(SeedGenerator, self).__init__()
-        self.uptrans = UpTransformer(256, 128, dim=64, n_knn=n_knn, use_upfeat=False, attn_channel=attn_channel, up_factor=factor, scale_layer=None)
-        self.mlp_1 = MLP_Res(in_dim=feat_dim + 128, hidden_dim=128, out_dim=128)
-        self.mlp_2 = MLP_Res(in_dim=128, hidden_dim=64, out_dim=128)
-        self.mlp_3 = MLP_Res(in_dim=feat_dim + 128, hidden_dim=128, out_dim=seed_dim)
+        self.uptrans = UpTransformer(256, 256, dim=64, n_knn=n_knn, use_upfeat=False, attn_channel=attn_channel, up_factor=factor, scale_layer=None)
+        self.mlp_1 = MLP_Res(in_dim=feat_dim + 256, hidden_dim=256, out_dim=256)
+        self.mlp_2 = MLP_Res(in_dim=256, hidden_dim=64, out_dim=256)
+        self.mlp_3 = MLP_Res(in_dim=feat_dim + 256, hidden_dim=256, out_dim=seed_dim)
         self.mlp_4 = nn.Sequential(
             nn.Conv1d(seed_dim, 64, 1),
             nn.ReLU(),
@@ -71,8 +71,8 @@ class SeedGenerator(nn.Module):
 
 
 class UpTransformer(nn.Module):
-    def __init__(self, in_channel, out_channel, dim, n_knn=20, up_factor=2, use_upfeat=True,
-                 pos_hidden_dim=64, attn_hidden_multiplier=4, scale_layer=nn.Softmax, attn_channel=True):
+    def __init__(self, in_channel, out_channel, dim, n_knn=10, up_factor=2, use_upfeat=True,
+                 pos_hidden_dim=256, attn_hidden_multiplier=4, scale_layer=nn.Softmax, attn_channel=True):
         super(UpTransformer, self).__init__()
         self.n_knn = n_knn
         self.up_factor = up_factor
@@ -172,7 +172,7 @@ class UpLayer(nn.Module):
     """
     Upsample Layer with upsample transformers
     """
-    def __init__(self, dim, seed_dim, up_factor=2, i=0, radius=1, n_knn=20, interpolate='three', attn_channel=True):
+    def __init__(self, dim, seed_dim, up_factor=2, i=0, radius=1, n_knn=10, interpolate='three', attn_channel=True):
         super(UpLayer, self).__init__()
         self.i = i
         self.up_factor = up_factor
@@ -180,8 +180,8 @@ class UpLayer(nn.Module):
         self.n_knn = n_knn
         self.interpolate = interpolate
 
-        self.mlp_1 = MLP_CONV(in_channel=3, layer_dims=[64, 128])
-        self.mlp_2 = MLP_CONV(in_channel=128 * 2 + seed_dim, layer_dims=[256, dim])
+        self.mlp_1 = MLP_CONV(in_channel=3, layer_dims=[64, 256])
+        self.mlp_2 = MLP_CONV(in_channel=256 * 2 + seed_dim, layer_dims=[256, dim])
 
         self.uptrans1 = UpTransformer(dim, dim, dim=64, n_knn=self.n_knn, use_upfeat=True, up_factor=None)
         self.uptrans2 = UpTransformer(dim, dim, dim=64, n_knn=self.n_knn, use_upfeat=True, attn_channel=attn_channel, up_factor=self.up_factor)
@@ -247,7 +247,7 @@ class SeedFormer(nn.Module):
     """
     SeedFormer Point Cloud Completion with Patch Seeds and Upsample Transformer
     """
-    def __init__(self, feat_dim=512, embed_dim=128, num_p0=512, n_knn=20, radius=1, up_factors=None, seed_factor=2, interpolate='three', attn_channel=True):
+    def __init__(self, feat_dim=1024, embed_dim=256, num_p0=512, n_knn=20, radius=1, up_factors=None, seed_factor=2, interpolate='three', attn_channel=True):
         """
         Args:
             feat_dim: dimension of global feature
@@ -328,7 +328,7 @@ class SeedFormer(nn.Module):
 ###########################
 
 def seedformer_dim128(**kwargs):
-    model = SeedFormer(feat_dim=128, embed_dim=64, n_knn=10, **kwargs)
+    model = SeedFormer(feat_dim=512, embed_dim=256, n_knn=10, **kwargs)
     return model
 
 
