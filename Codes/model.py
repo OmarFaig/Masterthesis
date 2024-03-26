@@ -15,14 +15,15 @@ class FeatureExtractor(nn.Module):
     def __init__(self, out_dim=1024, n_knn=10):
         """Encoder that encodes information of partial point cloud
         """
-        #in_channel values are not correct needs to be investigated
+        #in_channel values are not correct needs to be investigated in_chanell =128+3
         super(FeatureExtractor, self).__init__()
-        self.sa_module_1 = PointNet_SA_Layer(npoints=2000,nsample=16,in_channel=6,mlp_channels=[64,128] )
+        self.sa_module_1 = PointNet_SA_Layer(npoints=2000,nsample=8,in_channel=6,mlp_channels=[64,128] )
         self.transformer_1 = vTransformer(128, dim=64, n_knn=n_knn)
 
-        self.sa_module_2 = PointNet_SA_Layer(npoints=1000,nsample=8,in_channel=131,mlp_channels=[128,256])
+        self.sa_module_2 = PointNet_SA_Layer(npoints=1000,nsample=4,in_channel=131,mlp_channels=[128,256])
         self.transformer_2 = vTransformer(256, dim=128, n_knn=n_knn)
-        self.sa_module_3 = PointNet_SA_Layer(npoints=None,nsample=None,in_channel=131,mlp_channels=[512,out_dim])
+
+        self.sa_module_3 = PointNet_SA_Layer(npoints=None,nsample=None,in_channel=259,mlp_channels=[512,out_dim])
 
     def forward(self, partial_cloud):
         """
@@ -37,13 +38,13 @@ class FeatureExtractor(nn.Module):
 
         l1_xyz, l1_points = self.sa_module_1(l0_xyz, l0_points)  # (B, 3, 512), (B, 128, 512)
         l1_points = self.transformer_1(l1_points, l1_xyz)
-        print("layer1 shape: ", l1_points.shape)
+       # print("layer1 shape: ", l1_points.shape)
         l2_xyz, l2_points = self.sa_module_2(l1_xyz, l1_points)  # (B, 3, 128), (B, 256, 128)
         l2_points = self.transformer_2(l2_points, l2_xyz)
-        print("layer2 shape: ", l2_points.shape)
+        #print("layer2 shape: ", l2_points.shape)
 
         l3_xyz, l3_points = self.sa_module_3(l2_xyz, l2_points)  # (B, 3, 1), (B, out_dim, 1)
-        print("layer3 shape: ", l3_points.shape)
+        #print("layer3 shape: ", l3_points.shape)
 
         return l3_points, l2_xyz, l2_points
 

@@ -107,8 +107,8 @@ class PointNet_SA_Layer(nn.Module):
             sampled_xyz : sampled points [B,C(3),npoints]
 
         '''
-        print("sample xyz.shape ",xyz.shape)
-        print("sample npoints: -  ",npoints)
+        #print("sample xyz.shape ",xyz.shape)
+       # print("sample npoints: -  ",npoints)
 
         if npoints is None:
             return None
@@ -183,7 +183,7 @@ class PointNet_SA_Layer(nn.Module):
 
             if sampled_xyz is None:
                 sampled_xyz = self._sample(xyz, npoints)  # (B, C, S)
-                print("sampled_xyz")
+               # print("sampled_xyz")
             grouped_points = self._group(xyz, points, sampled_xyz)  # (B, C+D, S, K)
             #grouped_points = grouped_points.reshape(grouped_points.size(0), -1, grouped_points.size(-1))
 
