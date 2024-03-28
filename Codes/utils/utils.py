@@ -3,6 +3,7 @@ import numpy as np
 import torch
 from torch.nn.utils.rnn import pad_sequence
 import os
+from tqdm import tqdm
 def visualize(pcl,bbox_coordinates):
     '''
     Function for visualizing the point cloud and bbox
@@ -151,7 +152,7 @@ def apply_and_save_res(dataset, dataloader, model, savedir):
     model.eval()
 
     for dataset, dataloader, in [(dataset, dataloader)]:
-        for i, data in enumerate(tqdm(dataloader, unit='point cloud')):
+        for i, data in enumerate(tqdm(dataloader, unit='batch')):
             # if i >= num_samples:
             #    break
 
@@ -163,9 +164,11 @@ def apply_and_save_res(dataset, dataloader, model, savedir):
                 outputs = model(inputs)
 
             outputs_cpu = outputs.cpu().numpy()
+            valid_points = (inputs != 0).any(dim=-1)  # Assuming padding is represented as zeros
+            outputs_cpu_valid = outputs_cpu[valid_points]
 
             # for path, output in zip(paths, outputs_cpu):
             filename = os.path.basename(paths[0])
-            output_pcd = o3d.geometry.PointCloud(o3d.utility.Vector3dVector(outputs_cpu[0]))
+            output_pcd = o3d.geometry.PointCloud(o3d.utility.Vector3dVector(outputs_cpu_valid))
             f_name = os.path.join(savedir, filename)
             o3d.io.write_point_cloud(f_name, output_pcd)
