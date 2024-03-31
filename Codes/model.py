@@ -157,7 +157,7 @@ class UpTransformer(nn.Module):
         attention = self.attn_mlp(qk_rel + pos_embedding + upfeat_rel)  # (B, dim, N*up_factor, k)
 
         # softmax function
-        attention = self.scale(attention)
+        attention = self.scale(attention)#softmax
 
         # knn value is correct
         value = grouping_operation(value, idx_knn) + pos_embedding + upfeat_rel  # (B, dim, N, k)
@@ -323,7 +323,7 @@ class SeedFormer(nn.Module):
             pcd, K_prev = layer(pcd, seed, seed_feat, K_prev)
             pred_pcds.append(pcd.permute(0, 2, 1).contiguous())
            # print("len - pred_pcds," , len(pred_pcds))
-          #  print("len - pcd,",pcd.shape)
+        print("len - pcd,",pcd.shape)
         #print("shape of pred_pcds[:1]",pred_pcds[-1].shape())
         #return pcd,pred_pcds[:-1]
         return pred_pcds[-1]

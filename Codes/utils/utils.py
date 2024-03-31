@@ -31,13 +31,16 @@ def visualize(pcl,bbox_coordinates):
     view_control.set_up([0, 1, 0])  # Lock the view up direction along the z-axis
 
     bbox_line_set = o3d.geometry.LineSet.create_from_oriented_bounding_box(bbox)
-    color = (0, 0, 0)
-
-    colors = [color for _ in range(len(bbox_line_set.lines))]
+    # Set color and thickness for bounding box lines
+    color = (1, 0, 0)  # Red color
+    line_width = 10  # Thickness of lines
 
     # Assign colors to the LineSet
-    bbox_line_set.colors = o3d.utility.Vector3dVector(colors)
+    bbox_line_set.colors = o3d.utility.Vector3dVector([color for _ in range(len(bbox_line_set.lines))])
 
+    # Set line width for bounding box lines
+    #for line in bbox_line_set.lines:
+    #    line.points = line.points * line_width
    # o3d.visualization.draw_geometries([pcl,bbox_line_set])
     vis.add_geometry(pcl)
     vis.add_geometry(bbox_line_set)
@@ -69,8 +72,7 @@ def crop_bbox(pcd,bbox_coordinates,save_path):#num_random_points):
     center = bbox_coordinates[11:14]
     bbox = o3d.geometry.OrientedBoundingBox(center=center,R=rotation_mat_z,extent=[ l,w,h])
     bbox_crop = pcd.crop(bbox)
-
-
+    #print(save_path)
     o3d.io.write_point_cloud(save_path,bbox_crop)
     bbox_line_set=o3d.geometry.LineSet.create_from_oriented_bounding_box(bbox)
     color=(1, 0, 0)
@@ -95,7 +97,7 @@ def crop_invert_stitch(original_pcd, car_reconstructed, bbox_coords):
     # orignal_crop_invert =o3d.geometry.PointCloud.crop(original_pcd,bbox)
     inliers_indices = bbox.get_point_indices_within_bounding_box(original_pcd.points)
 
-    inliers_pcd = original_pcd.select_by_index(inliers_indices, invert=False)  # select inside points = cropped
+    #inliers_pcd = original_pcd.select_by_index(inliers_indices, invert=False)  # select inside points = cropped
     outliers_pcd = original_pcd.select_by_index(inliers_indices, invert=True)  # select outside points
     stitched_pcd = outliers_pcd + car_reconstructed
 
@@ -145,30 +147,27 @@ def collate_fn(batch):
     return padded_points, paths
 
 
+
 def apply_and_save_res(dataset, dataloader, model, savedir):
     model.eval()
     # Apply the model and visualize differences
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.eval()
-
     for dataset, dataloader, in [(dataset, dataloader)]:
-        for i, data in enumerate(tqdm(dataloader, unit='batch')):
+        for i, data in enumerate(tqdm(dataloader, unit='point cloud')):
             # if i >= num_samples:
             #    break
 
             inputs, paths = data
             # print(paths)
             inputs = inputs.to(device)
-
             with torch.no_grad():
                 outputs = model(inputs)
 
             outputs_cpu = outputs.cpu().numpy()
-            valid_points = (inputs != 0).any(dim=-1)  # Assuming padding is represented as zeros
-            outputs_cpu_valid = outputs_cpu[valid_points]
 
             # for path, output in zip(paths, outputs_cpu):
             filename = os.path.basename(paths[0])
-            output_pcd = o3d.geometry.PointCloud(o3d.utility.Vector3dVector(outputs_cpu_valid))
+            output_pcd = o3d.geometry.PointCloud(o3d.utility.Vector3dVector(outputs_cpu[0]))
             f_name = os.path.join(savedir, filename)
             o3d.io.write_point_cloud(f_name, output_pcd)
