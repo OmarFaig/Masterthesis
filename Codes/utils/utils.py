@@ -4,6 +4,9 @@ import torch
 from torch.nn.utils.rnn import pad_sequence
 import os
 from tqdm import tqdm
+from pytorch3d.loss import chamfer_distance
+from pytorch3d.ops import  knn_points,sample_farthest_points
+
 def visualize(pcl,bbox_coordinates):
     '''
     Function for visualizing the point cloud and bbox
@@ -148,6 +151,64 @@ def collate_fn(batch):
 
 
 
+def chamfer(p1, p2):
+    d1, d2= chamfer_distance(p1, p2)
+    return torch.mean(d1)
+
+
+def chamfer_sqrt(p1, p2):
+    d1, d2 = chamfer_distance(p1, p2)
+    d1 = torch.clamp(d1, min=1e-9)
+    d2 = torch.clamp(d2, min=1e-9)
+    d1 = torch.mean(torch.sqrt(d1))
+    d2 = torch.mean(torch.sqrt(d2))
+    return (d1 + d2) / 2
+
+
+def chamfer_single_side(pcd1, pcd2):
+    d1, d2= chamfer_distance(pcd1, pcd2)
+    d1 = torch.mean(d1)
+    return d1
+
+
+def chamfer_single_side_sqrt(pcd1, pcd2):
+    d1, d2= chamfer_distance(pcd1, pcd2)
+    d1 = torch.clamp(d1, min=1e-9)
+    d2 = torch.clamp(d2, min=1e-9)
+    d1 = torch.mean(torch.sqrt(d1))
+    return d1
+
+
+def get_loss(pcds_pred, partial, gt, sqrt=True):
+    """loss function
+    Args
+        pcds_pred: List of predicted point clouds, order in [Pc, P1, P2, P3...]
+    """
+    if sqrt:
+        CD = chamfer_sqrt
+        PM = chamfer_single_side_sqrt
+    else:
+        CD = chamfer
+        PM = chamfer_single_side
+
+    Pc, P1, P2, P3 = pcds_pred
+
+
+    gt_2,_ = sample_farthest_points(gt, K=pcds_pred[2].shape[1])
+    gt_1,_ = sample_farthest_points(gt_2, K=P1.shape[1])
+    gt_c,_ = sample_farthest_points(gt_1, K=Pc.shape[1])
+
+    cdc = CD(Pc, gt_c)
+    cd1 = CD(P1, gt_1)
+    cd2 = CD(P2, gt_2)
+    cd3 = CD(P3, gt)
+
+    partial_matching = PM(partial, P3)
+
+    loss_all = (cdc + cd1 + cd2 + cd3 + partial_matching)#*1e3
+    losses = [cdc, cd1, cd2, cd3, partial_matching]
+    return loss_all, losses, [gt_2, gt_1, gt_c]
+
 def apply_and_save_res(dataset, dataloader, model, savedir):
     model.eval()
     # Apply the model and visualize differences
@@ -164,7 +225,7 @@ def apply_and_save_res(dataset, dataloader, model, savedir):
             with torch.no_grad():
                 outputs = model(inputs)
 
-            outputs_cpu = outputs.cpu().numpy()
+            outputs_cpu = outputs[-1].cpu().numpy()
 
             # for path, output in zip(paths, outputs_cpu):
             filename = os.path.basename(paths[0])

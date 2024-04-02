@@ -12,16 +12,16 @@ logger = logging.getLogger(__name__)
 
 
 class FeatureExtractor(nn.Module):
-    def __init__(self, out_dim=1024, n_knn=10):
+    def __init__(self, out_dim=2048, n_knn=20):
         """Encoder that encodes information of partial point cloud
         """
         #in_channel values are not correct needs to be investigated in_chanell =128+3
         super(FeatureExtractor, self).__init__()
-        self.sa_module_1 = PointNet_SA_Layer(npoints=2000,nsample=8,in_channel=6,mlp_channels=[64,128] )
+        self.sa_module_1 = PointNet_SA_Layer(npoints=512,nsample=8,in_channel=6,mlp_channels=[64,128] )
         self.transformer_1 = vTransformer(128, dim=64, n_knn=n_knn)
 
-        self.sa_module_2 = PointNet_SA_Layer(npoints=1000,nsample=4,in_channel=131,mlp_channels=[128,256])
-        self.transformer_2 = vTransformer(256, dim=128, n_knn=n_knn)
+        self.sa_module_2 = PointNet_SA_Layer(npoints=256,nsample=8,in_channel=131,mlp_channels=[128,256])
+        self.transformer_2 = vTransformer(256, dim=64, n_knn=n_knn)
 
         self.sa_module_3 = PointNet_SA_Layer(npoints=None,nsample=None,in_channel=259,mlp_channels=[512,out_dim])
 
@@ -322,11 +322,11 @@ class SeedFormer(nn.Module):
         for layer in self.up_layers:
             pcd, K_prev = layer(pcd, seed, seed_feat, K_prev)
             pred_pcds.append(pcd.permute(0, 2, 1).contiguous())
-           # print("len - pred_pcds," , len(pred_pcds))
-        print("len - pcd,",pcd.shape)
+        #print("len - pcd,",pcd.shape)
+
         #print("shape of pred_pcds[:1]",pred_pcds[-1].shape())
         #return pcd,pred_pcds[:-1]
-        return pred_pcds[-1]
+        return pred_pcds
 
 
 ###########################
@@ -342,7 +342,7 @@ if __name__ == '__main__':
 
     model = seedformer_dim128(up_factors=[1, 2, 2])
     model = model.cuda()
-    #print(model)
+    print(model)
 
    # x= torch.rand(8, 2048, 3)
    # x = x.cuda()
