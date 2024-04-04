@@ -1,0 +1,15 @@
+2024-04-04 15:41:53,229 - INFO - Using device: cuda
+2024-04-04 15:42:25,434 - INFO - Using device: cuda
+2024-04-04 15:42:27,438 - INFO - No checkpoint found. Starting training from scratch.
+2024-04-04 15:42:52,058 - INFO - Using device: cuda
+2024-04-04 15:42:54,092 - INFO - No checkpoint found. Starting training from scratch.
+2024-04-04 15:43:15,460 - INFO - Using device: cuda
+2024-04-04 15:43:17,439 - INFO - No checkpoint found. Starting training from scratch.
+2024-04-04 15:44:02,245 - INFO - Using device: cuda
+2024-04-04 15:44:04,293 - INFO - No checkpoint found. Starting training from scratch.
+2024-04-04 15:44:21,470 - INFO - Using device: cuda
+2024-04-04 15:44:23,377 - INFO - No checkpoint found. Starting training from scratch.
+2024-04-04 15:44:42,980 - INFO - Using device: cuda
+2024-04-04 15:44:44,988 - INFO - No checkpoint found. Starting training from scratch.
+2024-04-04 15:44:54,721 - INFO - Using device: cuda
+2024-04-04 15:44:56,664 - INFO - No checkpoint found. Starting training from scratch.

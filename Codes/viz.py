@@ -6,35 +6,61 @@ import open3d as o3d
 frame_index = 0
 
 # Path to folder containing .npy files for point clouds
-pc_folder_path = '/home/omar/TUM/Data/SeedFormer_2602_npy/reconstructed_0104/points'
+pc_folder_path = '/home/omar/TUM/Data/reconstructed_cropped/sim_0304'
 
 # Path to folder containing bounding box text files
 bbox_folder_path = '/home/omar/TUM/Data/SeedFormer_2602_npy/reconstructed_0104/labels'
 
 # List all .npy files in the folder
-file_list = sorted([f for f in os.listdir(pc_folder_path) if f.endswith('.npy')])
+file_list = sorted([f for f in os.listdir(pc_folder_path) if f.endswith(('.npy', '.pcd'))])
 
+# Create Open3D visualizer
+vis = o3d.visualization.VisualizerWithKeyCallback()
+vis.create_window()
 
+vis.get_render_option().point_size = 3.0
+vis.get_render_option().background_color = np.zeros(3)
+view_control = vis.get_view_control()
+view_control.set_up([0, 1, 0])
+ctr = vis.get_view_control()
+parameters = ctr.convert_to_pinhole_camera_parameters()
+parameters.extrinsic = np.array([[1, 0, 0, 0],
+                                 [0, 1, -1, 0],  # Look from the side, flipping y-axis
+                                 [0, 1, 0, 0],
+                                 [0, 0, 0, 1]])  # Translation remains unchanged
+ctr.convert_from_pinhole_camera_parameters(parameters)
+# Lock the view up direction along the z-axis
+
+# view_control.set_lookat(bbox.get_center())
+#
+#view_control.set_lookat(np.array([7.0, 8.0, 100.0]))
+#view_control.scale(9)  # Adjust the zoom level as needed to zoom in closer
 # Function to load .npy point cloud and bounding box coordinates
 def load_data(pc_folder, bbox_folder, file_name):
-    point_cloud = np.load(os.path.join(pc_folder, file_name))
-    bbox_file_path = os.path.join(bbox_folder, file_name.replace('.npy', '.txt'))
+    if file_name.endswith('.npy'):
+        # Load point cloud from .npy file
+        point_cloud = np.load(os.path.join(pc_folder, file_name))
+    elif file_name.endswith('.pcd'):
+        # Load point cloud from .pcd file using Open3D
+        pcd_path = os.path.join(pc_folder, file_name)
+        print(pcd_path)
+        pcd = o3d.io.read_point_cloud(pcd_path)
+        point_cloud = np.asarray(pcd.points)
 
-    # Check if bbox file exists
-    if os.path.exists(bbox_file_path):
-        with open(bbox_file_path, 'r') as file:
-            line = file.readline().strip()  # Read the single line from the file
-            bbox_coordinates = line.split()  # Split the line into label and coordinates
-            print(bbox_coordinates)
-            # Check if the label is "Car", if yes, discard it
 
-            bbox_coordinates = bbox_coordinates[:-1]  # Exclude the label
-            print(bbox_coordinates)
+    bbox_file_path = os.path.join(bbox_folder, file_name.replace('.npy', '.txt').replace('.pcd', '.txt'))
+    print(bbox_file_path)
 
-            bbox_coordinates = np.array(
-                list(map(float, bbox_coordinates)))  # Convert coordinates to float and then to NumPy array
-    else:
-        bbox_coordinates = None
+    with open(bbox_file_path, 'r') as file:
+        line = file.readline().strip()  # Read the single line from the file
+        bbox_coordinates = line.split()  # Split the line into label and coordinates
+        print(bbox_coordinates)
+        # Check if the label is "Car", if yes, discard it
+
+        bbox_coordinates = bbox_coordinates[:-1]  # Exclude the label
+
+        bbox_coordinates = list(map(float, bbox_coordinates))  # Convert coordinates to float and then to NumPy array
+
 
     return point_cloud, bbox_coordinates
 
@@ -55,43 +81,54 @@ def visualize(point_cloud, bbox_coordinates):
         bbox = None
 
     # Visualize point cloud and bounding box
-    o3d.visualization.draw_geometries([pcl, bbox])
+    #o3d.visualization.draw_geometries([pcl, bbox])
+    #vis.clear_geometries()
 
+
+
+
+    vis.add_geometry(pcl)
+    vis.add_geometry(bbox)
 
 def load_next_frame(vis):
     global frame_index
+    print("Loading frame", frame_index)
+
+    vis.clear_geometries()
+    # Set the camera view to look at the center of the bounding box
+
     if frame_index < len(file_list):
         point_cloud, bbox_coordinates = load_data(pc_folder_path, bbox_folder_path, file_list[frame_index])
         if point_cloud is not None:
             visualize(point_cloud, bbox_coordinates)
         frame_index += 1
+    #view_control.set_lookat(bbox_coordinates[:3])
 
 
 def load_prev_frame(vis):
     global frame_index
-    if frame_index > 0:
-        frame_index -= 1
-        point_cloud, bbox_coordinates = load_data(pc_folder_path, bbox_folder_path, file_list[frame_index])
-        if point_cloud is not None:
-            visualize(point_cloud, bbox_coordinates)
-
+    if frame_index >= 2:
+        frame_index -= 2
+        return load_next_frame(vis)
+    else:
+        frame_index = 0
+        return load_next_frame(vis)
 
 def close_vis(vis):
     vis.close()
     vis.destroy_window()
 
 
-# Create Open3D visualizer
-vis = o3d.visualization.VisualizerWithKeyCallback()
-vis.create_window()
 
 # Register key callbacks
-key_to_callback = {ord('N'): load_next_frame, ord('B'): load_prev_frame, ord('X'): close_vis}
+key_to_callback = {}
+key_to_callback[ord("N")] = load_next_frame
+key_to_callback[ord("B")] = load_prev_frame
+key_to_callback[ord("X")] = close_vis
+
+load_next_frame(vis)
+
 for key, val in key_to_callback.items():
     vis.register_key_callback(key, val)
 
-# Load and visualize the initial frame
-load_next_frame(vis)
-
-# Run Open3D visualizer
 vis.run()

@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 class FeatureExtractor(nn.Module):
-    def __init__(self, out_dim=2048, n_knn=20):
+    def __init__(self, out_dim=512, n_knn=10):
         """Encoder that encodes information of partial point cloud
         """
         #in_channel values are not correct needs to be investigated in_chanell =128+3
@@ -334,7 +334,7 @@ class SeedFormer(nn.Module):
 ###########################
 
 def seedformer_dim128(**kwargs):
-    model = SeedFormer(feat_dim=512, embed_dim=256, n_knn=10, **kwargs)
+    model = SeedFormer(feat_dim=512, embed_dim=128, n_knn=20, **kwargs)
     return model
 
 
