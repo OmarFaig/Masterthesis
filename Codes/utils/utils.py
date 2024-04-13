@@ -130,7 +130,7 @@ def correct_bbox_label(bbox_list):
 
 def collate_fn(batch):
     # Define the target number of points for padding
-    target_num_points = 4731
+    target_num_points = 10000
 
     # Pad each point cloud to have target_num_points points
     padded_points_batch = []

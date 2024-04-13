@@ -6,29 +6,31 @@ import open3d as o3d
 frame_index = 0
 
 # Path to folder containing .npy files for point clouds
-pc_folder_path = '/home/omar/TUM/Data/reconstructed_cropped/sim_0304'
+pc_folder_path = '/home/omar/TUM/Data/SeedFormer_2602_npy/reconstructed_1004_100v001_pad10000/points'
 
 # Path to folder containing bounding box text files
-bbox_folder_path = '/home/omar/TUM/Data/SeedFormer_2602_npy/reconstructed_0104/labels'
+bbox_folder_path = '/home/omar/TUM/Data/SeedFormer_2602_npy/reconstructed_1004_100v001_pad10000/labels'
 
 # List all .npy files in the folder
-file_list = sorted([f for f in os.listdir(pc_folder_path) if f.endswith(('.npy', '.pcd'))])
+file_list = sorted([f for f in os.listdir(pc_folder_path) if f.endswith(('.npy','.pcd'))])
 
+print(file_list)
 # Create Open3D visualizer
 vis = o3d.visualization.VisualizerWithKeyCallback()
 vis.create_window()
 
 vis.get_render_option().point_size = 3.0
 vis.get_render_option().background_color = np.zeros(3)
-view_control = vis.get_view_control()
-view_control.set_up([0, 1, 0])
-ctr = vis.get_view_control()
-parameters = ctr.convert_to_pinhole_camera_parameters()
-parameters.extrinsic = np.array([[1, 0, 0, 0],
-                                 [0, 1, -1, 0],  # Look from the side, flipping y-axis
-                                 [0, 1, 0, 0],
-                                 [0, 0, 0, 1]])  # Translation remains unchanged
-ctr.convert_from_pinhole_camera_parameters(parameters)
+#view_control = vis.get_view_control()
+
+#view_control.set_up([0, 1, 0])
+#ctr = vis.get_view_control()
+#parameters = ctr.convert_to_pinhole_camera_parameters()
+#parameters.extrinsic = np.array([[1, 0, 0, 0],
+                          #      [1, 0, 0, 0],  # Look from the side, flipping y-axis
+                          #      [1, 0, 0, 0],
+                          #      [1, 0, 0, 0]])  # Translation remains unchanged
+#ctr.convert_from_pinhole_camera_parameters(parameters)
 # Lock the view up direction along the z-axis
 
 # view_control.set_lookat(bbox.get_center())
@@ -68,28 +70,38 @@ def load_data(pc_folder, bbox_folder, file_name):
 # Function to visualize point cloud and bounding box
 def visualize(point_cloud, bbox_coordinates):
     # Create Open3D point cloud
+
+
     pcl = o3d.geometry.PointCloud()
     pcl.points = o3d.utility.Vector3dVector(point_cloud)
+   # view_control.set_zoom(125)
 
     # Create Open3D bounding box
-    if bbox_coordinates is not None:
-        bbox = o3d.geometry.OrientedBoundingBox(center=bbox_coordinates[:3],
-                                                R=np.eye(3),
-                                                extent=bbox_coordinates[3:6])
-        bbox.color = [1, 0, 0]  # Set bbox color to red
-    else:
-        bbox = None
+   # if bbox_coordinates is not None:
+    bbox = o3d.geometry.OrientedBoundingBox(center=bbox_coordinates[:3],
+                                            R=np.eye(3),
+                                            extent=bbox_coordinates[3:6])
+    print(bbox.get_center())
+    #view_control.set_lookat(bbox.get_center())
+    bbox.color = [1, 0, 0]  # Set bbox color to red
+   # else:
+
+      #  bbox = None
 
     # Visualize point cloud and bounding box
     #o3d.visualization.draw_geometries([pcl, bbox])
-    #vis.clear_geometries()
-
+    vis.clear_geometries()
 
 
 
     vis.add_geometry(pcl)
     vis.add_geometry(bbox)
+    view_control = vis.get_view_control()
 
+    view_control.set_front([0.1, -0.5, 0.6])
+    view_control.set_lookat(bbox.get_center())
+    #view_control.set_up([-0.36828927493940194, 0.49961995188329117, 0.78405542766104697])
+    view_control.set_zoom(0.009)
 def load_next_frame(vis):
     global frame_index
     print("Loading frame", frame_index)
