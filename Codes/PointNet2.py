@@ -35,10 +35,10 @@ class Conv2d(nn.Module):
     def __init__(self,
                  in_channel,
                  out_channel,
-                 kernel_size=(1, 1),
+                 kernel_size=(3, 3),
                  stride=(1, 1),
                  if_bn=True,
-                 activation_fn=torch.relu):
+                 activation_fn=F.relu):
         super(Conv2d, self).__init__()
         self.conv = nn.Conv2d(in_channel,
                               out_channel,
@@ -65,12 +65,16 @@ class MLP_CONV(nn.Module):
         layers = []
         last_channel = in_channel
         for out_channel in layer_dims[:-1]:
-            layers.append(nn.Conv1d(last_channel, out_channel, 1))
+            layers.append(nn.Conv1d(last_channel, out_channel, kernel_size=3))
             if bn:
                 layers.append(nn.BatchNorm1d(out_channel))
             layers.append(nn.ReLU())
+            layers.append(nn.Dropout(0.5))  # Adding dropout after each activation
+
             last_channel = out_channel
-        layers.append(nn.Conv1d(last_channel, layer_dims[-1], 1))
+        layers.append(nn.Conv1d(last_channel, last_channel, kernel_size=3))
+        layers.append(nn.ReLU())
+        layers.append(nn.Conv1d(last_channel, layer_dims[-1], 3))
         self.mlp = nn.Sequential(*layers)
 
     def forward(self, inputs):
@@ -82,9 +86,9 @@ class MLP_Res(nn.Module):
         super(MLP_Res, self).__init__()
         if hidden_dim is None:
             hidden_dim = in_dim
-        self.conv_1 = nn.Conv1d(in_dim, hidden_dim, 1)
-        self.conv_2 = nn.Conv1d(hidden_dim, out_dim, 1)
-        self.conv_shortcut = nn.Conv1d(in_dim, out_dim, 1)
+        self.conv_1 = nn.Conv1d(in_dim, hidden_dim*2, kernel_size=3)
+        self.conv_2 = nn.Conv1d(hidden_dim, out_dim*3, kernel_size=3)
+        self.conv_shortcut = nn.Conv1d(in_dim, out_dim*2, kernel_size=3)
 
     def forward(self, x):
         """
