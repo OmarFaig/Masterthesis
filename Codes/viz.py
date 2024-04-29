@@ -6,10 +6,10 @@ import open3d as o3d
 frame_index = 0
 
 # Path to folder containing .npy files for point clouds
-pc_folder_path = '/home/omar/TUM/Data/SeedFormer_2602_npy/reconstructed_1004_100v001_pad10000/points'
+pc_folder_path = '/home/omar/TUM/Data/SeedFormer_2602_npy/reconstructed_2604v001/points/'
 
 # Path to folder containing bounding box text files
-bbox_folder_path = '/home/omar/TUM/Data/SeedFormer_2602_npy/reconstructed_1004_100v001_pad10000/labels'
+bbox_folder_path = '/home/omar/TUM/Data/SeedFormer_2602_npy/reconstructed_2604v001/labels'
 
 # List all .npy files in the folder
 file_list = sorted([f for f in os.listdir(pc_folder_path) if f.endswith(('.npy','.pcd'))])

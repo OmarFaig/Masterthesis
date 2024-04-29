@@ -18,13 +18,13 @@ class FeatureExtractor(nn.Module):
         #in_channel values are not correct needs to be investigated in_chanell =128+3
         super(FeatureExtractor, self).__init__()
        # self.sa_module_1 = PointNet_SA_Layer(npoints=128,nsample=4,in_channel=6,mlp_channels=[64,128] )
-        self.sa_module_1 = PointNet_SA_Module_KNN(512, 4, 3, [64, 128], group_all=False, if_bn=False, if_idx=False)
+        self.sa_module_1 = PointNet_SA_Module_KNN(512, 8, 3, [64, 128], group_all=True, if_bn=False, if_idx=False)
         self.transformer_1 = vTransformer(128, dim=64,n_knn=n_knn)
 
        # self.sa_module_1 = PointNet_SA_Module_KNN(256, 16, 64, [64, 128], group_all=False, if_bn=False, if_idx=False)
        # self.transformer_1 = vTransformer(128, dim=64,n_knn=n_knn)
        # self.sa_module_2 = PointNet_SA_Layer(npoints=64,nsample=4,in_channel=131,mlp_channels=[128,256])
-        self.sa_module_2 = PointNet_SA_Module_KNN(128, 4, 128, [128, 256], group_all=False, if_bn=False, if_idx=False)
+        self.sa_module_2 = PointNet_SA_Module_KNN(128, 8, 128, [128, 256], group_all=True, if_bn=False, if_idx=False)
         self.transformer_2 = vTransformer(256, dim=64, n_knn=n_knn)
 
         self.sa_module_3 = PointNet_SA_Module_KNN(None, None, 256, [512, out_dim], group_all=True, if_bn=False)
@@ -59,9 +59,9 @@ class SeedGenerator(nn.Module):
         self.mlp_2 = MLP_Res(in_dim=128, hidden_dim=64, out_dim=128)
         self.mlp_3 = MLP_Res(in_dim=feat_dim + 128, hidden_dim=128, out_dim=seed_dim)
         self.mlp_4 = nn.Sequential(
-            nn.Conv1d(seed_dim, 64, 1),
+            nn.Conv1d(seed_dim, 128, 1),
             nn.ReLU(),
-            nn.Conv1d(64, 3, 1)
+            nn.Conv1d(128, 3, 1)
         )
 
     def forward(self, feat, patch_xyz, patch_feat):
@@ -80,7 +80,7 @@ class SeedGenerator(nn.Module):
 
 
 class UpTransformer(nn.Module):
-    def __init__(self, in_channel, out_channel, dim, n_knn=20, up_factor=2, use_upfeat=True,
+    def __init__(self, in_channel, out_channel, dim, n_knn=20, up_factor=2, use_upfeat=False,
                  pos_hidden_dim=64, attn_hidden_multiplier=4, scale_layer=nn.Softmax, attn_channel=True):
         super(UpTransformer, self).__init__()
         self.n_knn = n_knn
@@ -100,14 +100,14 @@ class UpTransformer(nn.Module):
         self.pos_mlp = nn.Sequential(
             nn.Conv2d(3, pos_hidden_dim, 1),
             nn.BatchNorm2d(pos_hidden_dim),
-            nn.ReLU(),
+            nn.LeakyReLU(),
             nn.Conv2d(pos_hidden_dim, dim, 1)
         )
 
         # attention layers
         self.attn_mlp = [nn.Conv2d(dim, dim * attn_hidden_multiplier, 1),
                          nn.BatchNorm2d(dim * attn_hidden_multiplier),
-                         nn.ReLU()]
+                         nn.LeakyReLU()]
         if up_factor:
             self.attn_mlp.append(
                 nn.ConvTranspose2d(dim * attn_hidden_multiplier, attn_out_channel, (up_factor, 1), (up_factor, 1)))
@@ -245,7 +245,7 @@ class UpLayer(nn.Module):
 
         # New point cloud
         #try also without tanh
-        delta = torch.tanh(self.mlp_delta(torch.relu(K_curr))) / self.radius**self.i  # (B, 3, N_prev * up_factor)
+        delta = torch.relu(self.mlp_delta(torch.relu(K_curr))) / self.radius**self.i  # (B, 3, N_prev * up_factor)
         pcd_new = self.upsample(pcd_prev)
         pcd_new = pcd_new + delta
 
@@ -337,7 +337,7 @@ class SeedFormer(nn.Module):
 ###########################
 
 def seedformer_dim128(**kwargs):
-    model = SeedFormer(feat_dim=512, embed_dim=128, n_knn=20, **kwargs)
+    model = SeedFormer(feat_dim=1024, embed_dim=256, n_knn=20, **kwargs)
     return model
 
 

@@ -32,7 +32,10 @@ def visualize(pcl,bbox_coordinates):
     opt.background_color = np.asarray([0, 0, 0])
     view_control = vis.get_view_control()
     view_control.set_up([0, 1, 0])  # Lock the view up direction along the z-axis
-
+    view_control.set_front([0.1, -0.5, 0.6])
+    view_control.set_lookat(bbox.get_center())
+    # view_control.set_up([-0.36828927493940194, 0.49961995188329117, 0.78405542766104697])
+    view_control.set_zoom(0.009)
     bbox_line_set = o3d.geometry.LineSet.create_from_oriented_bounding_box(bbox)
     # Set color and thickness for bounding box lines
     color = (1, 0, 0)  # Red color
@@ -130,7 +133,7 @@ def correct_bbox_label(bbox_list):
 
 def collate_fn(batch):
     # Define the target number of points for padding
-    target_num_points = 10000
+    target_num_points = 5000
 
     # Pad each point cloud to have target_num_points points
     padded_points_batch = []

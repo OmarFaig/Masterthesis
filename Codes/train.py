@@ -12,11 +12,11 @@ import utils.utils as utils
 
 #from dataset import CustomDataset  # Import your custom dataset class here
 class RacingDataset(Dataset):
-    def __init__(self, root_dir, target_points=2990):  # 4731
+    def __init__(self, root_dir):  # 4731
         self.root_dir = root_dir
         self.file_list = os.listdir(root_dir)
         self.filter_file_list = self.filter_list()
-        self.target_points = target_points
+        #self.target_points = target_points
 
     def __len__(self):
         return len(self.filter_file_list)
@@ -44,14 +44,14 @@ class RacingDataset(Dataset):
 
 
 # Set up logging
-logging.basicConfig(filename='training.log', level=logging.INFO,
+logging.basicConfig(filename='training_2904v001.log', level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
-epochs=1
+epochs=400
 # Set random seed for reproducibility
 torch.manual_seed(42)
 
 # Initialize your model
-model = seedformer_dim128(up_factors=[1, 2, 2])
+model = seedformer_dim128(up_factors=[1, 2, 2,2])#1024 2048 4096 9192
 
 # Define device (GPU if available, else CPU)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -60,14 +60,14 @@ model.to(device)
 
 # Define DataLoader
 # Replace CustomDataset with your actual dataset class and provide necessary arguments
-dataset = RacingDataset(root_dir="/home/omar/TUM/Data/cropped/real", target_points=4000)
-dataloader = DataLoader(dataset, batch_size=1, shuffle=False, num_workers=8,collate_fn=utils.collate_fn)
+dataset = RacingDataset(root_dir="/dev/shm/IAC/SeedFormer_2602_npy/cropped/real")
+dataloader = DataLoader(dataset, batch_size=8, shuffle=True, num_workers=8,collate_fn=utils.collate_fn)
 # Define optimizer and scheduler
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay=5e-4)
-scheduler = StepLR(optimizer, step_size=5, gamma=0.1)  # Reduce LR by a factor of 0.1 every 5 epochs
+scheduler = StepLR(optimizer, step_size=20, gamma=0.1)  # Reduce LR by a factor of 0.1 every 5 epochs
 
 # Define paths for checkpoint
-checkpoint_path = 'checkpoint_train.pth'
+checkpoint_path = 'training_2904v001.pth'
 
 # Check if a checkpoint exists
 if os.path.exists(checkpoint_path):
@@ -83,8 +83,9 @@ else:
     start_epoch = 0
     best_loss = float('inf')
     logging.info("No checkpoint found. Starting training from scratch.")
-
+    logging.info(model)
 # Training loop
+train_losses=[]
 for epoch in range(start_epoch, epochs):
     running_loss = 0
 
@@ -107,9 +108,10 @@ for epoch in range(start_epoch, epochs):
             optimizer.step()
 
             running_loss += loss
-            pbar.set_postfix(loss=running_loss / (i + 1))  # Update tqdm progress bar with the current loss
+            pbar.set_postfix(loss=loss / (i + 1))  # Update tqdm progress bar with the current loss
 
         scheduler.step()  # Step the learning rate scheduler
+    train_losses.append(running_loss / len(dataloader))
 
     # Save checkpoint if current loss is the best seen so far
     if running_loss < best_loss:
@@ -124,6 +126,6 @@ for epoch in range(start_epoch, epochs):
 
     # Log the epoch loss
     avg_loss = running_loss / len(dataloader)
-    logging.info(f'Epoch {epoch + 1} Loss: {avg_loss}')
+    logging.info(f'Epoch {epoch + 1} Loss: {avg_loss} LR :{scheduler.get_last_lr()}')
 
 print('Finished Training')
