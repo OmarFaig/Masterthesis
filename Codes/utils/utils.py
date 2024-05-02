@@ -194,10 +194,10 @@ def get_loss(pcds_pred, partial, gt, sqrt=True):
         CD = chamfer
         PM = chamfer_single_side
 
-    Pc, P1, P2, P3 = pcds_pred
+    Pc, P1, P2, P3,P4 = pcds_pred
 
 
-    gt_2,_ = sample_farthest_points(gt, K=pcds_pred[2].shape[1])
+    gt_2,_ = sample_farthest_points(gt, K=P2.shape[1])#pcds_pred[2].shape
     gt_1,_ = sample_farthest_points(gt_2, K=P1.shape[1])
     gt_c,_ = sample_farthest_points(gt_1, K=Pc.shape[1])
 
@@ -208,7 +208,7 @@ def get_loss(pcds_pred, partial, gt, sqrt=True):
 
     partial_matching = PM(partial, P3)
 
-    loss_all = (cdc + cd1 + cd2 + cd3 + partial_matching)#*1e3
+    loss_all = (cdc + cd1 + cd2 + cd3 + partial_matching) *1e3
     losses = [cdc, cd1, cd2, cd3, partial_matching]
     return loss_all, losses, [gt_2, gt_1, gt_c]
 
