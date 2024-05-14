@@ -133,7 +133,7 @@ def correct_bbox_label(bbox_list):
 
 def collate_fn(batch):
     # Define the target number of points for padding
-    target_num_points = 5000
+    target_num_points = 512
 
     # Pad each point cloud to have target_num_points points
     padded_points_batch = []
@@ -155,32 +155,26 @@ def collate_fn(batch):
 
 
 def chamfer(p1, p2):
-    d1, d2= chamfer_distance(p1, p2)
+    d1,_ = chamfer_distance(p1, p2 )
     return torch.mean(d1)
-
 
 def chamfer_sqrt(p1, p2):
     d1, d2 = chamfer_distance(p1, p2)
     d1 = torch.clamp(d1, min=1e-9)
-    d2 = torch.clamp(d2, min=1e-9)
-    d1 = torch.mean(torch.sqrt(d1))
-    d2 = torch.mean(torch.sqrt(d2))
-    return (d1 + d2) / 2
-
+    #d2 = torch.clamp(d2, min=1e-9)
+   # d1 = torch.mean(torch.sqrt(d1))
+    #d2 = torch.mean(torch.sqrt(d2))
+    return d1
 
 def chamfer_single_side(pcd1, pcd2):
-    d1, d2= chamfer_distance(pcd1, pcd2)
-    d1 = torch.mean(d1)
+    d1, _ = chamfer_distance(pcd1, pcd2)
     return d1
-
 
 def chamfer_single_side_sqrt(pcd1, pcd2):
-    d1, d2= chamfer_distance(pcd1, pcd2)
+    d1, _ = chamfer_distance(pcd1, pcd2)
     d1 = torch.clamp(d1, min=1e-9)
-    d2 = torch.clamp(d2, min=1e-9)
-    d1 = torch.mean(torch.sqrt(d1))
+  #  d1 = torch.mean(torch.sqrt(d1))
     return d1
-
 
 def get_loss(pcds_pred, partial, gt, sqrt=True):
     """loss function
@@ -189,17 +183,23 @@ def get_loss(pcds_pred, partial, gt, sqrt=True):
     """
     if sqrt:
         CD = chamfer_sqrt
-        PM = chamfer_single_side_sqrt
-    else:
-        CD = chamfer
         PM = chamfer_single_side
+    else:
+        CD = chamfer_sqrt
+        PM = chamfer_single_side
+    #print("len - pcd,",len(pcds_pred))
 
-    Pc, P1, P2, P3,P4 = pcds_pred
+    Pc, P1, P2, P3 = pcds_pred
+   # print("len - Pc,",Pc.size())
+
+   # print("len - P2,",P2.size())
+   # print("len - P1,",P1.size())
+    #print("len - P3,",P3.size())
 
 
-    gt_2,_ = sample_farthest_points(gt, K=P2.shape[1])#pcds_pred[2].shape
-    gt_1,_ = sample_farthest_points(gt_2, K=P1.shape[1])
-    gt_c,_ = sample_farthest_points(gt_1, K=Pc.shape[1])
+    gt_2,_ = sample_farthest_points(gt, K=P2.size()[1])#pcds_pred[2].shape
+    gt_1,_ = sample_farthest_points(gt_2, K=P1.size()[1])
+    gt_c,_ = sample_farthest_points(gt_1, K=Pc.size()[1])
 
     cdc = CD(Pc, gt_c)
     cd1 = CD(P1, gt_1)
@@ -208,9 +208,11 @@ def get_loss(pcds_pred, partial, gt, sqrt=True):
 
     partial_matching = PM(partial, P3)
 
-    loss_all = (cdc + cd1 + cd2 + cd3 + partial_matching) *1e3
+    loss_all = (cdc + cd1 + cd2 + cd3 + partial_matching) *1e-1
     losses = [cdc, cd1, cd2, cd3, partial_matching]
     return loss_all, losses, [gt_2, gt_1, gt_c]
+
+
 
 def apply_and_save_res(dataset, dataloader, model, savedir):
     model.eval()

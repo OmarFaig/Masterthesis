@@ -18,14 +18,14 @@ class FeatureExtractor(nn.Module):
         #in_channel values are not correct needs to be investigated in_chanell =128+3
         super(FeatureExtractor, self).__init__()
        # self.sa_module_1 = PointNet_SA_Layer(npoints=128,nsample=4,in_channel=6,mlp_channels=[64,128] )
-        self.sa_module_1 = PointNet_SA_Module_KNN(512, 8, 3, [64, 128], group_all=True, if_bn=False, if_idx=False)
-        self.transformer_1 = vTransformer(128, dim=64,n_knn=n_knn)
+        self.sa_module_1 = PointNet_SA_Module_KNN(512, 8, 3, [32,64, 128], group_all=False, if_bn=False, if_idx=True)
+        self.transformer_1 = vTransformer(128, dim=128,n_knn=n_knn)
 
        # self.sa_module_1 = PointNet_SA_Module_KNN(256, 16, 64, [64, 128], group_all=False, if_bn=False, if_idx=False)
        # self.transformer_1 = vTransformer(128, dim=64,n_knn=n_knn)
        # self.sa_module_2 = PointNet_SA_Layer(npoints=64,nsample=4,in_channel=131,mlp_channels=[128,256])
-        self.sa_module_2 = PointNet_SA_Module_KNN(128, 8, 128, [128, 256], group_all=True, if_bn=False, if_idx=False)
-        self.transformer_2 = vTransformer(256, dim=64, n_knn=n_knn)
+        self.sa_module_2 = PointNet_SA_Module_KNN(128, 8, 128, [128, 256], group_all=False, if_bn=False, if_idx=True)
+        self.transformer_2 = vTransformer(256, dim=128, n_knn=n_knn)
 
         self.sa_module_3 = PointNet_SA_Module_KNN(None, None, 256, [512, out_dim], group_all=True, if_bn=False)
     def forward(self, partial_cloud):
@@ -39,10 +39,10 @@ class FeatureExtractor(nn.Module):
         l0_xyz = partial_cloud
         l0_points = partial_cloud
 
-        l1_xyz, l1_points = self.sa_module_1(l0_xyz, l0_points)  # (B, 3, 512), (B, 128, 512)
+        l1_xyz, l1_points,idx1 = self.sa_module_1(l0_xyz, l0_points)  # (B, 3, 512), (B, 128, 512)
         l1_points = self.transformer_1(l1_points, l1_xyz)
        # print("layer1 shape: ", l1_points.shape)
-        l2_xyz, l2_points = self.sa_module_2(l1_xyz, l1_points)  # (B, 3, 128), (B, 256, 128)
+        l2_xyz, l2_points,idx2= self.sa_module_2(l1_xyz, l1_points)  # (B, 3, 128), (B, 256, 128)
         l2_points = self.transformer_2(l2_points, l2_xyz)
         #print("layer2 shape: ", l2_points.shape)
 
@@ -52,7 +52,7 @@ class FeatureExtractor(nn.Module):
         return l3_points, l2_xyz, l2_points
 
 class SeedGenerator(nn.Module):
-    def __init__(self, feat_dim=512, seed_dim=128, n_knn=20, factor=2, attn_channel=True):
+    def __init__(self, feat_dim=512, seed_dim=256, n_knn=10, factor=2, attn_channel=True):
         super(SeedGenerator, self).__init__()
         self.uptrans = UpTransformer(256, 128, dim=64, n_knn=n_knn, use_upfeat=False, attn_channel=attn_channel, up_factor=factor, scale_layer=None)
         self.mlp_1 = MLP_Res(in_dim=feat_dim + 128, hidden_dim=128, out_dim=128)
@@ -80,8 +80,8 @@ class SeedGenerator(nn.Module):
 
 
 class UpTransformer(nn.Module):
-    def __init__(self, in_channel, out_channel, dim, n_knn=20, up_factor=2, use_upfeat=False,
-                 pos_hidden_dim=64, attn_hidden_multiplier=4, scale_layer=nn.Softmax, attn_channel=True):
+    def __init__(self, in_channel, out_channel, dim, n_knn=10, up_factor=2, use_upfeat=False,
+                 pos_hidden_dim=128, attn_hidden_multiplier=4, scale_layer=nn.Softmax, attn_channel=True):
         super(UpTransformer, self).__init__()
         self.n_knn = n_knn
         self.up_factor = up_factor
@@ -256,7 +256,7 @@ class SeedFormer(nn.Module):
     """
     SeedFormer Point Cloud Completion with Patch Seeds and Upsample Transformer
     """
-    def __init__(self, feat_dim=512, embed_dim=128, num_p0=512, n_knn=20, radius=1, up_factors=None, seed_factor=2, interpolate='three', attn_channel=True):
+    def __init__(self, feat_dim=512, embed_dim=256, num_p0=512, n_knn=10, radius=1, up_factors=None, seed_factor=2, interpolate='three', attn_channel=True):
         """
         Args:
             feat_dim: dimension of global feature
@@ -291,6 +291,7 @@ class SeedFormer(nn.Module):
 
         # Decoder
         pred_pcds = self.forward_decoder(feat, partial_cloud, patch_xyz, patch_feat)
+      #  print("len - pcd,",len(pred_pcds))
 
         return pred_pcds
 
@@ -325,7 +326,7 @@ class SeedFormer(nn.Module):
         for layer in self.up_layers:
             pcd, K_prev = layer(pcd, seed, seed_feat, K_prev)
             pred_pcds.append(pcd.permute(0, 2, 1).contiguous())
-        #print("len - pcd,",pcd.shape)
+        #print("len - pcd,",len(pred_pcds))
 
         #print("shape of pred_pcds[:1]",pred_pcds[-1].shape())
         #return pcd,pred_pcds[:-1]
@@ -337,7 +338,7 @@ class SeedFormer(nn.Module):
 ###########################
 
 def seedformer_dim128(**kwargs):
-    model = SeedFormer(feat_dim=1024, embed_dim=256, n_knn=20, **kwargs)
+    model = SeedFormer(feat_dim=512, embed_dim=256, n_knn=10, **kwargs)
     return model
 
 
