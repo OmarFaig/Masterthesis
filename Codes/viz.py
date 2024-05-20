@@ -6,10 +6,10 @@ import open3d as o3d
 frame_index = 0
 
 # Path to folder containing .npy files for point clouds
-pc_folder_path = '/home/omar/TUM/Data/SeedFormer_2602_npy/reconstructed_2604v001/points/'
+pc_folder_path = '/home/omar/TUM/Data/SeedFormer_2602_npy/reconstructed_1805v001/points'
 
 # Path to folder containing bounding box text files
-bbox_folder_path = '/home/omar/TUM/Data/SeedFormer_2602_npy/reconstructed_2604v001/labels'
+bbox_folder_path = '/home/omar/TUM/Data/SeedFormer_2602_npy/reconstructed_1805v001/labels'
 
 # List all .npy files in the folder
 file_list = sorted([f for f in os.listdir(pc_folder_path) if f.endswith(('.npy','.pcd'))])
@@ -70,38 +70,53 @@ def load_data(pc_folder, bbox_folder, file_name):
 # Function to visualize point cloud and bounding box
 def visualize(point_cloud, bbox_coordinates):
     # Create Open3D point cloud
-
-
     pcl = o3d.geometry.PointCloud()
     pcl.points = o3d.utility.Vector3dVector(point_cloud)
-   # view_control.set_zoom(125)
 
     # Create Open3D bounding box
-   # if bbox_coordinates is not None:
-    bbox = o3d.geometry.OrientedBoundingBox(center=bbox_coordinates[:3],
-                                            R=np.eye(3),
-                                            extent=bbox_coordinates[3:6])
-    print(bbox.get_center())
-    #view_control.set_lookat(bbox.get_center())
-    bbox.color = [1, 0, 0]  # Set bbox color to red
-   # else:
+    bbox = None
+    if bbox_coordinates is not None:
+        bbox = o3d.geometry.OrientedBoundingBox(center=bbox_coordinates[:3],
+                                                 R=np.eye(3),
+                                                 extent=bbox_coordinates[3:6])
+        bbox.color = [1, 0, 0]  # Set bbox color to red
 
-      #  bbox = None
-
-    # Visualize point cloud and bounding box
-    #o3d.visualization.draw_geometries([pcl, bbox])
+    # Add geometries to the visualizer
     vis.clear_geometries()
-
-
-
     vis.add_geometry(pcl)
-    vis.add_geometry(bbox)
+    if bbox:
+        vis.add_geometry(bbox)
+    # Get the view control
     view_control = vis.get_view_control()
 
     view_control.set_front([0.1, -0.5, 0.6])
     view_control.set_lookat(bbox.get_center())
     #view_control.set_up([-0.36828927493940194, 0.49961995188329117, 0.78405542766104697])
     view_control.set_zoom(0.009)
+    # Set camera parameters
+    #if bbox:
+    #    bbox_center = bbox.get_center()
+
+    #    # Calculate the extent of the bounding box
+    #    bbox_points = np.asarray(bbox.get_box_points())
+    #    bbox_min = np.min(bbox_points, axis=0)
+    #    bbox_max = np.max(bbox_points, axis=0)
+    #    bbox_extent = bbox_max - bbox_min
+
+    #    # Calculate the position 1 meter away from the bounding box in the direction of the top right corner
+    #    camera_pos = np.array(bbox_center) + np.array([bbox_extent[0] / 2, bbox_extent[1] / 2, 1.0])
+
+    #    # Look at the center of the bounding box
+    #    view_control.set_lookat(bbox_center)
+
+    #    # Set camera position
+    #    view_control.set_front(camera_pos)
+    #    view_control.set_up([0, 0, 1])  # Set the up direction to be the z-axis
+
+    #    # Adjust zoom level
+
+    #    view_control.set_zoom(0.05)  # Adjust the zoom level as needed
+
 def load_next_frame(vis):
     global frame_index
     print("Loading frame", frame_index)

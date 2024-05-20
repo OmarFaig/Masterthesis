@@ -29,7 +29,7 @@ def visualize(pcl,bbox_coordinates):
     bbox = o3d.geometry.OrientedBoundingBox(center=center, R=rotation_mat_z, extent=[l, w, h])
     opt = vis.get_render_option()
     #opt.show_coordinate_frame = True
-    opt.background_color = np.asarray([0, 0, 0])
+    #opt.background_color = np.asarray([0, 0, 0])
     view_control = vis.get_view_control()
     view_control.set_up([0, 1, 0])  # Lock the view up direction along the z-axis
     view_control.set_front([0.1, -0.5, 0.6])

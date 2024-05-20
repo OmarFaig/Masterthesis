@@ -1,12 +1,16 @@
+import numpy as np
 import torch
 import torch.nn as nn
 from torch import einsum
 import torch.nn.functional as F
-from pytorch3d.ops import sample_farthest_points, ball_query, knn_points,knn_gather
+from pytorch3d.ops import sample_farthest_points, ball_query, knn_points, knn_gather
 from utils.pointnet_utils import index_points
 import logging
 import warnings
+
 logger = logging.getLogger(__name__)
+
+
 def absolute_or_relative(value, total):
     """Returns the value if integer or multiplies it with total and converts the result to type(total) if float."""
     if isinstance(value, int):
@@ -15,6 +19,7 @@ def absolute_or_relative(value, total):
         return type(total)(value * total)
     else:
         raise ValueError(f"Absolute or relative value must be of type int or float, but is: {type(value)}")
+
 
 def grouping_operation(features, idx):
     """
@@ -31,6 +36,8 @@ def grouping_operation(features, idx):
         (B, C, npoint, nsample) tensor
     """
     return index_points(features.transpose(-2, -1), idx).movedim(-1, -3)
+
+
 class Conv2d(nn.Module):
     def __init__(self,
                  in_channel,
@@ -43,7 +50,8 @@ class Conv2d(nn.Module):
         self.conv = nn.Conv2d(in_channel,
                               out_channel,
                               kernel_size,
-                              stride=stride)
+                              stride=stride,
+                              )
         self.if_bn = if_bn
         self.bn = nn.BatchNorm2d(out_channel)
         self.activation_fn = activation_fn
@@ -104,9 +112,10 @@ class PointNet_SA_Layer(nn.Module):
     based on paper : [1] PointNet++: Deep Hierarchical Feature Learning on Point Sets in a Metric Space - https://arxiv.org/abs/1706.02413
 
     '''
-    def __init__(self,in_channel,mlp_channels,*,npoints=None,nsample=None,radius=None,activation=F.relu):
+
+    def __init__(self, in_channel, mlp_channels, *, npoints=None, nsample=None, radius=None, activation=F.relu):
         super(PointNet_SA_Layer, self).__init__()
-#activation relu ?!
+        # activation relu ?!
         self.npoints = npoints
         self.nsample = nsample
         self.radius = radius
@@ -116,14 +125,13 @@ class PointNet_SA_Layer(nn.Module):
         last_channel = in_channel
         for out_channel in mlp_channels[:-1]:
             self.convs.append(nn.Conv2d(last_channel, out_channel, 1))
-          #  self.norms.append(nn.BatchNorm1d(out_channel))  # Adding BatchNorm1d layer
+            #  self.norms.append(nn.BatchNorm1d(out_channel))  # Adding BatchNorm1d layer
 
-            self.norms.append(nn.Identity())#nn.BatchNorm1d()
+            self.norms.append(nn.Identity())  # nn.BatchNorm1d()
             last_channel = out_channel
-        self.last_conv = nn.Conv2d(last_channel,mlp_channels[-1],1 )
+        self.last_conv = nn.Conv2d(last_channel, mlp_channels[-1], 1)
 
-
-    def _sample(self,xyz,npoints):
+    def _sample(self, xyz, npoints):
         '''
         Given input points {x1, x2, ..., xn}, we use iterative farthest point sampling (FPS)
         to choose a subset of points {xi1 , xi2 , ..., xim}, such that xij is the most distant point (in metric
@@ -135,19 +143,22 @@ class PointNet_SA_Layer(nn.Module):
             sampled_xyz : sampled points [B,C(3),npoints]
 
         '''
-        #print("sample xyz.shape ",xyz.shape)
-       # print("sample npoints: -  ",npoints)
+        # print("sample xyz.shape ",xyz.shape)
+        # print("sample npoints: -  ",npoints)
 
         if npoints is None:
             return None
         N = xyz.shape[-1]
-        if N==npoints:
-            sampled_xyz = xyz # sample all the points [B,C,npoints]
-        elif N>npoints:
-            sampled_xyz = sample_farthest_points(xyz.transpose(-2,-1),K=npoints,random_start_point=True)[0].transpose(-2,-1)
-        else: raise RuntimeError(f'NPoints is bigger than the number of input points !')
+        if N == npoints:
+            sampled_xyz = xyz  # sample all the points [B,C,npoints]
+        elif N > npoints:
+            sampled_xyz = sample_farthest_points(xyz.transpose(-2, -1), K=npoints, random_start_point=True)[
+                0].transpose(-2, -1)
+        else:
+            raise RuntimeError(f'NPoints is bigger than the number of input points !')
         return sampled_xyz
-    def _group(self,xyz,points,sampled_xyz):
+
+    def _group(self, xyz, points, sampled_xyz):
         '''
         The input to this layer is a point set of size N x (d + C) and the coordinates of
         aset of centroids of size N' x d. The output are groups of point sets of size N' x K x (d + C),
@@ -162,66 +173,66 @@ class PointNet_SA_Layer(nn.Module):
         :return
         grouped_points : grouped points positions + feature data , [B,C+D,S,K]
         '''
-        if self.nsample is not None:#sample and group by ball query or knn
+        if self.nsample is not None:  # sample and group by ball query or knn
             if self.radius is not None:
                 # Ball Query
-                group_idx=ball_query(p1=sampled_xyz.transpose(-2,-1), p2=xyz.transpose(-2,-1), K=self.nsample, radius=self.radius).idx
-                grouped_xyz = index_points(xyz.transpose(-2,-1), group_idx).movedim(-1,-3)
+                group_idx = ball_query(p1=sampled_xyz.transpose(-2, -1), p2=xyz.transpose(-2, -1), K=self.nsample,
+                                       radius=self.radius).idx
+                grouped_xyz = index_points(xyz.transpose(-2, -1), group_idx).movedim(-1, -3)
                 grouped_xyz -= sampled_xyz.unsqueeze(-1)
                 grouped_xyz /= self.radius
             else:
-                #KNN
-                group_idx = knn_points(sampled_xyz.transpose(-2,-1),xyz.transpose(-2,-1), K=self.nsample,return_sorted=False).idx
-                grouped_xyz = index_points(xyz.transpose(-2,-1),group_idx).movedim(-1,-3)
-                grouped_xyz -=sampled_xyz.unsqueeze(-1)
+                # KNN
+                group_idx = knn_points(sampled_xyz.transpose(-2, -1), xyz.transpose(-2, -1), K=self.nsample,
+                                       return_sorted=False).idx
+                grouped_xyz = index_points(xyz.transpose(-2, -1), group_idx).movedim(-1, -3)
+                grouped_xyz -= sampled_xyz.unsqueeze(-1)
 
             if points is not None:
-                grouped_points = index_points(points.transpose(-2,-1),group_idx).movedim(-1,-3)
-                grouped_points = torch.cat([grouped_points, grouped_xyz],dim=1)
+                grouped_points = index_points(points.transpose(-2, -1), group_idx).movedim(-1, -3)
+                grouped_points = torch.cat([grouped_points, grouped_xyz], dim=1)
             else:
                 grouped_points = grouped_xyz
-        else:#group all
+        else:  # group all
             grouped_xyz = xyz.unsqueeze(-2)
             if points is not None:
-                grouped_points =points.unsqueeze(2)
-                grouped_points = torch.cat([grouped_points,grouped_xyz],dim=1)
+                grouped_points = points.unsqueeze(2)
+                grouped_points = torch.cat([grouped_points, grouped_xyz], dim=1)
             else:
                 grouped_points = grouped_xyz
         return grouped_points
 
-
-    #def forward(self):
-        #test
+    # def forward(self):
+    # test
     def forward(self, xyz, points=None, sampled_xyz=None, npoints=None):
-            """
-            Args:
-                xyz: Tensor, (B, 3, N)
-                points: Tensor, (B, f, N)
+        """
+        Args:
+            xyz: Tensor, (B, 3, N)
+            points: Tensor, (B, f, N)
 
-            Returns:
-                new_xyz: Tensor, (B, 3, npoint)
-                new_points: Tensor, (B, mlp[-1], npoint)
-            """
-           # print(f'forward - npoints: {npoints}, self.nsample: {self.nsample}')
+        Returns:
+            new_xyz: Tensor, (B, 3, npoint)
+            new_points: Tensor, (B, mlp[-1], npoint)
+        """
+        # print(f'forward - npoints: {npoints}, self.nsample: {self.nsample}')
 
-            assert (npoints is None) or (self.npoints is None)
-            if npoints is None:
-                npoints = self.npoints
-            assert (npoints is None) == (self.nsample is None)  # both None => group all, otherwise sample and group
+        assert (npoints is None) or (self.npoints is None)
+        if npoints is None:
+            npoints = self.npoints
+        assert (npoints is None) == (self.nsample is None)  # both None => group all, otherwise sample and group
 
-            if sampled_xyz is None:
-                sampled_xyz = self._sample(xyz, npoints)  # (B, C, S)
-               # print("sampled_xyz")
-            grouped_points = self._group(xyz, points, sampled_xyz)  # (B, C+D, S, K)
-            #grouped_points = grouped_points.reshape(grouped_points.size(0), -1, grouped_points.size(-1))
+        if sampled_xyz is None:
+            sampled_xyz = self._sample(xyz, npoints)  # (B, C, S)
+        # print("sampled_xyz")
+        grouped_points = self._group(xyz, points, sampled_xyz)  # (B, C+D, S, K)
+        # grouped_points = grouped_points.reshape(grouped_points.size(0), -1, grouped_points.size(-1))
 
-            for conv, norm in zip(self.convs, self.norms):
-                grouped_points = self.activation(norm(conv(grouped_points)))
-            grouped_points = self.last_conv(grouped_points)
-            new_points = torch.max(grouped_points, -1)[0]  # (B, D', S)
+        for conv, norm in zip(self.convs, self.norms):
+            grouped_points = self.activation(norm(conv(grouped_points)))
+        grouped_points = self.last_conv(grouped_points)
+        new_points = torch.max(grouped_points, -1)[0]  # (B, D', S)
 
-            return sampled_xyz, new_points
-
+        return sampled_xyz, new_points
 
 
 def sample_and_group_all(xyz, points, use_xyz=True):
@@ -275,16 +286,68 @@ def square_distance(src, dst):
     B, N, _ = src.shape
     _, M, _ = dst.shape
     dist = -2 * torch.matmul(src, dst.permute(0, 2, 1))  # B, N, M
-    dist += torch.sum(src**2, -1).view(B, N, 1)
-    dist += torch.sum(dst**2, -1).view(B, 1, M)
+    dist += torch.sum(src ** 2, -1).view(B, N, 1)
+    dist += torch.sum(dst ** 2, -1).view(B, 1, M)
     return dist
+
+
 def query_knn(nsample, xyz, new_xyz, include_self=True):
     """Find k-NN of new_xyz in xyz"""
     pad = 0 if include_self else 1
+    # print("xyz shape",xyz.shape)
+    # print("bew_xyz shape",new_xyz.shape)
     sqrdists = square_distance(new_xyz, xyz)  # B, S, N
     idx = torch.argsort(sqrdists, dim=-1, descending=False)[:, :,
-                                                            pad:nsample + pad]
+          pad:nsample + pad]
     return idx.int()
+
+
+def gather_operation(xyz, idx):
+    """
+    Gather points from the input point cloud based on indices.
+
+    Args:
+        xyz: Tensor, input point cloud of shape (B, 3, N).
+        idx: Tensor, indices specifying which points to gather. Shape: (B, npoint).
+
+    Returns:
+        new_xyz: Tensor, gathered points. Shape: (B, 3, npoint).
+    """
+    B, _, N = xyz.size()
+    npoint = idx.size(1)
+
+    # Reshape indices to match the indexing operation
+    # idx = idx.view(B, npoint, 1).repeat(1, 1, 3)
+    idx_expanded = idx.unsqueeze(1).expand(-1, 3, -1)
+
+    # Gather points using the indices
+    new_xyz = torch.gather(xyz, 2, idx_expanded)
+
+    return new_xyz
+
+
+def index_points(points, idx):
+    """
+    NOTE: Similar to `gather` and `knn_gather` in this module, but with
+    - different order of dimensions
+    - arbitrary number of indexed dimensions
+    - apparently much faster (cuda, backward pass, determinsic algorithms)
+
+    Parameters
+    -----------
+    points: tensor with shape (B, N, C)
+    idx: tensor (long) with shape (B, S_1, ... S_d)
+
+    Returns
+    -------
+    points_indexed: tensor (long) with shape (B, S_1, ..., S_d, C)
+    """
+    B = points.shape[0]
+    d = len(idx.shape) - 1
+    view_shape = [B] + [1] * d
+    batch_idx = torch.arange(B, dtype=torch.long, device=idx.device).view(view_shape).expand_as(idx)
+    return points[batch_idx, idx, :]
+
 
 def sample_and_group_knn(xyz, points, npoint, k, use_xyz=True, idx=None):
     """
@@ -304,14 +367,33 @@ def sample_and_group_knn(xyz, points, npoint, k, use_xyz=True, idx=None):
 
     """
     xyz_flipped = xyz.permute(0, 2, 1).contiguous()  # (B, N, 3)
-    new_xyz =  sample_farthest_points(xyz.transpose(-2,-1),K=npoint,random_start_point=True)[0].transpose(-2,-1)
-  # (B, 3, npoint)gather_operation(xyz
-    if idx is None:
-       # group_idx = ball_query(p1=sampled_xyz.transpose(-2, -1), p2=xyz.transpose(-2, -1), K=self.nsample,
-                              # radius=self.radius).idx
+    # new_xyz =  sample_farthest_points(xyz.transpose(-2,-1),K=npoint,random_start_point=True)[0].transpose(-2,-1)
+    # (B, 3, npoint)gather_operation(xyz
+    _, selected_indices = sample_farthest_points(xyz_flipped, K=npoint)
+    # print("xyz.shape",xyz.shape)
+    # print("xyz_flipped.shape",xyz_flipped.shape)
+    #
+    # print("selected_points shape:", selected_points) #1x512x3
+    # print("indices shape:", selected_indices.shape) #1x512x3
 
+    # print("selected_points shape:", selected_points[1].shape)
+    # _, idx_knn, _ = knn_points(xyz_flipped, xyz_flipped, K=10, return_sorted=False)
+    # sqrdists = square_distance(xyz_flipped, new_xyz)  # Pass xyz_flipped as src and new_xyz as dst
+
+    # new_xyz = index_points(xyz,selected_points[1])  # (B, 3, npoint)
+    new_xyz = gather_operation(xyz, selected_indices)
+    # print("xyz.shape",xyz.shape)
+    # print("xyz_flipped.shape",xyz_flipped.shape)
+    # print("new_xyz.shape",new_xyz.shape)
+    if idx is None:
+        # group_idx = ball_query(p1=selected_points.transpose(-2, -1), p2=xyz.transpose(-2, -1), K=npoint,
+        #                      radius=3).idx
         idx = query_knn(k, xyz_flipped, new_xyz.permute(0, 2, 1).contiguous())
-    grouped_xyz = grouping_operation(xyz, idx)  # (B, 3, npoint, nsample)
+
+        # idx = ball_query(k,  xyz_flipped,new_xyz)
+    grouped_xyz = grouping_operation(xyz, idx)  # (B, 3, npoint, nsample) 1x3x512x20
+    # print("grouped_xyz.shape",grouped_xyz.shape)
+    # Transpose new_xyz to have shape [1, 3, 512]
     grouped_xyz -= new_xyz.unsqueeze(3).repeat(1, 1, 1, k)
 
     if points is not None:
@@ -325,6 +407,8 @@ def sample_and_group_knn(xyz, points, npoint, k, use_xyz=True, idx=None):
         new_points = grouped_xyz
 
     return new_xyz, new_points, idx, grouped_xyz
+
+
 class PointNet_SA_Module_KNN(nn.Module):
     def __init__(self,
                  npoint,
@@ -357,11 +441,12 @@ class PointNet_SA_Module_KNN(nn.Module):
         self.mlp_conv = []
         for out_channel in mlp[:-1]:
             self.mlp_conv.append(Conv2d(last_channel, out_channel,
-                                        if_bn=if_bn))
+                                        if_bn=if_bn))  # (conv): Conv2d(last_channel, out_channel, kernel_size=(1, 1), stride=(1, 1))
             last_channel = out_channel
         self.mlp_conv.append(
             Conv2d(last_channel, mlp[-1], if_bn=False, activation_fn=None))
-        self.mlp_conv = nn.Sequential(*self.mlp_conv)
+        # (conv): Conv2d(last_channel, out_channel, kernel_size=(1, 1), stride=(1, 1))
+        self.mlp_conv = nn.Sequential(*self.mlp_conv)  # convert to nn.Sequential module
 
     def forward(self, xyz, points, idx=None):
         """
@@ -387,7 +472,6 @@ class PointNet_SA_Module_KNN(nn.Module):
             return new_xyz, new_points, idx
         else:
             return new_xyz, new_points
-
 
 
 class vTransformer(nn.Module):
@@ -430,17 +514,26 @@ class vTransformer(nn.Module):
         x = self.linear_start(x)
         b, dim, n = x.shape
 
-        pos_flipped = pos.permute(0, 2, 1)#.contiguous()
-        _, idx_knn, _ = knn_points(pos_flipped, pos_flipped, K=self.n_knn, return_sorted=False)
+        pos_flipped = pos.permute(0, 2, 1)  # .contiguous()
+        # _, idx_knn, _ = knn_points(pos_flipped, pos_flipped, K=self.n_knn, return_sorted=False)
+        idx = query_knn(self.n_knn, pos_flipped, pos_flipped)
+        # print("idx",idx.shape)
         key = self.conv_key(x)  # (B, dim, N)
         value = self.conv_value(x)
         query = self.conv_query(x)
 
-        key = grouping_operation(key, idx_knn)  # (B, dim, N, k)
+        key = grouping_operation(key, idx)  # (B, dim, N, k)
+        # print("key shape " ,key.shape)
+        # print("query shape",query.shape)
+        # print("query.reshape((b, -1, n, 1))",query.reshape((b, dim, n, 1)).shape)
+        # print("pos.shape",pos.shape)
+        # print("grouping_operation(pos, idx).shape",grouping_operation(pos, idx).shape)
+
+        # qk_rel = query.reshape((b,dim, n, 1)) - key
         qk_rel = query.reshape((b, -1, n, 1)) - key
 
         pos_rel = pos.reshape(
-            (b, -1, n, 1)) - grouping_operation(pos, idx_knn)  # (B, 3, N, k)
+            (b, -1, n, 1)) - grouping_operation(pos, idx)  # (B, 3, N, k)
         pos_embedding = self.pos_mlp(pos_rel)  # (B, dim, N, k)
 
         attention = self.attn_mlp(qk_rel + pos_embedding)
@@ -448,7 +541,7 @@ class vTransformer(nn.Module):
 
         # knn value is correct
         value = grouping_operation(value,
-                                   idx_knn) + pos_embedding  # (B, dim, N, k)
+                                   idx) + pos_embedding  # (B, dim, N, k)
 
         agg = einsum('b c i j, b c i j -> b c i', attention,
                      value)  # (B, dim, N)
