@@ -7,8 +7,18 @@ from utils.pointnet_utils import index_points
 import logging
 import warnings
 logger = logging.getLogger(__name__)
+
 def absolute_or_relative(value, total):
-    """Returns the value if integer or multiplies it with total and converts the result to type(total) if float."""
+    """
+    Returns the value if integer or multiplies it with total and converts the result to type(total) if float.
+
+    Args:
+        value (int or float): Value to be converted.
+        total (int or float): Total to be used for relative conversion if value is float.
+
+    Returns:
+        int or float: The absolute or relative value.
+    """
     if isinstance(value, int):
         return value
     elif isinstance(value, float):
@@ -16,39 +26,50 @@ def absolute_or_relative(value, total):
     else:
         raise ValueError(f"Absolute or relative value must be of type int or float, but is: {type(value)}")
 
+
 def grouping_operation(features, idx):
     """
-    Parameters
-    ----------
-    features : torch.Tensor
-        (B, C, N) tensor of features to group
-    idx : torch.Tensor
-        (B, npoint, nsample) tensor containing the indicies of features to group with
+    Group features using the provided indices.
 
-    Returns
-    -------
-    torch.Tensor
-        (B, C, npoint, nsample) tensor
+    Args:
+        features (torch.Tensor): (B, C, N) tensor of features to group.
+        idx (torch.Tensor): (B, npoint, nsample) tensor containing the indices of features to group with.
+
+    Returns:
+        torch.Tensor: (B, C, npoint, nsample) tensor of grouped features.
     """
     return index_points(features.transpose(-2, -1), idx).movedim(-1, -3)
+
+
 class Conv2d(nn.Module):
-    def __init__(self,
-                 in_channel,
-                 out_channel,
-                 kernel_size=(1, 1),
-                 stride=(1, 1),
-                 if_bn=True,
-                 activation_fn=torch.relu):
+    def __init__(self, in_channel, out_channel, kernel_size=(1, 1), stride=(1, 1), if_bn=True, activation_fn=torch.relu):
+        """
+        Initialize a 2D Convolutional layer.
+
+        Args:
+            in_channel (int): Number of input channels.
+            out_channel (int): Number of output channels.
+            kernel_size (tuple): Kernel size of the convolution.
+            stride (tuple): Stride of the convolution.
+            if_bn (bool): Whether to use batch normalization.
+            activation_fn (function): Activation function to apply.
+        """
         super(Conv2d, self).__init__()
-        self.conv = nn.Conv2d(in_channel,
-                              out_channel,
-                              kernel_size,
-                              stride=stride)
+        self.conv = nn.Conv2d(in_channel, out_channel, kernel_size, stride=stride)
         self.if_bn = if_bn
         self.bn = nn.BatchNorm2d(out_channel)
         self.activation_fn = activation_fn
 
     def forward(self, input):
+        """
+        Forward pass for the Conv2d layer.
+
+        Args:
+            input (torch.Tensor): Input tensor.
+
+        Returns:
+            torch.Tensor: Output tensor after convolution, batch normalization, and activation.
+        """
         out = self.conv(input)
         if self.if_bn:
             out = self.bn(out)
@@ -60,7 +81,18 @@ class Conv2d(nn.Module):
 
 
 class MLP_CONV(nn.Module):
+    """
+    Multi-layer perceptron with 1D convolutional layers.
+    """
     def __init__(self, in_channel, layer_dims, bn=None):
+        """
+        Initialize a multi-layer perceptron with 1D convolutional layers.
+
+        Args:
+            in_channel (int): Number of input channels.
+            layer_dims (list of int): List of output channels for each layer.
+            bn (bool): Whether to use batch normalization.
+        """
         super(MLP_CONV, self).__init__()
         layers = []
         last_channel = in_channel
@@ -74,11 +106,32 @@ class MLP_CONV(nn.Module):
         self.mlp = nn.Sequential(*layers)
 
     def forward(self, inputs):
+        """
+        Forward pass for the MLP_CONV.
+
+        Args:
+            inputs (torch.Tensor): Input tensor.
+
+        Returns:
+            torch.Tensor: Output tensor after applying the MLP.
+        """
         return self.mlp(inputs)
 
 
+
 class MLP_Res(nn.Module):
+    """
+    Residual MLP layer.
+    """
     def __init__(self, in_dim=128, hidden_dim=None, out_dim=128):
+        """
+        Initialize a residual MLP layer.
+
+        Args:
+            in_dim (int): Input dimension.
+            hidden_dim (int): Hidden dimension.
+            out_dim (int): Output dimension.
+        """
         super(MLP_Res, self).__init__()
         if hidden_dim is None:
             hidden_dim = in_dim
@@ -88,23 +141,38 @@ class MLP_Res(nn.Module):
 
     def forward(self, x):
         """
+        Forward pass for the MLP_Res layer.
+
         Args:
-            x: (B, out_dim, n)
+            x (torch.Tensor): Input tensor of shape (B, out_dim, n).
+
+        Returns:
+            torch.Tensor: Output tensor after applying the residual MLP.
         """
         shortcut = self.conv_shortcut(x)
         out = self.conv_2(torch.relu(self.conv_1(x))) + shortcut
         return out
 
 
-class PointNet_SA_Layer(nn.Module):
-    '''
-    PointNet set of abstraction layer : sampling + grouping + PointNet layers
-    based on paper : [1] PointNet++: Deep Hierarchical Feature Learning on Point Sets in a Metric Space - https://arxiv.org/abs/1706.02413
 
-    '''
-    def __init__(self,in_channel,mlp_channels,*,npoints=None,nsample=None,radius=None,activation=F.relu):
+class PointNet_SA_Layer(nn.Module):
+    """
+    PointNet set abstraction layer: sampling + grouping + PointNet layers.
+    Based on the paper: PointNet++: Deep Hierarchical Feature Learning on Point Sets in a Metric Space.
+    """
+    def __init__(self, in_channel, mlp_channels, *, npoints=None, nsample=None, radius=None, activation=F.relu):
+        """
+        Initialize the PointNet set abstraction layer.
+
+        Args:
+            in_channel (int): Number of input channels.
+            mlp_channels (list of int): List of output channels for each MLP layer.
+            npoints (int): Number of points to sample.
+            nsample (int): Number of points in each local region.
+            radius (float): Radius for ball query.
+            activation (function): Activation function to apply.
+        """
         super(PointNet_SA_Layer, self).__init__()
-#activation relu ?!
         self.npoints = npoints
         self.nsample = nsample
         self.radius = radius
@@ -114,68 +182,58 @@ class PointNet_SA_Layer(nn.Module):
         last_channel = in_channel
         for out_channel in mlp_channels[:-1]:
             self.convs.append(nn.Conv2d(last_channel, out_channel, 1))
-          #  self.norms.append(nn.BatchNorm1d(out_channel))  # Adding BatchNorm1d layer
-
-            self.norms.append(nn.Identity())#nn.BatchNorm1d()
+            self.norms.append(nn.Identity())
             last_channel = out_channel
-        self.last_conv = nn.Conv2d(last_channel,mlp_channels[-1],1 )
+        self.last_conv = nn.Conv2d(last_channel, mlp_channels[-1], 1)
 
+    def _sample(self, xyz, npoints):
+        """
+        Sample points using iterative farthest point sampling (FPS).
 
-    def _sample(self,xyz,npoints):
-        '''
-        Given input points {x1, x2, ..., xn}, we use iterative farthest point sampling (FPS)
-        to choose a subset of points {xi1 , xi2 , ..., xim}, such that xij is the most distant point (in metric
-        distance) from the set {xi1 , xi2 , ..., xij1 } with regard to the rest points.
         Args:
-            xyz (tensor): input points [B,C(3),N]
-            npoints (int): number of points to be sampled from the input points
-        Return:
-            sampled_xyz : sampled points [B,C(3),npoints]
+            xyz (torch.Tensor): Input points [B, C(3), N].
+            npoints (int): Number of points to be sampled from the input points.
 
-        '''
-        #print("sample xyz.shape ",xyz.shape)
-       # print("sample npoints: -  ",npoints)
-
+        Returns:
+            torch.Tensor: Sampled points [B, C(3), npoints].
+        """
         if npoints is None:
             return None
         N = xyz.shape[-1]
-        if N==npoints:
-            sampled_xyz = xyz # sample all the points [B,C,npoints]
-        elif N>npoints:
-            sampled_xyz = sample_farthest_points(xyz.transpose(-2,-1),K=npoints,random_start_point=True)[0].transpose(-2,-1)
-        else: raise RuntimeError(f'NPoints is bigger than the number of input points !')
+        if N == npoints:
+            sampled_xyz = xyz  # sample all the points [B, C, npoints]
+        elif N > npoints:
+            sampled_xyz = sample_farthest_points(xyz.transpose(-2, -1), K=npoints, random_start_point=True)[0].transpose(-2, -1)
+        else:
+            raise RuntimeError('NPoints is bigger than the number of input points!')
         return sampled_xyz
-    def _group(self,xyz,points,sampled_xyz):
-        '''
-        The input to this layer is a point set of size N x (d + C) and the coordinates of
-        aset of centroids of size N' x d. The output are groups of point sets of size N' x K x (d + C),
-        where each group corresponds to a local region and K is the number of points in the neighborhood of
-        ccentroid points. Note that K varies across groups but the succeeding PointNet layer is able to convert
-        flexible number of points into a fixed length local region feature vector.
-        3 ways of grouping : KNN -  Ball Query -  group all
-        Input:
-        xyz: input points(positions) [B,C(3),N] or (Nx(d+C)
-        points : input points [B,D,N]  - features
-        sampled_xyz: points to be grouped (coordinates of the centroids)
-        :return
-        grouped_points : grouped points positions + feature data , [B,C+D,S,K]
-        '''
-        if self.nsample is not None:#sample and group by ball query or knn
+
+    def _group(self, xyz, points, sampled_xyz):
+        """
+        Group points using ball query or KNN.
+
+        Args:
+            xyz (torch.Tensor): Input points (positions) [B, C(3), N].
+            points (torch.Tensor): Input points [B, D, N] - features.
+            sampled_xyz (torch.Tensor): Points to be grouped (coordinates of the centroids).
+
+        Returns:
+            torch.Tensor: Grouped points positions + feature data [B, C+D, S, K].
+        """
+        if self.nsample is not None:
             if self.radius is not None:
-                # Ball Query
-                group_idx=ball_query(p1=sampled_xyz.transpose(-2,-1), p2=xyz.transpose(-2,-1), K=self.nsample, radius=self.radius).idx
-                grouped_xyz = index_points(xyz.transpose(-2,-1), group_idx).movedim(-1,-3)
+                group_idx = ball_query(p1=sampled_xyz.transpose(-2, -1), p2=xyz.transpose(-2, -1), K=self.nsample, radius=self.radius).idx
+                grouped_xyz = index_points(xyz.transpose(-2, -1), group_idx).movedim(-1, -3)
                 grouped_xyz -= sampled_xyz.unsqueeze(-1)
                 grouped_xyz /= self.radius
             else:
-                #KNN
-                group_idx = knn_points(sampled_xyz.transpose(-2,-1),xyz.transpose(-2,-1), K=self.nsample,return_sorted=False).idx
-                grouped_xyz = index_points(xyz.transpose(-2,-1),group_idx).movedim(-1,-3)
-                grouped_xyz -=sampled_xyz.unsqueeze(-1)
+                group_idx = knn_points(sampled_xyz.transpose(-2, -1), xyz.transpose(-2, -1), K=self.nsample, return_sorted=False).idx
+                grouped_xyz = index_points(xyz.transpose(-2, -1), group_idx).movedim(-1, -3)
+                grouped_xyz -= sampled_xyz.unsqueeze(-1)
 
             if points is not None:
-                grouped_points = index_points(points.transpose(-2,-1),group_idx).movedim(-1,-3)
-                grouped_points = torch.cat([grouped_points, grouped_xyz],dim=1)
+                grouped_points = index_points(points.transpose(-2, -1), group_idx).movedim(-1, -3)
+                grouped_points = torch.cat([grouped_points, grouped_xyz], dim=1)
             else:
                 grouped_points = grouped_xyz
         else:#group all
@@ -190,36 +248,29 @@ class PointNet_SA_Layer(nn.Module):
 
     #def forward(self):
         #test
-    def forward(self, xyz, points=None, sampled_xyz=None, npoints=None):
-            """
-            Args:
-                xyz: Tensor, (B, 3, N)
-                points: Tensor, (B, f, N)
+    def forward(self, xyz, points):
+        """
+        Forward pass for the PointNet_SA_Layer.
 
-            Returns:
-                new_xyz: Tensor, (B, 3, npoint)
-                new_points: Tensor, (B, mlp[-1], npoint)
-            """
-           # print(f'forward - npoints: {npoints}, self.nsample: {self.nsample}')
+        Args:
+            xyz (torch.Tensor): Input points (positions) [B, C(3), N].
+            points (torch.Tensor): Input points [B, D, N] - features.
 
-            assert (npoints is None) or (self.npoints is None)
-            if npoints is None:
-                npoints = self.npoints
-            assert (npoints is None) == (self.nsample is None)  # both None => group all, otherwise sample and group
+        Returns:
+            torch.Tensor: Output tensor after applying the PointNet_SA_Layer [B, D', npoints].
+        """
+        if self.npoints is not None:
+            xyz = self._sample(xyz, self.npoints)
+        grouped_points = self._group(xyz, points, xyz)
 
-            if sampled_xyz is None:
-                sampled_xyz = self._sample(xyz, npoints)  # (B, C, S)
-               # print("sampled_xyz")
-            grouped_points = self._group(xyz, points, sampled_xyz)  # (B, C+D, S, K)
-            #grouped_points = grouped_points.reshape(grouped_points.size(0), -1, grouped_points.size(-1))
+        for i, conv in enumerate(self.convs):
+            grouped_points = conv(grouped_points)
+            grouped_points = self.norms[i](grouped_points)
+            grouped_points = self.activation(grouped_points)
 
-            for conv, norm in zip(self.convs, self.norms):
-                grouped_points = self.activation(norm(conv(grouped_points)))
-            grouped_points = self.last_conv(grouped_points)
-            new_points = torch.max(grouped_points, -1)[0]  # (B, D', S)
+        grouped_points = self.last_conv(grouped_points)
 
-            return sampled_xyz, new_points
-
+        return grouped_points.squeeze(-1)
 
 
 def sample_and_group_all(xyz, points, use_xyz=True):
@@ -276,6 +327,7 @@ def square_distance(src, dst):
     dist += torch.sum(src**2, -1).view(B, N, 1)
     dist += torch.sum(dst**2, -1).view(B, 1, M)
     return dist
+
 def query_knn(nsample, xyz, new_xyz, include_self=True):
     """Find k-NN of new_xyz in xyz"""
     pad = 0 if include_self else 1
@@ -323,6 +375,7 @@ def sample_and_group_knn(xyz, points, npoint, k, use_xyz=True, idx=None):
         new_points = grouped_xyz
 
     return new_xyz, new_points, idx, grouped_xyz
+
 class PointNet_SA_Module_KNN(nn.Module):
     def __init__(self,
                  npoint,
