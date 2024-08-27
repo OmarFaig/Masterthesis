@@ -10,23 +10,15 @@ from pytorch3d.ops import  knn_points,sample_farthest_points
 from PointNet2 import MLP_Res,MLP_CONV, PointNet_SA_Layer,vTransformer,grouping_operation,PointNet_SA_Module_KNN
 logger = logging.getLogger(__name__)
 
-
+"""
+    Based on the paper: SeedFormer: https://arxiv.org/pdf/2207.10315
+"""
 class FeatureExtractor(nn.Module):
     def __init__(self, out_dim=1024, n_knn=20):
         """Encoder that encodes information of partial point cloud
         """
         #in_channel values are not correct needs to be investigated in_chanell =128+3
         super(FeatureExtractor, self).__init__()
-        #self.sa_module_1 =PointNet_SA_Layer(npoints=512,nsample=8,in_channel=6,mlp_channels=[64,128] )
-        #self.sa_module_1 = PointNet_SA_Module_KNN(512, 8, 3, [64, 128], group_all=False, if_bn=False, if_idx=False)
-        #self.transformer_1 = vTransformer(128, dim=64,n_knn=n_knn)
-
-        #self.sa_module_1 = PointNet_SA_Module_KNN(128, 8, 128, [128, 256], group_all=False, if_bn=False, if_idx=False)
-        #self.transformer_1 = vTransformer(128, dim=64,n_knn=n_knn)
-       # self.sa_module_2 = PointNet_SA_Layer(npoints=128,nsample=8,in_channel=131,mlp_channels=[128,256])        #self.sa_module_2 = PointNet_SA_Module_KNN(128, 16, 128, [128, 256], group_all=False, if_bn=False, if_idx=True)
-        #self.transformer_2 = vTransformer(256, dim=64, n_knn=n_knn)
-
-        #self.sa_module_3 = PointNet_SA_Layer(npoints=None,nsample=None,in_channel=259,mlp_channels=[512,out_dim])
         self.sa_module_1 = PointNet_SA_Module_KNN(512, 8, 3, [64, 128], group_all=False, if_bn=False, if_idx=False)
         self.transformer_1 = vTransformer(128, dim=64,n_knn=n_knn)
 

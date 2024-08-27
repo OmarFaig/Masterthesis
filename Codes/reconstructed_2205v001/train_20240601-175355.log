@@ -1,0 +1,1214 @@
+2024-06-01 17:53:55,072   INFO  **********************Start logging**********************
+2024-06-01 17:53:55,073   INFO  CUDA_VISIBLE_DEVICES=ALL
+2024-06-01 17:53:55,073   INFO  Training with a single process
+2024-06-01 17:53:55,073   INFO  cfg_file         cfgs/kitti_models/pointpillar.yaml
+2024-06-01 17:53:55,073   INFO  batch_size       4
+2024-06-01 17:53:55,073   INFO  epochs           80
+2024-06-01 17:53:55,073   INFO  workers          4
+2024-06-01 17:53:55,073   INFO  extra_tag        reconstructed_2205v001
+2024-06-01 17:53:55,073   INFO  ckpt             None
+2024-06-01 17:53:55,073   INFO  pretrained_model None
+2024-06-01 17:53:55,073   INFO  launcher         none
+2024-06-01 17:53:55,073   INFO  tcp_port         18888
+2024-06-01 17:53:55,073   INFO  sync_bn          False
+2024-06-01 17:53:55,073   INFO  fix_random_seed  False
+2024-06-01 17:53:55,073   INFO  ckpt_save_interval 1
+2024-06-01 17:53:55,073   INFO  local_rank       0
+2024-06-01 17:53:55,073   INFO  max_ckpt_save_num 30
+2024-06-01 17:53:55,073   INFO  merge_all_iters_to_one_epoch False
+2024-06-01 17:53:55,073   INFO  set_cfgs         None
+2024-06-01 17:53:55,073   INFO  max_waiting_mins 0
+2024-06-01 17:53:55,073   INFO  start_epoch      0
+2024-06-01 17:53:55,073   INFO  num_epochs_to_eval 0
+2024-06-01 17:53:55,073   INFO  save_to_file     False
+2024-06-01 17:53:55,073   INFO  use_tqdm_to_record False
+2024-06-01 17:53:55,074   INFO  logger_iter_interval 50
+2024-06-01 17:53:55,074   INFO  ckpt_save_time_interval 300
+2024-06-01 17:53:55,074   INFO  wo_gpu_stat      False
+2024-06-01 17:53:55,074   INFO  use_amp          False
+2024-06-01 17:53:55,074   INFO  cfg.ROOT_DIR: /home/ubuntu/omar/OpenPCDet
+2024-06-01 17:53:55,074   INFO  cfg.LOCAL_RANK: 0
+2024-06-01 17:53:55,074   INFO  cfg.CLASS_NAMES: ['Car']
+2024-06-01 17:53:55,074   INFO  ----------- DATA_CONFIG -----------
+2024-06-01 17:53:55,074   INFO  cfg.DATA_CONFIG.DATASET: CustomDataset
+2024-06-01 17:53:55,074   INFO  cfg.DATA_CONFIG.DATA_PATH: /dev/shm/IAC/SeedFormer_2602_npy/reconstructed_2205v001
+2024-06-01 17:53:55,074   INFO  cfg.DATA_CONFIG.POINT_CLOUD_RANGE: [-119.0, -39.68, -3, 119.0, 39.68, 1]
+2024-06-01 17:53:55,074   INFO  ----------- MAP_CLASS_TO_KITTI -----------
+2024-06-01 17:53:55,074   INFO  cfg.DATA_CONFIG.MAP_CLASS_TO_KITTI.Car: Car
+2024-06-01 17:53:55,074   INFO  ----------- DATA_SPLIT -----------
+2024-06-01 17:53:55,074   INFO  cfg.DATA_CONFIG.DATA_SPLIT.train: train
+2024-06-01 17:53:55,074   INFO  cfg.DATA_CONFIG.DATA_SPLIT.test: val
+2024-06-01 17:53:55,074   INFO  ----------- INFO_PATH -----------
+2024-06-01 17:53:55,074   INFO  cfg.DATA_CONFIG.INFO_PATH.train: ['custom_infos_train.pkl']
+2024-06-01 17:53:55,074   INFO  cfg.DATA_CONFIG.INFO_PATH.test: ['custom_infos_val.pkl']
+2024-06-01 17:53:55,074   INFO  ----------- POINT_FEATURE_ENCODING -----------
+2024-06-01 17:53:55,074   INFO  cfg.DATA_CONFIG.POINT_FEATURE_ENCODING.encoding_type: absolute_coordinates_encoding
+2024-06-01 17:53:55,074   INFO  cfg.DATA_CONFIG.POINT_FEATURE_ENCODING.used_feature_list: ['x', 'y', 'z']
+2024-06-01 17:53:55,074   INFO  cfg.DATA_CONFIG.POINT_FEATURE_ENCODING.src_feature_list: ['x', 'y', 'z']
+2024-06-01 17:53:55,074   INFO  ----------- DATA_AUGMENTOR -----------
+2024-06-01 17:53:55,074   INFO  cfg.DATA_CONFIG.DATA_AUGMENTOR.DISABLE_AUG_LIST: ['placeholder']
+2024-06-01 17:53:55,074   INFO  cfg.DATA_CONFIG.DATA_AUGMENTOR.AUG_CONFIG_LIST: [{'NAME': 'gt_sampling', 'USE_ROAD_PLANE': False, 'DB_INFO_PATH': ['custom_dbinfos_train.pkl'], 'PREPARE': {'filter_by_min_points': ['Car:5'], 'filter_by_difficulty': [-1]}, 'SAMPLE_GROUPS': ['Car:15'], 'NUM_POINT_FEATURES': 3, 'DATABASE_WITH_FAKELIDAR': False, 'REMOVE_EXTRA_WIDTH': [0.0, 0.0, 0.0], 'LIMIT_WHOLE_SCENE': False}, {'NAME': 'random_world_flip', 'ALONG_AXIS_LIST': ['x']}, {'NAME': 'random_world_rotation', 'WORLD_ROT_ANGLE': [-0.78539816, 0.78539816]}, {'NAME': 'random_world_scaling', 'WORLD_SCALE_RANGE': [0.95, 1.05]}]
+2024-06-01 17:53:55,074   INFO  cfg.DATA_CONFIG.DATA_PROCESSOR: [{'NAME': 'mask_points_and_boxes_outside_range', 'REMOVE_OUTSIDE_BOXES': True}, {'NAME': 'shuffle_points', 'SHUFFLE_ENABLED': {'train': True, 'test': False}}, {'NAME': 'transform_points_to_voxels', 'VOXEL_SIZE': [0.16, 0.16, 4], 'MAX_POINTS_PER_VOXEL': 32, 'MAX_NUMBER_OF_VOXELS': {'train': 16000, 'test': 40000}}]
+2024-06-01 17:53:55,075   INFO  cfg.DATA_CONFIG._BASE_CONFIG_: cfgs/dataset_configs/tum_dataset.yaml
+2024-06-01 17:53:55,075   INFO  ----------- MODEL -----------
+2024-06-01 17:53:55,075   INFO  cfg.MODEL.NAME: PointPillar
+2024-06-01 17:53:55,075   INFO  ----------- VFE -----------
+2024-06-01 17:53:55,075   INFO  cfg.MODEL.VFE.NAME: PillarVFE
+2024-06-01 17:53:55,075   INFO  cfg.MODEL.VFE.WITH_DISTANCE: False
+2024-06-01 17:53:55,075   INFO  cfg.MODEL.VFE.USE_ABSLOTE_XYZ: True
+2024-06-01 17:53:55,075   INFO  cfg.MODEL.VFE.USE_NORM: True
+2024-06-01 17:53:55,075   INFO  cfg.MODEL.VFE.NUM_FILTERS: [64]
+2024-06-01 17:53:55,075   INFO  ----------- MAP_TO_BEV -----------
+2024-06-01 17:53:55,075   INFO  cfg.MODEL.MAP_TO_BEV.NAME: PointPillarScatter
+2024-06-01 17:53:55,075   INFO  cfg.MODEL.MAP_TO_BEV.NUM_BEV_FEATURES: 64
+2024-06-01 17:53:55,075   INFO  ----------- BACKBONE_2D -----------
+2024-06-01 17:53:55,075   INFO  cfg.MODEL.BACKBONE_2D.NAME: BaseBEVBackbone
+2024-06-01 17:53:55,075   INFO  cfg.MODEL.BACKBONE_2D.LAYER_NUMS: [3, 5, 5]
+2024-06-01 17:53:55,075   INFO  cfg.MODEL.BACKBONE_2D.LAYER_STRIDES: [2, 2, 2]
+2024-06-01 17:53:55,075   INFO  cfg.MODEL.BACKBONE_2D.NUM_FILTERS: [64, 128, 256]
+2024-06-01 17:53:55,075   INFO  cfg.MODEL.BACKBONE_2D.UPSAMPLE_STRIDES: [1, 2, 4]
+2024-06-01 17:53:55,075   INFO  cfg.MODEL.BACKBONE_2D.NUM_UPSAMPLE_FILTERS: [128, 128, 128]
+2024-06-01 17:53:55,075   INFO  ----------- DENSE_HEAD -----------
+2024-06-01 17:53:55,075   INFO  cfg.MODEL.DENSE_HEAD.NAME: AnchorHeadSingle
+2024-06-01 17:53:55,075   INFO  cfg.MODEL.DENSE_HEAD.CLASS_AGNOSTIC: False
+2024-06-01 17:53:55,075   INFO  cfg.MODEL.DENSE_HEAD.USE_DIRECTION_CLASSIFIER: True
+2024-06-01 17:53:55,075   INFO  cfg.MODEL.DENSE_HEAD.DIR_OFFSET: 0.78539
+2024-06-01 17:53:55,075   INFO  cfg.MODEL.DENSE_HEAD.DIR_LIMIT_OFFSET: 0.0
+2024-06-01 17:53:55,075   INFO  cfg.MODEL.DENSE_HEAD.NUM_DIR_BINS: 2
+2024-06-01 17:53:55,075   INFO  cfg.MODEL.DENSE_HEAD.ANCHOR_GENERATOR_CONFIG: [{'class_name': 'Car', 'anchor_sizes': [[3.9, 1.6, 1.56]], 'anchor_rotations': [0, 1.57], 'anchor_bottom_heights': [-1.78], 'align_center': False, 'feature_map_stride': 2, 'matched_threshold': 0.6, 'unmatched_threshold': 0.45}]
+2024-06-01 17:53:55,076   INFO  ----------- TARGET_ASSIGNER_CONFIG -----------
+2024-06-01 17:53:55,076   INFO  cfg.MODEL.DENSE_HEAD.TARGET_ASSIGNER_CONFIG.NAME: AxisAlignedTargetAssigner
+2024-06-01 17:53:55,076   INFO  cfg.MODEL.DENSE_HEAD.TARGET_ASSIGNER_CONFIG.POS_FRACTION: -1.0
+2024-06-01 17:53:55,076   INFO  cfg.MODEL.DENSE_HEAD.TARGET_ASSIGNER_CONFIG.SAMPLE_SIZE: 512
+2024-06-01 17:53:55,076   INFO  cfg.MODEL.DENSE_HEAD.TARGET_ASSIGNER_CONFIG.NORM_BY_NUM_EXAMPLES: False
+2024-06-01 17:53:55,076   INFO  cfg.MODEL.DENSE_HEAD.TARGET_ASSIGNER_CONFIG.MATCH_HEIGHT: False
+2024-06-01 17:53:55,076   INFO  cfg.MODEL.DENSE_HEAD.TARGET_ASSIGNER_CONFIG.BOX_CODER: ResidualCoder
+2024-06-01 17:53:55,076   INFO  ----------- LOSS_CONFIG -----------
+2024-06-01 17:53:55,076   INFO  ----------- LOSS_WEIGHTS -----------
+2024-06-01 17:53:55,076   INFO  cfg.MODEL.DENSE_HEAD.LOSS_CONFIG.LOSS_WEIGHTS.cls_weight: 1.0
+2024-06-01 17:53:55,076   INFO  cfg.MODEL.DENSE_HEAD.LOSS_CONFIG.LOSS_WEIGHTS.loc_weight: 2.0
+2024-06-01 17:53:55,076   INFO  cfg.MODEL.DENSE_HEAD.LOSS_CONFIG.LOSS_WEIGHTS.dir_weight: 0.2
+2024-06-01 17:53:55,076   INFO  cfg.MODEL.DENSE_HEAD.LOSS_CONFIG.LOSS_WEIGHTS.code_weights: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+2024-06-01 17:53:55,076   INFO  ----------- POST_PROCESSING -----------
+2024-06-01 17:53:55,076   INFO  cfg.MODEL.POST_PROCESSING.RECALL_THRESH_LIST: [0.3, 0.5, 0.7]
+2024-06-01 17:53:55,076   INFO  cfg.MODEL.POST_PROCESSING.SCORE_THRESH: 0.1
+2024-06-01 17:53:55,076   INFO  cfg.MODEL.POST_PROCESSING.OUTPUT_RAW_SCORE: False
+2024-06-01 17:53:55,076   INFO  cfg.MODEL.POST_PROCESSING.EVAL_METRIC: kitti
+2024-06-01 17:53:55,076   INFO  ----------- NMS_CONFIG -----------
+2024-06-01 17:53:55,076   INFO  cfg.MODEL.POST_PROCESSING.NMS_CONFIG.MULTI_CLASSES_NMS: False
+2024-06-01 17:53:55,076   INFO  cfg.MODEL.POST_PROCESSING.NMS_CONFIG.NMS_TYPE: nms_gpu
+2024-06-01 17:53:55,076   INFO  cfg.MODEL.POST_PROCESSING.NMS_CONFIG.NMS_THRESH: 0.01
+2024-06-01 17:53:55,076   INFO  cfg.MODEL.POST_PROCESSING.NMS_CONFIG.NMS_PRE_MAXSIZE: 4096
+2024-06-01 17:53:55,076   INFO  cfg.MODEL.POST_PROCESSING.NMS_CONFIG.NMS_POST_MAXSIZE: 500
+2024-06-01 17:53:55,076   INFO  ----------- OPTIMIZATION -----------
+2024-06-01 17:53:55,076   INFO  cfg.OPTIMIZATION.BATCH_SIZE_PER_GPU: 4
+2024-06-01 17:53:55,076   INFO  cfg.OPTIMIZATION.NUM_EPOCHS: 80
+2024-06-01 17:53:55,076   INFO  cfg.OPTIMIZATION.OPTIMIZER: adam_onecycle
+2024-06-01 17:53:55,077   INFO  cfg.OPTIMIZATION.LR: 0.003
+2024-06-01 17:53:55,077   INFO  cfg.OPTIMIZATION.WEIGHT_DECAY: 0.01
+2024-06-01 17:53:55,077   INFO  cfg.OPTIMIZATION.MOMENTUM: 0.9
+2024-06-01 17:53:55,077   INFO  cfg.OPTIMIZATION.MOMS: [0.95, 0.85]
+2024-06-01 17:53:55,077   INFO  cfg.OPTIMIZATION.PCT_START: 0.4
+2024-06-01 17:53:55,077   INFO  cfg.OPTIMIZATION.DIV_FACTOR: 10
+2024-06-01 17:53:55,077   INFO  cfg.OPTIMIZATION.DECAY_STEP_LIST: [35, 45]
+2024-06-01 17:53:55,077   INFO  cfg.OPTIMIZATION.LR_DECAY: 0.1
+2024-06-01 17:53:55,077   INFO  cfg.OPTIMIZATION.LR_CLIP: 1e-07
+2024-06-01 17:53:55,077   INFO  cfg.OPTIMIZATION.LR_WARMUP: False
+2024-06-01 17:53:55,077   INFO  cfg.OPTIMIZATION.WARMUP_EPOCH: 1
+2024-06-01 17:53:55,077   INFO  cfg.OPTIMIZATION.GRAD_NORM_CLIP: 10
+2024-06-01 17:53:55,077   INFO  cfg.TAG: pointpillar
+2024-06-01 17:53:55,077   INFO  cfg.EXP_GROUP_PATH: kitti_models
+2024-06-01 17:53:55,086   INFO  ----------- Create dataloader & network & optimizer -----------
+2024-06-01 17:53:55,109   INFO  Database filter by min points Car: 4997 => 4996
+2024-06-01 17:53:55,110   INFO  Loading Custom dataset.
+2024-06-01 17:53:55,135   INFO  Total samples for CUSTOM dataset: 4997
+2024-06-01 17:53:56,897   INFO  ----------- Model PointPillar created, param count: 4814804 -----------
+2024-06-01 17:53:56,897   INFO  PointPillar(
+  (vfe): PillarVFE(
+    (pfn_layers): ModuleList(
+      (0): PFNLayer(
+        (linear): Linear(in_features=9, out_features=64, bias=False)
+        (norm): BatchNorm1d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+      )
+    )
+  )
+  (backbone_3d): None
+  (map_to_bev_module): PointPillarScatter()
+  (pfe): None
+  (backbone_2d): BaseBEVBackbone(
+    (blocks): ModuleList(
+      (0): Sequential(
+        (0): ZeroPad2d((1, 1, 1, 1))
+        (1): Conv2d(64, 64, kernel_size=(3, 3), stride=(2, 2), bias=False)
+        (2): BatchNorm2d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (3): ReLU()
+        (4): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (5): BatchNorm2d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (6): ReLU()
+        (7): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (8): BatchNorm2d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (9): ReLU()
+        (10): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (11): BatchNorm2d(64, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (12): ReLU()
+      )
+      (1): Sequential(
+        (0): ZeroPad2d((1, 1, 1, 1))
+        (1): Conv2d(64, 128, kernel_size=(3, 3), stride=(2, 2), bias=False)
+        (2): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (3): ReLU()
+        (4): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (5): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (6): ReLU()
+        (7): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (8): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (9): ReLU()
+        (10): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (11): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (12): ReLU()
+        (13): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (14): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (15): ReLU()
+        (16): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (17): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (18): ReLU()
+      )
+      (2): Sequential(
+        (0): ZeroPad2d((1, 1, 1, 1))
+        (1): Conv2d(128, 256, kernel_size=(3, 3), stride=(2, 2), bias=False)
+        (2): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (3): ReLU()
+        (4): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (5): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (6): ReLU()
+        (7): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (8): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (9): ReLU()
+        (10): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (11): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (12): ReLU()
+        (13): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (14): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (15): ReLU()
+        (16): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+        (17): BatchNorm2d(256, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (18): ReLU()
+      )
+    )
+    (deblocks): ModuleList(
+      (0): Sequential(
+        (0): ConvTranspose2d(64, 128, kernel_size=(1, 1), stride=(1, 1), bias=False)
+        (1): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+      (1): Sequential(
+        (0): ConvTranspose2d(128, 128, kernel_size=(2, 2), stride=(2, 2), bias=False)
+        (1): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+      (2): Sequential(
+        (0): ConvTranspose2d(256, 128, kernel_size=(4, 4), stride=(4, 4), bias=False)
+        (1): BatchNorm2d(128, eps=0.001, momentum=0.01, affine=True, track_running_stats=True)
+        (2): ReLU()
+      )
+    )
+  )
+  (dense_head): AnchorHeadSingle(
+    (cls_loss_func): SigmoidFocalClassificationLoss()
+    (reg_loss_func): WeightedSmoothL1Loss()
+    (dir_loss_func): WeightedCrossEntropyLoss()
+    (conv_cls): Conv2d(384, 2, kernel_size=(1, 1), stride=(1, 1))
+    (conv_box): Conv2d(384, 14, kernel_size=(1, 1), stride=(1, 1))
+    (conv_dir_cls): Conv2d(384, 4, kernel_size=(1, 1), stride=(1, 1))
+  )
+  (point_head): None
+  (roi_head): None
+)
+2024-06-01 17:53:56,898   INFO  **********************Start training kitti_models/pointpillar(reconstructed_2205v001)**********************
+2024-06-01 17:53:59,570   INFO  Train:    1/80 (  1%) [   0/1250 (  0%)]  Loss: 5.767 (5.77)  LR: 3.000e-04  Time cost: 00:02/49:48 [00:02/66:24:53]  Acc_iter 1           Data time: 0.64(0.64)  Forward time: 1.75(1.75)  Batch time: 2.39(2.39)
+2024-06-01 17:54:16,249   INFO  Train:    1/80 (  1%) [  49/1250 (  4%)]  Loss: 1.082 (1.86)  LR: 3.000e-04  Time cost: 00:19/07:38 [00:19/10:35:20]  Acc_iter 50          Data time: 0.00(0.02)  Forward time: 0.33(0.37)  Batch time: 0.34(0.38)
+2024-06-01 17:54:33,513   INFO  Train:    1/80 (  1%) [  99/1250 (  8%)]  Loss: 0.6775 (1.41)  LR: 3.000e-04  Time cost: 00:36/06:58 [00:36/10:04:57]  Acc_iter 100         Data time: 0.01(0.01)  Forward time: 0.40(0.35)  Batch time: 0.41(0.36)
+2024-06-01 17:54:50,839   INFO  Train:    1/80 (  1%) [ 149/1250 ( 12%)]  Loss: 1.127 (1.18)  LR: 3.001e-04  Time cost: 00:53/06:33 [00:53/9:55:19]  Acc_iter 150         Data time: 0.00(0.01)  Forward time: 0.34(0.35)  Batch time: 0.34(0.36)
+2024-06-01 17:54:51,084   INFO  indy-gpu                 Sat Jun  1 17:54:51 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 55°C, 100 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 17:55:08,342   INFO  Train:    1/80 (  1%) [ 199/1250 ( 16%)]  Loss: 0.3110 (1.05)  LR: 3.002e-04  Time cost: 01:11/06:13 [01:11/9:51:50]  Acc_iter 200         Data time: 0.00(0.01)  Forward time: 0.37(0.35)  Batch time: 0.37(0.36)
+2024-06-01 17:55:25,336   INFO  Train:    1/80 (  1%) [ 249/1250 ( 20%)]  Loss: 0.4373 (0.945)  LR: 3.003e-04  Time cost: 01:28/05:52 [01:28/9:46:14]  Acc_iter 250         Data time: 0.00(0.01)  Forward time: 0.33(0.35)  Batch time: 0.33(0.35)
+2024-06-01 17:55:42,346   INFO  Train:    1/80 (  1%) [ 299/1250 ( 24%)]  Loss: 1.111 (0.877)  LR: 3.004e-04  Time cost: 01:45/05:33 [01:45/9:42:30]  Acc_iter 300         Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 17:55:42,589   INFO  indy-gpu                 Sat Jun  1 17:55:42 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 63°C,  55 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 17:55:59,682   INFO  Train:    1/80 (  1%) [ 349/1250 ( 28%)]  Loss: 0.3938 (0.815)  LR: 3.005e-04  Time cost: 02:02/05:15 [02:02/9:41:18]  Acc_iter 350         Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.35)
+2024-06-01 17:56:16,574   INFO  Train:    1/80 (  1%) [ 399/1250 ( 32%)]  Loss: 0.3776 (0.770)  LR: 3.007e-04  Time cost: 02:19/04:56 [02:19/9:38:29]  Acc_iter 400         Data time: 0.00(0.01)  Forward time: 0.35(0.34)  Batch time: 0.35(0.35)
+2024-06-01 17:56:33,751   INFO  Train:    1/80 (  1%) [ 449/1250 ( 36%)]  Loss: 0.4507 (0.729)  LR: 3.008e-04  Time cost: 02:36/04:38 [02:36/9:37:17]  Acc_iter 450         Data time: 0.00(0.01)  Forward time: 0.35(0.34)  Batch time: 0.35(0.35)
+2024-06-01 17:56:33,994   INFO  indy-gpu                 Sat Jun  1 17:56:33 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  96 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 17:56:51,044   INFO  Train:    1/80 (  1%) [ 499/1250 ( 40%)]  Loss: 0.5607 (0.699)  LR: 3.010e-04  Time cost: 02:53/04:21 [02:54/9:36:39]  Acc_iter 500         Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.35(0.35)
+2024-06-01 17:57:08,327   INFO  Train:    1/80 (  1%) [ 549/1250 ( 44%)]  Loss: 0.2567 (0.667)  LR: 3.013e-04  Time cost: 03:11/04:03 [03:11/9:36:03]  Acc_iter 550         Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 17:57:25,698   INFO  Train:    1/80 (  1%) [ 599/1250 ( 48%)]  Loss: 0.2432 (0.639)  LR: 3.015e-04  Time cost: 03:28/03:46 [03:28/9:35:44]  Acc_iter 600         Data time: 0.00(0.01)  Forward time: 0.35(0.34)  Batch time: 0.35(0.35)
+2024-06-01 17:57:25,939   INFO  indy-gpu                 Sat Jun  1 17:57:25 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  96 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 17:57:42,896   INFO  Train:    1/80 (  1%) [ 649/1250 ( 52%)]  Loss: 0.2834 (0.613)  LR: 3.018e-04  Time cost: 03:45/03:28 [03:45/9:35:00]  Acc_iter 650         Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 17:57:59,848   INFO  Train:    1/80 (  1%) [ 699/1250 ( 56%)]  Loss: 0.2522 (0.590)  LR: 3.020e-04  Time cost: 04:02/03:11 [04:02/9:33:44]  Acc_iter 700         Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 17:58:16,639   INFO  Train:    1/80 (  1%) [ 749/1250 ( 60%)]  Loss: 0.2131 (0.570)  LR: 3.023e-04  Time cost: 04:19/02:53 [04:19/9:32:15]  Acc_iter 750         Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 17:58:16,882   INFO  indy-gpu                 Sat Jun  1 17:58:16 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  42 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 17:58:33,685   INFO  Train:    1/80 (  1%) [ 799/1250 ( 64%)]  Loss: 0.3368 (0.553)  LR: 3.027e-04  Time cost: 04:36/02:35 [04:36/9:31:26]  Acc_iter 800         Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 17:58:50,519   INFO  Train:    1/80 (  1%) [ 849/1250 ( 68%)]  Loss: 0.3817 (0.536)  LR: 3.030e-04  Time cost: 04:53/02:18 [04:53/9:30:17]  Acc_iter 850         Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 17:58:57,323   INFO  Save latest model to /home/ubuntu/omar/OpenPCDet/output/kitti_models/pointpillar/reconstructed_2205v001/ckpt/latest_model
+2024-06-01 17:59:07,661   INFO  Train:    1/80 (  1%) [ 899/1250 ( 72%)]  Loss: 0.2046 (0.522)  LR: 3.034e-04  Time cost: 05:10/02:01 [05:10/9:29:47]  Acc_iter 900         Data time: 0.00(0.00)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 17:59:07,904   INFO  indy-gpu                 Sat Jun  1 17:59:07 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  99 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 17:59:24,806   INFO  Train:    1/80 (  1%) [ 949/1250 ( 76%)]  Loss: 0.1957 (0.509)  LR: 3.037e-04  Time cost: 05:27/01:43 [05:27/9:29:19]  Acc_iter 950         Data time: 0.00(0.01)  Forward time: 0.44(0.34)  Batch time: 0.44(0.34)
+2024-06-01 17:59:41,670   INFO  Train:    1/80 (  1%) [ 999/1250 ( 80%)]  Loss: 0.2244 (0.497)  LR: 3.042e-04  Time cost: 05:44/01:26 [05:44/9:28:24]  Acc_iter 1000        Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 17:59:58,469   INFO  Train:    1/80 (  1%) [1049/1250 ( 84%)]  Loss: 0.2980 (0.486)  LR: 3.046e-04  Time cost: 06:01/01:09 [06:01/9:27:27]  Acc_iter 1050        Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 17:59:58,711   INFO  indy-gpu                 Sat Jun  1 17:59:58 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 69°C,  40 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:00:15,647   INFO  Train:    1/80 (  1%) [1099/1250 ( 88%)]  Loss: 0.1555 (0.475)  LR: 3.050e-04  Time cost: 06:18/00:51 [06:18/9:27:08]  Acc_iter 1100        Data time: 0.00(0.00)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:00:32,307   INFO  Train:    1/80 (  1%) [1149/1250 ( 92%)]  Loss: 0.2215 (0.464)  LR: 3.055e-04  Time cost: 06:35/00:34 [06:35/9:26:04]  Acc_iter 1150        Data time: 0.00(0.00)  Forward time: 0.35(0.34)  Batch time: 0.35(0.34)
+2024-06-01 18:00:48,981   INFO  Train:    1/80 (  1%) [1199/1250 ( 96%)]  Loss: 0.2139 (0.454)  LR: 3.060e-04  Time cost: 06:51/00:17 [06:52/9:25:05]  Acc_iter 1200        Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:00:49,228   INFO  indy-gpu                 Sat Jun  1 18:00:49 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  76 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:01:06,048   INFO  Train:    1/80 (  1%) [1249/1250 (100%)]  Loss: 0.2078 (0.446)  LR: 3.065e-04  Time cost: 07:08/00:00 [07:09/9:24:40]  Acc_iter 1250        Data time: 0.00(0.00)  Forward time: 0.10(0.34)  Batch time: 0.11(0.34)
+2024-06-01 18:01:07,401   INFO  Train:    2/80 (  2%) [   0/1250 (  0%)]  Loss: 0.2601 (0.260)  LR: 3.065e-04  Time cost: 00:00/20:07 [07:10/26:29:15]  Acc_iter 1251        Data time: 0.59(0.59)  Forward time: 0.38(0.38)  Batch time: 0.97(0.97)
+2024-06-01 18:01:24,386   INFO  Train:    2/80 (  2%) [  49/1250 (  4%)]  Loss: 0.2365 (0.219)  LR: 3.070e-04  Time cost: 00:17/07:11 [07:27/9:50:34]  Acc_iter 1300        Data time: 0.00(0.01)  Forward time: 0.35(0.34)  Batch time: 0.35(0.36)
+2024-06-01 18:01:42,028   INFO  Train:    2/80 (  2%) [  99/1250 (  8%)]  Loss: 0.2289 (0.217)  LR: 3.076e-04  Time cost: 00:35/06:49 [07:45/9:45:12]  Acc_iter 1350        Data time: 0.00(0.01)  Forward time: 0.35(0.35)  Batch time: 0.35(0.36)
+2024-06-01 18:01:42,272   INFO  indy-gpu                 Sat Jun  1 18:01:42 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 69°C,  99 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:01:59,638   INFO  Train:    2/80 (  2%) [ 149/1250 ( 12%)]  Loss: 0.1276 (0.214)  LR: 3.081e-04  Time cost: 00:53/06:30 [08:02/9:42:51]  Acc_iter 1400        Data time: 0.00(0.01)  Forward time: 0.33(0.35)  Batch time: 0.33(0.35)
+2024-06-01 18:02:16,579   INFO  Train:    2/80 (  2%) [ 199/1250 ( 16%)]  Loss: 0.2195 (0.211)  LR: 3.087e-04  Time cost: 01:10/06:08 [08:19/9:36:03]  Acc_iter 1450        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.35)
+2024-06-01 18:02:33,402   INFO  Train:    2/80 (  2%) [ 249/1250 ( 20%)]  Loss: 0.3849 (0.214)  LR: 3.093e-04  Time cost: 01:26/05:48 [08:36/9:31:05]  Acc_iter 1500        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 18:02:33,642   INFO  indy-gpu                 Sat Jun  1 18:02:33 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  37 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:02:50,611   INFO  Train:    2/80 (  2%) [ 299/1250 ( 24%)]  Loss: 0.1059 (0.211)  LR: 3.100e-04  Time cost: 01:44/05:30 [08:53/9:29:47]  Acc_iter 1550        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 18:03:07,703   INFO  Train:    2/80 (  2%) [ 349/1250 ( 28%)]  Loss: 0.2056 (0.211)  LR: 3.106e-04  Time cost: 02:01/05:12 [09:10/9:28:13]  Acc_iter 1600        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 18:03:24,488   INFO  Train:    2/80 (  2%) [ 399/1250 ( 32%)]  Loss: 0.2977 (0.209)  LR: 3.113e-04  Time cost: 02:18/04:53 [09:27/9:25:44]  Acc_iter 1650        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 18:03:24,729   INFO  indy-gpu                 Sat Jun  1 18:03:24 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C, 100 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:03:41,726   INFO  Train:    2/80 (  2%) [ 449/1250 ( 36%)]  Loss: 0.1958 (0.208)  LR: 3.120e-04  Time cost: 02:35/04:36 [09:44/9:25:22]  Acc_iter 1700        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 18:03:58,702   INFO  Train:    2/80 (  2%) [ 499/1250 ( 40%)]  Loss: 0.2077 (0.207)  LR: 3.127e-04  Time cost: 02:52/04:18 [10:01/9:24:10]  Acc_iter 1750        Data time: 0.00(0.01)  Forward time: 0.36(0.34)  Batch time: 0.36(0.34)
+2024-06-01 18:04:15,383   INFO  Train:    2/80 (  2%) [ 549/1250 ( 44%)]  Loss: 0.1271 (0.205)  LR: 3.135e-04  Time cost: 03:08/04:00 [10:18/9:22:16]  Acc_iter 1800        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:04:15,630   INFO  indy-gpu                 Sat Jun  1 18:04:15 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 69°C,  84 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:04:32,650   INFO  Train:    2/80 (  2%) [ 599/1250 ( 48%)]  Loss: 0.1605 (0.201)  LR: 3.142e-04  Time cost: 03:26/03:43 [10:35/9:22:13]  Acc_iter 1850        Data time: 0.00(0.01)  Forward time: 0.39(0.34)  Batch time: 0.39(0.34)
+2024-06-01 18:04:49,568   INFO  Train:    2/80 (  2%) [ 649/1250 ( 52%)]  Loss: 0.1942 (0.199)  LR: 3.150e-04  Time cost: 03:43/03:26 [10:52/9:21:16]  Acc_iter 1900        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:05:06,252   INFO  Train:    2/80 (  2%) [ 699/1250 ( 56%)]  Loss: 0.1348 (0.198)  LR: 3.158e-04  Time cost: 03:59/03:08 [11:09/9:19:51]  Acc_iter 1950        Data time: 0.00(0.00)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:05:06,499   INFO  indy-gpu                 Sat Jun  1 18:05:06 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  32 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:05:23,297   INFO  Train:    2/80 (  2%) [ 749/1250 ( 60%)]  Loss: 0.1422 (0.197)  LR: 3.166e-04  Time cost: 04:16/02:51 [11:26/9:19:23]  Acc_iter 2000        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:05:39,910   INFO  Train:    2/80 (  2%) [ 799/1250 ( 64%)]  Loss: 0.2394 (0.196)  LR: 3.174e-04  Time cost: 04:33/02:34 [11:43/9:18:03]  Acc_iter 2050        Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:05:56,764   INFO  Train:    2/80 (  2%) [ 849/1250 ( 68%)]  Loss: 0.1376 (0.193)  LR: 3.183e-04  Time cost: 04:50/02:16 [11:59/9:17:19]  Acc_iter 2100        Data time: 0.00(0.00)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:05:57,007   INFO  indy-gpu                 Sat Jun  1 18:05:56 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  96 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:06:06,910   INFO  Save latest model to /home/ubuntu/omar/OpenPCDet/output/kitti_models/pointpillar/reconstructed_2205v001/ckpt/latest_model
+2024-06-01 18:06:13,887   INFO  Train:    2/80 (  2%) [ 899/1250 ( 72%)]  Loss: 0.1375 (0.192)  LR: 3.192e-04  Time cost: 05:07/01:59 [12:16/9:17:07]  Acc_iter 2150        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:06:30,466   INFO  Train:    2/80 (  2%) [ 949/1250 ( 76%)]  Loss: 0.2075 (0.190)  LR: 3.201e-04  Time cost: 05:24/01:42 [12:33/9:15:58]  Acc_iter 2200        Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:06:47,382   INFO  Train:    2/80 (  2%) [ 999/1250 ( 80%)]  Loss: 0.1491 (0.188)  LR: 3.210e-04  Time cost: 05:40/01:25 [12:50/9:15:27]  Acc_iter 2250        Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:06:47,634   INFO  indy-gpu                 Sat Jun  1 18:06:47 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  32 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:07:04,522   INFO  Train:    2/80 (  2%) [1049/1250 ( 84%)]  Loss: 0.2504 (0.188)  LR: 3.219e-04  Time cost: 05:58/01:08 [13:07/9:15:19]  Acc_iter 2300        Data time: 0.00(0.00)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:07:21,675   INFO  Train:    2/80 (  2%) [1099/1250 ( 88%)]  Loss: 0.08336 (0.187)  LR: 3.229e-04  Time cost: 06:15/00:51 [13:24/9:15:11]  Acc_iter 2350        Data time: 0.00(0.00)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:07:38,726   INFO  Train:    2/80 (  2%) [1149/1250 ( 92%)]  Loss: 0.2721 (0.185)  LR: 3.239e-04  Time cost: 06:32/00:34 [13:41/9:14:53]  Acc_iter 2400        Data time: 0.00(0.00)  Forward time: 0.37(0.34)  Batch time: 0.37(0.34)
+2024-06-01 18:07:38,972   INFO  indy-gpu                 Sat Jun  1 18:07:38 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  70 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:07:55,831   INFO  Train:    2/80 (  2%) [1199/1250 ( 96%)]  Loss: 0.1054 (0.184)  LR: 3.249e-04  Time cost: 06:49/00:17 [13:58/9:14:40]  Acc_iter 2450        Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:08:12,503   INFO  Train:    2/80 (  2%) [1249/1250 (100%)]  Loss: 0.1328 (0.183)  LR: 3.259e-04  Time cost: 07:06/00:00 [14:15/9:13:53]  Acc_iter 2500        Data time: 0.00(0.00)  Forward time: 0.10(0.34)  Batch time: 0.10(0.34)
+2024-06-01 18:08:13,752   INFO  Train:    3/80 (  4%) [   0/1250 (  0%)]  Loss: 0.1493 (0.149)  LR: 3.259e-04  Time cost: 00:00/16:36 [14:16/21:35:13]  Acc_iter 2501        Data time: 0.38(0.38)  Forward time: 0.41(0.41)  Batch time: 0.80(0.80)
+2024-06-01 18:08:30,307   INFO  Train:    3/80 (  4%) [  49/1250 (  4%)]  Loss: 0.1253 (0.155)  LR: 3.270e-04  Time cost: 00:17/06:56 [14:33/9:23:39]  Acc_iter 2550        Data time: 0.01(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.35)
+2024-06-01 18:08:30,553   INFO  indy-gpu                 Sat Jun  1 18:08:30 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  48 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:08:47,611   INFO  Train:    3/80 (  4%) [  99/1250 (  8%)]  Loss: 0.2669 (0.157)  LR: 3.280e-04  Time cost: 00:34/06:38 [14:50/9:22:35]  Acc_iter 2600        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 18:09:04,463   INFO  Train:    3/80 (  4%) [ 149/1250 ( 12%)]  Loss: 0.1148 (0.150)  LR: 3.291e-04  Time cost: 00:51/06:18 [15:07/9:17:09]  Acc_iter 2650        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:09:21,481   INFO  Train:    3/80 (  4%) [ 199/1250 ( 16%)]  Loss: 0.1723 (0.148)  LR: 3.302e-04  Time cost: 01:08/06:00 [15:24/9:15:38]  Acc_iter 2700        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:09:21,725   INFO  indy-gpu                 Sat Jun  1 18:09:21 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  95 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:09:38,639   INFO  Train:    3/80 (  4%) [ 249/1250 ( 20%)]  Loss: 0.1679 (0.147)  LR: 3.313e-04  Time cost: 01:25/05:43 [15:41/9:15:31]  Acc_iter 2750        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:09:55,876   INFO  Train:    3/80 (  4%) [ 299/1250 ( 24%)]  Loss: 0.1636 (0.147)  LR: 3.325e-04  Time cost: 01:42/05:26 [15:58/9:15:46]  Acc_iter 2800        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:10:13,082   INFO  Train:    3/80 (  4%) [ 349/1250 ( 28%)]  Loss: 0.1025 (0.148)  LR: 3.337e-04  Time cost: 02:00/05:09 [16:16/9:15:44]  Acc_iter 2850        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:10:13,324   INFO  indy-gpu                 Sat Jun  1 18:10:13 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  95 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:10:30,471   INFO  Train:    3/80 (  4%) [ 399/1250 ( 32%)]  Loss: 0.08450 (0.146)  LR: 3.348e-04  Time cost: 02:17/04:52 [16:33/9:16:22]  Acc_iter 2900        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:10:47,345   INFO  Train:    3/80 (  4%) [ 449/1250 ( 36%)]  Loss: 0.1006 (0.145)  LR: 3.360e-04  Time cost: 02:34/04:34 [16:50/9:14:57]  Acc_iter 2950        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:11:04,464   INFO  Train:    3/80 (  4%) [ 499/1250 ( 40%)]  Loss: 0.1116 (0.144)  LR: 3.373e-04  Time cost: 02:51/04:17 [17:07/9:14:33]  Acc_iter 3000        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:11:04,709   INFO  indy-gpu                 Sat Jun  1 18:11:04 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  88 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:11:22,003   INFO  Train:    3/80 (  4%) [ 549/1250 ( 44%)]  Loss: 0.08738 (0.143)  LR: 3.385e-04  Time cost: 03:09/04:00 [17:25/9:15:24]  Acc_iter 3050        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:11:39,084   INFO  Train:    3/80 (  4%) [ 599/1250 ( 48%)]  Loss: 0.1724 (0.142)  LR: 3.398e-04  Time cost: 03:26/03:43 [17:42/9:14:50]  Acc_iter 3100        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:11:55,891   INFO  Train:    3/80 (  4%) [ 649/1250 ( 52%)]  Loss: 0.09472 (0.143)  LR: 3.411e-04  Time cost: 03:42/03:26 [17:58/9:13:37]  Acc_iter 3150        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:11:56,137   INFO  indy-gpu                 Sat Jun  1 18:11:56 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  71 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:12:13,221   INFO  Train:    3/80 (  4%) [ 699/1250 ( 56%)]  Loss: 0.1520 (0.142)  LR: 3.424e-04  Time cost: 04:00/03:09 [18:16/9:13:45]  Acc_iter 3200        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:12:30,142   INFO  Train:    3/80 (  4%) [ 749/1250 ( 60%)]  Loss: 0.07979 (0.143)  LR: 3.437e-04  Time cost: 04:17/02:51 [18:33/9:12:57]  Acc_iter 3250        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:12:47,134   INFO  Train:    3/80 (  4%) [ 799/1250 ( 64%)]  Loss: 0.2032 (0.143)  LR: 3.451e-04  Time cost: 04:34/02:34 [18:50/9:12:21]  Acc_iter 3300        Data time: 0.00(0.00)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:12:47,376   INFO  indy-gpu                 Sat Jun  1 18:12:47 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  54 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:13:04,184   INFO  Train:    3/80 (  4%) [ 849/1250 ( 68%)]  Loss: 0.1011 (0.142)  LR: 3.464e-04  Time cost: 04:51/02:17 [19:07/9:11:54]  Acc_iter 3350        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:13:13,419   INFO  Save latest model to /home/ubuntu/omar/OpenPCDet/output/kitti_models/pointpillar/reconstructed_2205v001/ckpt/latest_model
+2024-06-01 18:13:21,440   INFO  Train:    3/80 (  4%) [ 899/1250 ( 72%)]  Loss: 0.1463 (0.142)  LR: 3.478e-04  Time cost: 05:08/02:00 [19:24/9:11:51]  Acc_iter 3400        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:13:38,315   INFO  Train:    3/80 (  4%) [ 949/1250 ( 76%)]  Loss: 0.1209 (0.142)  LR: 3.492e-04  Time cost: 05:25/01:43 [19:41/9:11:07]  Acc_iter 3450        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:13:38,557   INFO  indy-gpu                 Sat Jun  1 18:13:38 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  35 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:13:55,325   INFO  Train:    3/80 (  4%) [ 999/1250 ( 80%)]  Loss: 0.1538 (0.141)  LR: 3.507e-04  Time cost: 05:42/01:25 [19:58/9:10:39]  Acc_iter 3500        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:14:12,253   INFO  Train:    3/80 (  4%) [1049/1250 ( 84%)]  Loss: 0.1441 (0.140)  LR: 3.521e-04  Time cost: 05:59/01:08 [20:15/9:10:04]  Acc_iter 3550        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:14:28,946   INFO  Train:    3/80 (  4%) [1099/1250 ( 88%)]  Loss: 0.1240 (0.139)  LR: 3.536e-04  Time cost: 06:15/00:51 [20:32/9:09:10]  Acc_iter 3600        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:14:29,190   INFO  indy-gpu                 Sat Jun  1 18:14:29 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  44 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:14:45,948   INFO  Train:    3/80 (  4%) [1149/1250 ( 92%)]  Loss: 0.1026 (0.139)  LR: 3.551e-04  Time cost: 06:32/00:34 [20:49/9:08:46]  Acc_iter 3650        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:15:02,575   INFO  Train:    3/80 (  4%) [1199/1250 ( 96%)]  Loss: 0.1171 (0.138)  LR: 3.566e-04  Time cost: 06:49/00:17 [21:05/9:07:52]  Acc_iter 3700        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:15:19,213   INFO  Train:    3/80 (  4%) [1249/1250 (100%)]  Loss: 0.07621 (0.138)  LR: 3.581e-04  Time cost: 07:06/00:00 [21:22/9:07:02]  Acc_iter 3750        Data time: 0.00(0.00)  Forward time: 0.10(0.34)  Batch time: 0.10(0.34)
+2024-06-01 18:15:19,456   INFO  indy-gpu                 Sat Jun  1 18:15:19 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  90 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:15:20,774   INFO  Train:    4/80 (  5%) [   0/1250 (  0%)]  Loss: 0.1070 (0.107)  LR: 3.581e-04  Time cost: 00:00/18:33 [21:23/23:48:56]  Acc_iter 3751        Data time: 0.44(0.44)  Forward time: 0.45(0.45)  Batch time: 0.89(0.89)
+2024-06-01 18:15:37,589   INFO  Train:    4/80 (  5%) [  49/1250 (  4%)]  Loss: 0.2396 (0.130)  LR: 3.596e-04  Time cost: 00:17/07:05 [21:40/9:27:47]  Acc_iter 3800        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.35)
+2024-06-01 18:15:54,689   INFO  Train:    4/80 (  5%) [  99/1250 (  8%)]  Loss: 0.05939 (0.122)  LR: 3.612e-04  Time cost: 00:34/06:40 [21:57/9:17:46]  Acc_iter 3850        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.35)
+2024-06-01 18:16:12,609   INFO  Train:    4/80 (  5%) [ 149/1250 ( 12%)]  Loss: 0.1230 (0.120)  LR: 3.628e-04  Time cost: 00:52/06:27 [22:15/9:23:00]  Acc_iter 3900        Data time: 0.01(0.01)  Forward time: 0.40(0.35)  Batch time: 0.41(0.35)
+2024-06-01 18:16:12,855   INFO  indy-gpu                 Sat Jun  1 18:16:12 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  94 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:16:30,026   INFO  Train:    4/80 (  5%) [ 199/1250 ( 16%)]  Loss: 0.09435 (0.117)  LR: 3.644e-04  Time cost: 01:10/06:08 [22:33/9:21:26]  Acc_iter 3950        Data time: 0.00(0.01)  Forward time: 0.35(0.34)  Batch time: 0.36(0.35)
+2024-06-01 18:16:47,160   INFO  Train:    4/80 (  5%) [ 249/1250 ( 20%)]  Loss: 0.08435 (0.116)  LR: 3.660e-04  Time cost: 01:27/05:49 [22:50/9:18:34]  Acc_iter 4000        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.35(0.35)
+2024-06-01 18:17:04,108   INFO  Train:    4/80 (  5%) [ 299/1250 ( 24%)]  Loss: 0.1144 (0.117)  LR: 3.677e-04  Time cost: 01:44/05:30 [23:07/9:15:35]  Acc_iter 4050        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.35)
+2024-06-01 18:17:04,348   INFO  indy-gpu                 Sat Jun  1 18:17:04 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  82 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:17:21,240   INFO  Train:    4/80 (  5%) [ 349/1250 ( 28%)]  Loss: 0.06601 (0.119)  LR: 3.694e-04  Time cost: 02:01/05:12 [23:24/9:14:12]  Acc_iter 4100        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.35)
+2024-06-01 18:17:38,563   INFO  Train:    4/80 (  5%) [ 399/1250 ( 32%)]  Loss: 0.1491 (0.119)  LR: 3.710e-04  Time cost: 02:18/04:55 [23:41/9:13:51]  Acc_iter 4150        Data time: 0.00(0.01)  Forward time: 0.32(0.34)  Batch time: 0.32(0.35)
+2024-06-01 18:17:55,491   INFO  Train:    4/80 (  5%) [ 449/1250 ( 36%)]  Loss: 0.07600 (0.119)  LR: 3.728e-04  Time cost: 02:35/04:36 [23:58/9:12:07]  Acc_iter 4200        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.35)
+2024-06-01 18:17:55,737   INFO  indy-gpu                 Sat Jun  1 18:17:55 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  36 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:18:12,535   INFO  Train:    4/80 (  5%) [ 499/1250 ( 40%)]  Loss: 0.09615 (0.118)  LR: 3.745e-04  Time cost: 02:52/04:19 [24:15/9:11:03]  Acc_iter 4250        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.35)
+2024-06-01 18:18:29,461   INFO  Train:    4/80 (  5%) [ 549/1250 ( 44%)]  Loss: 0.09410 (0.118)  LR: 3.762e-04  Time cost: 03:09/04:01 [24:32/9:09:46]  Acc_iter 4300        Data time: 0.01(0.01)  Forward time: 0.38(0.34)  Batch time: 0.38(0.34)
+2024-06-01 18:18:46,309   INFO  Train:    4/80 (  5%) [ 599/1250 ( 48%)]  Loss: 0.1361 (0.117)  LR: 3.780e-04  Time cost: 03:26/03:43 [24:49/9:08:28]  Acc_iter 4350        Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:18:46,551   INFO  indy-gpu                 Sat Jun  1 18:18:46 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  55 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:19:03,630   INFO  Train:    4/80 (  5%) [ 649/1250 ( 52%)]  Loss: 0.09351 (0.118)  LR: 3.798e-04  Time cost: 03:43/03:26 [25:06/9:08:28]  Acc_iter 4400        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:19:20,618   INFO  Train:    4/80 (  5%) [ 699/1250 ( 56%)]  Loss: 0.1423 (0.117)  LR: 3.816e-04  Time cost: 04:00/03:09 [25:23/9:07:40]  Acc_iter 4450        Data time: 0.00(0.00)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:19:37,523   INFO  Train:    4/80 (  5%) [ 749/1250 ( 60%)]  Loss: 0.1026 (0.117)  LR: 3.834e-04  Time cost: 04:17/02:52 [25:40/9:06:46]  Acc_iter 4500        Data time: 0.00(0.00)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:19:37,772   INFO  indy-gpu                 Sat Jun  1 18:19:37 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C, 100 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:19:54,931   INFO  Train:    4/80 (  5%) [ 799/1250 ( 64%)]  Loss: 0.09852 (0.117)  LR: 3.852e-04  Time cost: 04:35/02:35 [25:58/9:06:56]  Acc_iter 4550        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:20:12,251   INFO  Train:    4/80 (  5%) [ 849/1250 ( 68%)]  Loss: 0.07144 (0.116)  LR: 3.871e-04  Time cost: 04:52/02:17 [26:15/9:06:54]  Acc_iter 4600        Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:20:20,416   INFO  Save latest model to /home/ubuntu/omar/OpenPCDet/output/kitti_models/pointpillar/reconstructed_2205v001/ckpt/latest_model
+2024-06-01 18:20:29,427   INFO  Train:    4/80 (  5%) [ 899/1250 ( 72%)]  Loss: 0.1486 (0.116)  LR: 3.890e-04  Time cost: 05:09/02:00 [26:32/9:06:34]  Acc_iter 4650        Data time: 0.00(0.01)  Forward time: 0.35(0.34)  Batch time: 0.35(0.34)
+2024-06-01 18:20:29,672   INFO  indy-gpu                 Sat Jun  1 18:20:29 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 69°C,  92 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:20:46,536   INFO  Train:    4/80 (  5%) [ 949/1250 ( 76%)]  Loss: 0.1170 (0.117)  LR: 3.909e-04  Time cost: 05:26/01:43 [26:49/9:06:08]  Acc_iter 4700        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:21:03,480   INFO  Train:    4/80 (  5%) [ 999/1250 ( 80%)]  Loss: 0.06717 (0.116)  LR: 3.928e-04  Time cost: 05:43/01:26 [27:06/9:05:27]  Acc_iter 4750        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.35(0.34)
+2024-06-01 18:21:20,545   INFO  Train:    4/80 (  5%) [1049/1250 ( 84%)]  Loss: 0.1171 (0.115)  LR: 3.948e-04  Time cost: 06:00/01:09 [27:23/9:05:00]  Acc_iter 4800        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:21:20,787   INFO  indy-gpu                 Sat Jun  1 18:21:20 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  34 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:21:37,746   INFO  Train:    4/80 (  5%) [1099/1250 ( 88%)]  Loss: 0.1218 (0.115)  LR: 3.967e-04  Time cost: 06:17/00:51 [27:40/9:04:45]  Acc_iter 4850        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:21:54,770   INFO  Train:    4/80 (  5%) [1149/1250 ( 92%)]  Loss: 0.1437 (0.114)  LR: 3.987e-04  Time cost: 06:34/00:34 [27:57/9:04:15]  Acc_iter 4900        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:22:11,909   INFO  Train:    4/80 (  5%) [1199/1250 ( 96%)]  Loss: 0.08323 (0.114)  LR: 4.007e-04  Time cost: 06:52/00:17 [28:15/9:03:56]  Acc_iter 4950        Data time: 0.00(0.00)  Forward time: 0.36(0.34)  Batch time: 0.37(0.34)
+2024-06-01 18:22:12,154   INFO  indy-gpu                 Sat Jun  1 18:22:12 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 69°C,  79 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:22:28,968   INFO  Train:    4/80 (  5%) [1249/1250 (100%)]  Loss: 0.1021 (0.114)  LR: 4.027e-04  Time cost: 07:09/00:00 [28:32/9:03:30]  Acc_iter 5000        Data time: 0.00(0.01)  Forward time: 0.10(0.34)  Batch time: 0.10(0.34)
+2024-06-01 18:22:30,330   INFO  Train:    5/80 (  6%) [   0/1250 (  0%)]  Loss: 0.06887 (0.0689)  LR: 4.028e-04  Time cost: 00:00/19:06 [28:33/24:12:22]  Acc_iter 5001        Data time: 0.47(0.47)  Forward time: 0.44(0.44)  Batch time: 0.92(0.92)
+2024-06-01 18:22:47,188   INFO  Train:    5/80 (  6%) [  49/1250 (  4%)]  Loss: 0.1062 (0.0976)  LR: 4.048e-04  Time cost: 00:17/07:06 [28:50/9:22:36]  Acc_iter 5050        Data time: 0.01(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.36)
+2024-06-01 18:23:04,272   INFO  Train:    5/80 (  6%) [  99/1250 (  8%)]  Loss: 0.06511 (0.0965)  LR: 4.068e-04  Time cost: 00:34/06:41 [29:07/9:11:21]  Acc_iter 5100        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 18:23:04,523   INFO  indy-gpu                 Sat Jun  1 18:23:04 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  99 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:23:21,268   INFO  Train:    5/80 (  6%) [ 149/1250 ( 12%)]  Loss: 0.2643 (0.102)  LR: 4.089e-04  Time cost: 00:51/06:20 [29:24/9:06:29]  Acc_iter 5150        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 18:23:38,409   INFO  Train:    5/80 (  6%) [ 199/1250 ( 16%)]  Loss: 0.1371 (0.107)  LR: 4.110e-04  Time cost: 01:08/06:02 [29:41/9:05:04]  Acc_iter 5200        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:23:55,210   INFO  Train:    5/80 (  6%) [ 249/1250 ( 20%)]  Loss: 0.06518 (0.112)  LR: 4.131e-04  Time cost: 01:25/05:43 [29:58/9:01:57]  Acc_iter 5250        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:23:55,452   INFO  indy-gpu                 Sat Jun  1 18:23:55 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  37 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:24:12,290   INFO  Train:    5/80 (  6%) [ 299/1250 ( 24%)]  Loss: 0.1608 (0.111)  LR: 4.152e-04  Time cost: 01:42/05:26 [30:15/9:01:15]  Acc_iter 5300        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:24:29,320   INFO  Train:    5/80 (  6%) [ 349/1250 ( 28%)]  Loss: 0.1032 (0.110)  LR: 4.174e-04  Time cost: 01:59/05:08 [30:32/9:00:26]  Acc_iter 5350        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:24:46,228   INFO  Train:    5/80 (  6%) [ 399/1250 ( 32%)]  Loss: 0.1203 (0.110)  LR: 4.196e-04  Time cost: 02:16/04:51 [30:49/8:59:17]  Acc_iter 5400        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:24:46,470   INFO  indy-gpu                 Sat Jun  1 18:24:46 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C, 100 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:25:03,372   INFO  Train:    5/80 (  6%) [ 449/1250 ( 36%)]  Loss: 0.1006 (0.109)  LR: 4.218e-04  Time cost: 02:33/04:34 [31:06/8:59:08]  Acc_iter 5450        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:25:20,324   INFO  Train:    5/80 (  6%) [ 499/1250 ( 40%)]  Loss: 0.1867 (0.107)  LR: 4.240e-04  Time cost: 02:50/04:16 [31:23/8:58:22]  Acc_iter 5500        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:25:37,175   INFO  Train:    5/80 (  6%) [ 549/1250 ( 44%)]  Loss: 0.08236 (0.107)  LR: 4.262e-04  Time cost: 03:07/03:59 [31:40/8:57:24]  Acc_iter 5550        Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:25:37,419   INFO  indy-gpu                 Sat Jun  1 18:25:37 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C, 100 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:25:54,137   INFO  Train:    5/80 (  6%) [ 599/1250 ( 48%)]  Loss: 0.1669 (0.108)  LR: 4.284e-04  Time cost: 03:24/03:42 [31:57/8:56:50]  Acc_iter 5600        Data time: 0.00(0.01)  Forward time: 0.36(0.34)  Batch time: 0.37(0.34)
+2024-06-01 18:26:10,980   INFO  Train:    5/80 (  6%) [ 649/1250 ( 52%)]  Loss: 0.06896 (0.108)  LR: 4.307e-04  Time cost: 03:41/03:24 [32:14/8:56:01]  Acc_iter 5650        Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:26:27,737   INFO  Train:    5/80 (  6%) [ 699/1250 ( 56%)]  Loss: 0.08777 (0.108)  LR: 4.330e-04  Time cost: 03:58/03:07 [32:30/8:55:06]  Acc_iter 5700        Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:26:27,980   INFO  indy-gpu                 Sat Jun  1 18:26:27 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  80 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:26:44,994   INFO  Train:    5/80 (  6%) [ 749/1250 ( 60%)]  Loss: 0.2533 (0.107)  LR: 4.353e-04  Time cost: 04:15/02:50 [32:48/8:55:18]  Acc_iter 5750        Data time: 0.00(0.00)  Forward time: 0.41(0.34)  Batch time: 0.41(0.34)
+2024-06-01 18:27:02,014   INFO  Train:    5/80 (  6%) [ 799/1250 ( 64%)]  Loss: 0.09399 (0.107)  LR: 4.376e-04  Time cost: 04:32/02:33 [33:05/8:54:59]  Acc_iter 5800        Data time: 0.00(0.00)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:27:18,954   INFO  Train:    5/80 (  6%) [ 849/1250 ( 68%)]  Loss: 0.1058 (0.106)  LR: 4.400e-04  Time cost: 04:49/02:16 [33:22/8:54:31]  Acc_iter 5850        Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:27:19,198   INFO  indy-gpu                 Sat Jun  1 18:27:19 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  39 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:27:29,870   INFO  Save latest model to /home/ubuntu/omar/OpenPCDet/output/kitti_models/pointpillar/reconstructed_2205v001/ckpt/latest_model
+2024-06-01 18:27:36,174   INFO  Train:    5/80 (  6%) [ 899/1250 ( 72%)]  Loss: 0.1366 (0.106)  LR: 4.423e-04  Time cost: 05:06/01:59 [33:39/8:54:33]  Acc_iter 5900        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:27:52,982   INFO  Train:    5/80 (  6%) [ 949/1250 ( 76%)]  Loss: 0.1032 (0.106)  LR: 4.447e-04  Time cost: 05:23/01:42 [33:56/8:53:53]  Acc_iter 5950        Data time: 0.00(0.00)  Forward time: 0.39(0.34)  Batch time: 0.39(0.34)
+2024-06-01 18:28:09,648   INFO  Train:    5/80 (  6%) [ 999/1250 ( 80%)]  Loss: 0.07448 (0.105)  LR: 4.471e-04  Time cost: 05:40/01:25 [34:12/8:53:02]  Acc_iter 6000        Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:28:09,889   INFO  indy-gpu                 Sat Jun  1 18:28:09 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  41 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:28:26,517   INFO  Train:    5/80 (  6%) [1049/1250 ( 84%)]  Loss: 0.1527 (0.105)  LR: 4.495e-04  Time cost: 05:57/01:08 [34:29/8:52:32]  Acc_iter 6050        Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:28:43,752   INFO  Train:    5/80 (  6%) [1099/1250 ( 88%)]  Loss: 0.1126 (0.106)  LR: 4.519e-04  Time cost: 06:14/00:51 [34:46/8:52:35]  Acc_iter 6100        Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:29:00,347   INFO  Train:    5/80 (  6%) [1149/1250 ( 92%)]  Loss: 0.1105 (0.106)  LR: 4.544e-04  Time cost: 06:30/00:34 [35:03/8:51:44]  Acc_iter 6150        Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:29:00,591   INFO  indy-gpu                 Sat Jun  1 18:29:00 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  89 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:29:17,427   INFO  Train:    5/80 (  6%) [1199/1250 ( 96%)]  Loss: 0.03361 (0.105)  LR: 4.569e-04  Time cost: 06:48/00:17 [35:20/8:51:33]  Acc_iter 6200        Data time: 0.00(0.00)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:29:33,799   INFO  Train:    5/80 (  6%) [1249/1250 (100%)]  Loss: 0.05224 (0.105)  LR: 4.594e-04  Time cost: 07:04/00:00 [35:36/8:50:29]  Acc_iter 6250        Data time: 0.00(0.00)  Forward time: 0.10(0.33)  Batch time: 0.10(0.34)
+2024-06-01 18:29:35,134   INFO  Train:    6/80 (  8%) [   0/1250 (  0%)]  Loss: 0.07584 (0.0758)  LR: 4.594e-04  Time cost: 00:00/17:45 [35:38/22:11:28]  Acc_iter 6251        Data time: 0.40(0.40)  Forward time: 0.45(0.45)  Batch time: 0.85(0.85)
+2024-06-01 18:29:52,067   INFO  Train:    6/80 (  8%) [  49/1250 (  4%)]  Loss: 0.2119 (0.0954)  LR: 4.619e-04  Time cost: 00:17/07:07 [35:55/9:15:29]  Acc_iter 6300        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.36)
+2024-06-01 18:29:52,312   INFO  indy-gpu                 Sat Jun  1 18:29:52 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  44 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:30:09,818   INFO  Train:    6/80 (  8%) [  99/1250 (  8%)]  Loss: 0.08050 (0.0893)  LR: 4.644e-04  Time cost: 00:35/06:49 [36:12/9:14:39]  Acc_iter 6350        Data time: 0.01(0.01)  Forward time: 0.34(0.35)  Batch time: 0.34(0.36)
+2024-06-01 18:30:26,858   INFO  Train:    6/80 (  8%) [ 149/1250 ( 12%)]  Loss: 0.08810 (0.0861)  LR: 4.669e-04  Time cost: 00:52/06:25 [36:29/9:06:47]  Acc_iter 6400        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 18:30:44,027   INFO  Train:    6/80 (  8%) [ 199/1250 ( 16%)]  Loss: 0.08266 (0.0918)  LR: 4.695e-04  Time cost: 01:09/06:06 [36:47/9:03:43]  Acc_iter 6450        Data time: 0.00(0.01)  Forward time: 0.35(0.34)  Batch time: 0.35(0.35)
+2024-06-01 18:30:44,269   INFO  indy-gpu                 Sat Jun  1 18:30:44 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  49 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:31:01,415   INFO  Train:    6/80 (  8%) [ 249/1250 ( 20%)]  Loss: 0.08279 (0.0927)  LR: 4.721e-04  Time cost: 01:27/05:48 [37:04/9:03:08]  Acc_iter 6500        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 18:31:18,872   INFO  Train:    6/80 (  8%) [ 299/1250 ( 24%)]  Loss: 0.07845 (0.0940)  LR: 4.747e-04  Time cost: 01:44/05:31 [37:21/9:03:00]  Acc_iter 6550        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.35)
+2024-06-01 18:31:35,996   INFO  Train:    6/80 (  8%) [ 349/1250 ( 28%)]  Loss: 0.07097 (0.0924)  LR: 4.773e-04  Time cost: 02:01/05:13 [37:39/9:01:20]  Acc_iter 6600        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 18:31:36,241   INFO  indy-gpu                 Sat Jun  1 18:31:36 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 69°C, 100 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:31:53,198   INFO  Train:    6/80 (  8%) [ 399/1250 ( 32%)]  Loss: 0.09198 (0.0929)  LR: 4.799e-04  Time cost: 02:18/04:55 [37:56/9:00:19]  Acc_iter 6650        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 18:32:09,963   INFO  Train:    6/80 (  8%) [ 449/1250 ( 36%)]  Loss: 0.04572 (0.0939)  LR: 4.826e-04  Time cost: 02:35/04:37 [38:13/8:57:58]  Acc_iter 6700        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 18:32:26,961   INFO  Train:    6/80 (  8%) [ 499/1250 ( 40%)]  Loss: 0.06754 (0.0938)  LR: 4.853e-04  Time cost: 02:52/04:19 [38:30/8:56:45]  Acc_iter 6750        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 18:32:27,205   INFO  indy-gpu                 Sat Jun  1 18:32:27 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  98 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:32:43,969   INFO  Train:    6/80 (  8%) [ 549/1250 ( 44%)]  Loss: 0.08134 (0.0927)  LR: 4.879e-04  Time cost: 03:09/04:01 [38:47/8:55:43]  Acc_iter 6800        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:33:00,983   INFO  Train:    6/80 (  8%) [ 599/1250 ( 48%)]  Loss: 0.04677 (0.0921)  LR: 4.907e-04  Time cost: 03:26/03:44 [39:04/8:54:50]  Acc_iter 6850        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:33:18,172   INFO  Train:    6/80 (  8%) [ 649/1250 ( 52%)]  Loss: 0.04571 (0.0928)  LR: 4.934e-04  Time cost: 03:43/03:27 [39:21/8:54:28]  Acc_iter 6900        Data time: 0.00(0.01)  Forward time: 0.32(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:33:18,415   INFO  indy-gpu                 Sat Jun  1 18:33:18 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  82 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:33:35,337   INFO  Train:    6/80 (  8%) [ 699/1250 ( 56%)]  Loss: 0.05820 (0.0925)  LR: 4.961e-04  Time cost: 04:01/03:09 [39:38/8:54:03]  Acc_iter 6950        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:33:52,447   INFO  Train:    6/80 (  8%) [ 749/1250 ( 60%)]  Loss: 0.1015 (0.0930)  LR: 4.989e-04  Time cost: 04:18/02:52 [39:55/8:53:32]  Acc_iter 7000        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:34:09,593   INFO  Train:    6/80 (  8%) [ 799/1250 ( 64%)]  Loss: 0.08348 (0.0928)  LR: 5.017e-04  Time cost: 04:35/02:35 [40:12/8:53:08]  Acc_iter 7050        Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:34:09,836   INFO  indy-gpu                 Sat Jun  1 18:34:09 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  61 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:34:26,660   INFO  Train:    6/80 (  8%) [ 849/1250 ( 68%)]  Loss: 0.1263 (0.0927)  LR: 5.045e-04  Time cost: 04:52/02:17 [40:29/8:52:35]  Acc_iter 7100        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:34:34,651   INFO  Save latest model to /home/ubuntu/omar/OpenPCDet/output/kitti_models/pointpillar/reconstructed_2205v001/ckpt/latest_model
+2024-06-01 18:34:43,917   INFO  Train:    6/80 (  8%) [ 899/1250 ( 72%)]  Loss: 0.09420 (0.0929)  LR: 5.073e-04  Time cost: 05:09/02:00 [40:47/8:52:24]  Acc_iter 7150        Data time: 0.00(0.01)  Forward time: 0.42(0.34)  Batch time: 0.42(0.34)
+2024-06-01 18:35:01,467   INFO  Train:    6/80 (  8%) [ 949/1250 ( 76%)]  Loss: 0.06196 (0.0934)  LR: 5.101e-04  Time cost: 05:27/01:43 [41:04/8:52:41]  Acc_iter 7200        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:35:01,712   INFO  indy-gpu                 Sat Jun  1 18:35:01 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  52 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:35:18,485   INFO  Train:    6/80 (  8%) [ 999/1250 ( 80%)]  Loss: 0.1595 (0.0925)  LR: 5.129e-04  Time cost: 05:44/01:26 [41:21/8:52:05]  Acc_iter 7250        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:35:35,204   INFO  Train:    6/80 (  8%) [1049/1250 ( 84%)]  Loss: 0.1150 (0.0928)  LR: 5.158e-04  Time cost: 06:00/01:09 [41:38/8:51:04]  Acc_iter 7300        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:35:51,873   INFO  Train:    6/80 (  8%) [1099/1250 ( 88%)]  Loss: 0.08573 (0.0930)  LR: 5.187e-04  Time cost: 06:17/00:51 [41:54/8:50:03]  Acc_iter 7350        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:35:52,121   INFO  indy-gpu                 Sat Jun  1 18:35:52 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  41 % | 14499 / 16384 MB | ubuntu(14495M)
+
+2024-06-01 18:36:08,899   INFO  Train:    6/80 (  8%) [1149/1250 ( 92%)]  Loss: 0.05458 (0.0934)  LR: 5.216e-04  Time cost: 06:34/00:34 [42:11/8:49:35]  Acc_iter 7400        Data time: 0.00(0.01)  Forward time: 0.40(0.34)  Batch time: 0.40(0.34)
+2024-06-01 18:36:25,511   INFO  Train:    6/80 (  8%) [1199/1250 ( 96%)]  Loss: 0.1711 (0.0936)  LR: 5.245e-04  Time cost: 06:51/00:17 [42:28/8:48:36]  Acc_iter 7450        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:36:42,141   INFO  Train:    6/80 (  8%) [1249/1250 (100%)]  Loss: 0.09401 (0.0935)  LR: 5.275e-04  Time cost: 07:07/00:00 [42:45/8:47:41]  Acc_iter 7500        Data time: 0.00(0.00)  Forward time: 0.10(0.34)  Batch time: 0.10(0.34)
+2024-06-01 18:36:42,392   INFO  indy-gpu                 Sat Jun  1 18:36:42 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  87 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 18:36:43,784   INFO  Train:    7/80 (  9%) [   0/1250 (  0%)]  Loss: 0.07980 (0.0798)  LR: 5.275e-04  Time cost: 00:00/18:38 [42:46/22:59:48]  Acc_iter 7501        Data time: 0.48(0.48)  Forward time: 0.41(0.41)  Batch time: 0.89(0.89)
+2024-06-01 18:37:00,760   INFO  Train:    7/80 (  9%) [  49/1250 (  4%)]  Loss: 0.03887 (0.0783)  LR: 5.304e-04  Time cost: 00:17/07:09 [43:03/9:10:45]  Acc_iter 7550        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.36)
+2024-06-01 18:37:18,006   INFO  Train:    7/80 (  9%) [  99/1250 (  8%)]  Loss: 0.03704 (0.0746)  LR: 5.334e-04  Time cost: 00:35/06:44 [43:21/9:00:49]  Acc_iter 7600        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 18:37:35,130   INFO  Train:    7/80 (  9%) [ 149/1250 ( 12%)]  Loss: 0.05657 (0.0781)  LR: 5.364e-04  Time cost: 00:52/06:23 [43:38/8:56:03]  Acc_iter 7650        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.35)
+2024-06-01 18:37:35,376   INFO  indy-gpu                 Sat Jun  1 18:37:35 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  43 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 18:37:52,653   INFO  Train:    7/80 (  9%) [ 199/1250 ( 16%)]  Loss: 0.08035 (0.0786)  LR: 5.394e-04  Time cost: 01:09/06:06 [43:55/8:56:36]  Acc_iter 7700        Data time: 0.00(0.01)  Forward time: 0.35(0.34)  Batch time: 0.36(0.35)
+2024-06-01 18:38:09,873   INFO  Train:    7/80 (  9%) [ 249/1250 ( 20%)]  Loss: 0.08998 (0.0784)  LR: 5.424e-04  Time cost: 01:26/05:48 [44:12/8:54:57]  Acc_iter 7750        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.35)
+2024-06-01 18:38:26,952   INFO  Train:    7/80 (  9%) [ 299/1250 ( 24%)]  Loss: 0.08769 (0.0781)  LR: 5.454e-04  Time cost: 01:44/05:29 [44:30/8:53:02]  Acc_iter 7800        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.35)
+2024-06-01 18:38:27,194   INFO  indy-gpu                 Sat Jun  1 18:38:27 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  72 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 18:38:44,128   INFO  Train:    7/80 (  9%) [ 349/1250 ( 28%)]  Loss: 0.07641 (0.0803)  LR: 5.485e-04  Time cost: 02:01/05:12 [44:47/8:52:01]  Acc_iter 7850        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.35)
+2024-06-01 18:39:01,067   INFO  Train:    7/80 (  9%) [ 399/1250 ( 32%)]  Loss: 0.05766 (0.0819)  LR: 5.516e-04  Time cost: 02:18/04:53 [45:04/8:50:16]  Acc_iter 7900        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.35)
+2024-06-01 18:39:18,115   INFO  Train:    7/80 (  9%) [ 449/1250 ( 36%)]  Loss: 0.1041 (0.0816)  LR: 5.547e-04  Time cost: 02:35/04:36 [45:21/8:49:12]  Acc_iter 7950        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:39:18,358   INFO  indy-gpu                 Sat Jun  1 18:39:18 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  46 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 18:39:35,442   INFO  Train:    7/80 (  9%) [ 499/1250 ( 40%)]  Loss: 0.1324 (0.0809)  LR: 5.578e-04  Time cost: 02:52/04:19 [45:38/8:49:10]  Acc_iter 8000        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 18:39:52,518   INFO  Train:    7/80 (  9%) [ 549/1250 ( 44%)]  Loss: 0.1770 (0.0812)  LR: 5.609e-04  Time cost: 03:09/04:01 [45:55/8:48:22]  Acc_iter 8050        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:40:09,495   INFO  Train:    7/80 (  9%) [ 599/1250 ( 48%)]  Loss: 0.04958 (0.0809)  LR: 5.640e-04  Time cost: 03:26/03:44 [46:12/8:47:25]  Acc_iter 8100        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:40:09,738   INFO  indy-gpu                 Sat Jun  1 18:40:09 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C, 100 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 18:40:26,688   INFO  Train:    7/80 (  9%) [ 649/1250 ( 52%)]  Loss: 0.06134 (0.0809)  LR: 5.672e-04  Time cost: 03:43/03:26 [46:29/8:47:04]  Acc_iter 8150        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:40:43,600   INFO  Train:    7/80 (  9%) [ 699/1250 ( 56%)]  Loss: 0.06905 (0.0801)  LR: 5.704e-04  Time cost: 04:00/03:09 [46:46/8:46:07]  Acc_iter 8200        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:41:00,695   INFO  Train:    7/80 (  9%) [ 749/1250 ( 60%)]  Loss: 0.02778 (0.0795)  LR: 5.736e-04  Time cost: 04:17/02:52 [47:03/8:45:38]  Acc_iter 8250        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:41:00,940   INFO  indy-gpu                 Sat Jun  1 18:41:00 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  51 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 18:41:17,900   INFO  Train:    7/80 (  9%) [ 799/1250 ( 64%)]  Loss: 0.05767 (0.0794)  LR: 5.768e-04  Time cost: 04:35/02:35 [47:20/8:45:23]  Acc_iter 8300        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:41:35,038   INFO  Train:    7/80 (  9%) [ 849/1250 ( 68%)]  Loss: 0.1035 (0.0806)  LR: 5.800e-04  Time cost: 04:52/02:17 [47:38/8:45:00]  Acc_iter 8350        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:41:43,319   INFO  Save latest model to /home/ubuntu/omar/OpenPCDet/output/kitti_models/pointpillar/reconstructed_2205v001/ckpt/latest_model
+2024-06-01 18:41:52,537   INFO  Train:    7/80 (  9%) [ 899/1250 ( 72%)]  Loss: 0.1861 (0.0813)  LR: 5.832e-04  Time cost: 05:09/02:00 [47:55/8:45:15]  Acc_iter 8400        Data time: 0.00(0.01)  Forward time: 0.32(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:41:52,782   INFO  indy-gpu                 Sat Jun  1 18:41:52 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  85 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 18:42:09,591   INFO  Train:    7/80 (  9%) [ 949/1250 ( 76%)]  Loss: 0.04403 (0.0808)  LR: 5.865e-04  Time cost: 05:26/01:43 [48:12/8:44:44]  Acc_iter 8450        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:42:26,443   INFO  Train:    7/80 (  9%) [ 999/1250 ( 80%)]  Loss: 0.04160 (0.0811)  LR: 5.898e-04  Time cost: 05:43/01:26 [48:29/8:43:55]  Acc_iter 8500        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:42:43,414   INFO  Train:    7/80 (  9%) [1049/1250 ( 84%)]  Loss: 0.1195 (0.0815)  LR: 5.930e-04  Time cost: 06:00/01:09 [48:46/8:43:20]  Acc_iter 8550        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:42:43,655   INFO  indy-gpu                 Sat Jun  1 18:42:43 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  98 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 18:43:00,781   INFO  Train:    7/80 (  9%) [1099/1250 ( 88%)]  Loss: 0.03426 (0.0812)  LR: 5.964e-04  Time cost: 06:17/00:51 [49:03/8:43:19]  Acc_iter 8600        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:43:18,003   INFO  Train:    7/80 (  9%) [1149/1250 ( 92%)]  Loss: 0.04814 (0.0818)  LR: 5.997e-04  Time cost: 06:35/00:34 [49:21/8:43:06]  Acc_iter 8650        Data time: 0.00(0.01)  Forward time: 0.36(0.34)  Batch time: 0.36(0.34)
+2024-06-01 18:43:35,165   INFO  Train:    7/80 (  9%) [1199/1250 ( 96%)]  Loss: 0.1231 (0.0818)  LR: 6.030e-04  Time cost: 06:52/00:17 [49:38/8:42:47]  Acc_iter 8700        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:43:35,412   INFO  indy-gpu                 Sat Jun  1 18:43:35 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  79 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 18:43:52,297   INFO  Train:    7/80 (  9%) [1249/1250 (100%)]  Loss: 0.1551 (0.0820)  LR: 6.064e-04  Time cost: 07:09/00:00 [49:55/8:42:27]  Acc_iter 8750        Data time: 0.00(0.01)  Forward time: 0.10(0.34)  Batch time: 0.10(0.34)
+2024-06-01 18:43:53,673   INFO  Train:    8/80 ( 10%) [   0/1250 (  0%)]  Loss: 0.07691 (0.0769)  LR: 6.064e-04  Time cost: 00:00/19:17 [49:56/23:27:58]  Acc_iter 8751        Data time: 0.51(0.51)  Forward time: 0.42(0.42)  Batch time: 0.93(0.93)
+2024-06-01 18:44:10,301   INFO  Train:    8/80 ( 10%) [  49/1250 (  4%)]  Loss: 0.04943 (0.0783)  LR: 6.097e-04  Time cost: 00:17/07:01 [50:13/8:53:38]  Acc_iter 8800        Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.35)
+2024-06-01 18:44:27,249   INFO  Train:    8/80 ( 10%) [  99/1250 (  8%)]  Loss: 0.08858 (0.0787)  LR: 6.131e-04  Time cost: 00:34/06:37 [50:30/8:44:08]  Acc_iter 8850        Data time: 0.00(0.01)  Forward time: 0.35(0.34)  Batch time: 0.35(0.35)
+2024-06-01 18:44:27,491   INFO  indy-gpu                 Sat Jun  1 18:44:27 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  57 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 18:44:44,568   INFO  Train:    8/80 ( 10%) [ 149/1250 ( 12%)]  Loss: 0.1001 (0.0803)  LR: 6.165e-04  Time cost: 00:51/06:20 [50:47/8:44:33]  Acc_iter 8900        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 18:45:01,605   INFO  Train:    8/80 ( 10%) [ 199/1250 ( 16%)]  Loss: 0.1807 (0.0803)  LR: 6.199e-04  Time cost: 01:08/06:01 [51:04/8:42:27]  Acc_iter 8950        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:45:18,490   INFO  Train:    8/80 ( 10%) [ 249/1250 ( 20%)]  Loss: 0.05561 (0.0787)  LR: 6.234e-04  Time cost: 01:25/05:43 [51:21/8:40:10]  Acc_iter 9000        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:45:18,731   INFO  indy-gpu                 Sat Jun  1 18:45:18 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  95 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 18:45:35,536   INFO  Train:    8/80 ( 10%) [ 299/1250 ( 24%)]  Loss: 0.1531 (0.0795)  LR: 6.268e-04  Time cost: 01:42/05:25 [51:38/8:39:22]  Acc_iter 9050        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:45:52,719   INFO  Train:    8/80 ( 10%) [ 349/1250 ( 28%)]  Loss: 0.06196 (0.0801)  LR: 6.303e-04  Time cost: 01:59/05:08 [51:55/8:39:18]  Acc_iter 9100        Data time: 0.00(0.01)  Forward time: 0.35(0.34)  Batch time: 0.35(0.34)
+2024-06-01 18:46:09,622   INFO  Train:    8/80 ( 10%) [ 399/1250 ( 32%)]  Loss: 0.1036 (0.0799)  LR: 6.338e-04  Time cost: 02:16/04:51 [52:12/8:38:08]  Acc_iter 9150        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:46:09,868   INFO  indy-gpu                 Sat Jun  1 18:46:09 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  85 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 18:46:26,916   INFO  Train:    8/80 ( 10%) [ 449/1250 ( 36%)]  Loss: 0.04162 (0.0788)  LR: 6.373e-04  Time cost: 02:34/04:34 [52:30/8:38:28]  Acc_iter 9200        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:46:43,969   INFO  Train:    8/80 ( 10%) [ 499/1250 ( 40%)]  Loss: 0.09272 (0.0794)  LR: 6.408e-04  Time cost: 02:51/04:17 [52:47/8:37:57]  Acc_iter 9250        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:47:00,730   INFO  Train:    8/80 ( 10%) [ 549/1250 ( 44%)]  Loss: 0.09018 (0.0794)  LR: 6.443e-04  Time cost: 03:07/03:59 [53:03/8:36:40]  Acc_iter 9300        Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:47:00,972   INFO  indy-gpu                 Sat Jun  1 18:47:00 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  88 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 18:47:17,722   INFO  Train:    8/80 ( 10%) [ 599/1250 ( 48%)]  Loss: 0.05959 (0.0791)  LR: 6.479e-04  Time cost: 03:24/03:42 [53:20/8:36:08]  Acc_iter 9350        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:47:34,425   INFO  Train:    8/80 ( 10%) [ 649/1250 ( 52%)]  Loss: 0.1187 (0.0789)  LR: 6.514e-04  Time cost: 03:41/03:24 [53:37/8:34:58]  Acc_iter 9400        Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:47:51,014   INFO  Train:    8/80 ( 10%) [ 699/1250 ( 56%)]  Loss: 0.1035 (0.0790)  LR: 6.550e-04  Time cost: 03:58/03:07 [53:54/8:33:41]  Acc_iter 9450        Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:47:51,255   INFO  indy-gpu                 Sat Jun  1 18:47:51 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  87 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 18:48:08,024   INFO  Train:    8/80 ( 10%) [ 749/1250 ( 60%)]  Loss: 0.05685 (0.0792)  LR: 6.586e-04  Time cost: 04:15/02:50 [54:11/8:33:23]  Acc_iter 9500        Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:48:24,640   INFO  Train:    8/80 ( 10%) [ 799/1250 ( 64%)]  Loss: 0.09969 (0.0791)  LR: 6.622e-04  Time cost: 04:31/02:33 [54:27/8:32:21]  Acc_iter 9550        Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:48:41,281   INFO  Train:    8/80 ( 10%) [ 849/1250 ( 68%)]  Loss: 0.04819 (0.0793)  LR: 6.658e-04  Time cost: 04:48/02:16 [54:44/8:31:26]  Acc_iter 9600        Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.34(0.34)
+2024-06-01 18:48:41,524   INFO  indy-gpu                 Sat Jun  1 18:48:41 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  72 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 18:48:53,173   INFO  Save latest model to /home/ubuntu/omar/OpenPCDet/output/kitti_models/pointpillar/reconstructed_2205v001/ckpt/latest_model
+2024-06-01 18:48:58,924   INFO  Train:    8/80 ( 10%) [ 899/1250 ( 72%)]  Loss: 0.08354 (0.0792)  LR: 6.695e-04  Time cost: 05:06/01:59 [55:02/8:32:17]  Acc_iter 9650        Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:49:16,034   INFO  Train:    8/80 ( 10%) [ 949/1250 ( 76%)]  Loss: 0.04329 (0.0783)  LR: 6.731e-04  Time cost: 05:23/01:42 [55:19/8:32:09]  Acc_iter 9700        Data time: 0.00(0.00)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:49:33,181   INFO  Train:    8/80 ( 10%) [ 999/1250 ( 80%)]  Loss: 0.1007 (0.0779)  LR: 6.768e-04  Time cost: 05:40/01:25 [55:36/8:32:04]  Acc_iter 9750        Data time: 0.00(0.00)  Forward time: 0.35(0.34)  Batch time: 0.36(0.34)
+2024-06-01 18:49:33,421   INFO  indy-gpu                 Sat Jun  1 18:49:33 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  72 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 18:49:50,475   INFO  Train:    8/80 ( 10%) [1049/1250 ( 84%)]  Loss: 0.08181 (0.0783)  LR: 6.805e-04  Time cost: 05:57/01:08 [55:53/8:32:10]  Acc_iter 9800        Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:50:07,171   INFO  Train:    8/80 ( 10%) [1099/1250 ( 88%)]  Loss: 0.06296 (0.0778)  LR: 6.842e-04  Time cost: 06:14/00:51 [56:10/8:31:26]  Acc_iter 9850        Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:50:23,932   INFO  Train:    8/80 ( 10%) [1149/1250 ( 92%)]  Loss: 0.07647 (0.0774)  LR: 6.879e-04  Time cost: 06:31/00:34 [56:27/8:30:48]  Acc_iter 9900        Data time: 0.00(0.00)  Forward time: 0.35(0.34)  Batch time: 0.35(0.34)
+2024-06-01 18:50:24,173   INFO  indy-gpu                 Sat Jun  1 18:50:24 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  77 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 18:50:40,888   INFO  Train:    8/80 ( 10%) [1199/1250 ( 96%)]  Loss: 0.06323 (0.0775)  LR: 6.916e-04  Time cost: 06:48/00:17 [56:43/8:30:27]  Acc_iter 9950        Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:50:57,343   INFO  Train:    8/80 ( 10%) [1249/1250 (100%)]  Loss: 0.02891 (0.0773)  LR: 6.953e-04  Time cost: 07:04/00:00 [57:00/8:29:31]  Acc_iter 10000       Data time: 0.00(0.00)  Forward time: 0.10(0.33)  Batch time: 0.10(0.34)
+2024-06-01 18:50:58,786   INFO  Train:    9/80 ( 11%) [   0/1250 (  0%)]  Loss: 0.05753 (0.0575)  LR: 6.954e-04  Time cost: 00:00/20:24 [57:01/24:29:42]  Acc_iter 10001       Data time: 0.51(0.51)  Forward time: 0.47(0.47)  Batch time: 0.98(0.98)
+2024-06-01 18:51:15,442   INFO  Train:    9/80 ( 11%) [  49/1250 (  4%)]  Loss: 0.03948 (0.0710)  LR: 6.991e-04  Time cost: 00:17/07:03 [57:18/8:48:47]  Acc_iter 10050       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.35)
+2024-06-01 18:51:15,688   INFO  indy-gpu                 Sat Jun  1 18:51:15 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C, 100 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 18:51:32,514   INFO  Train:    9/80 ( 11%) [  99/1250 (  8%)]  Loss: 0.04412 (0.0673)  LR: 7.029e-04  Time cost: 00:34/06:39 [57:35/8:40:02]  Acc_iter 10100       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 18:51:49,736   INFO  Train:    9/80 ( 11%) [ 149/1250 ( 12%)]  Loss: 0.05911 (0.0688)  LR: 7.066e-04  Time cost: 00:51/06:21 [57:52/8:38:26]  Acc_iter 10150       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 18:52:06,566   INFO  Train:    9/80 ( 11%) [ 199/1250 ( 16%)]  Loss: 0.08163 (0.0741)  LR: 7.104e-04  Time cost: 01:08/06:01 [58:09/8:34:33]  Acc_iter 10200       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:52:06,814   INFO  indy-gpu                 Sat Jun  1 18:52:06 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C, 100 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 18:52:23,536   INFO  Train:    9/80 ( 11%) [ 249/1250 ( 20%)]  Loss: 0.1960 (0.0766)  LR: 7.143e-04  Time cost: 01:25/05:43 [58:26/8:32:57]  Acc_iter 10250       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:52:40,476   INFO  Train:    9/80 ( 11%) [ 299/1250 ( 24%)]  Loss: 0.07051 (0.0768)  LR: 7.181e-04  Time cost: 01:42/05:25 [58:43/8:31:38]  Acc_iter 10300       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:52:57,509   INFO  Train:    9/80 ( 11%) [ 349/1250 ( 28%)]  Loss: 0.07411 (0.0783)  LR: 7.219e-04  Time cost: 01:59/05:08 [59:00/8:31:01]  Acc_iter 10350       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:52:57,756   INFO  indy-gpu                 Sat Jun  1 18:52:57 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C, 100 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 18:53:14,592   INFO  Train:    9/80 ( 11%) [ 399/1250 ( 32%)]  Loss: 0.08936 (0.0790)  LR: 7.258e-04  Time cost: 02:16/04:51 [59:17/8:30:40]  Acc_iter 10400       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:53:31,584   INFO  Train:    9/80 ( 11%) [ 449/1250 ( 36%)]  Loss: 0.08221 (0.0788)  LR: 7.297e-04  Time cost: 02:33/04:33 [59:34/8:30:02]  Acc_iter 10450       Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.35(0.34)
+2024-06-01 18:53:48,781   INFO  Train:    9/80 ( 11%) [ 499/1250 ( 40%)]  Loss: 0.08429 (0.0787)  LR: 7.335e-04  Time cost: 02:50/04:16 [59:51/8:30:04]  Acc_iter 10500       Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:53:49,027   INFO  indy-gpu                 Sat Jun  1 18:53:48 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  53 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 18:54:05,962   INFO  Train:    9/80 ( 11%) [ 549/1250 ( 44%)]  Loss: 0.05424 (0.0786)  LR: 7.374e-04  Time cost: 03:08/03:59 [1:00:09/8:30:01]  Acc_iter 10550       Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:54:23,151   INFO  Train:    9/80 ( 11%) [ 599/1250 ( 48%)]  Loss: 0.1274 (0.0777)  LR: 7.414e-04  Time cost: 03:25/03:42 [1:00:26/8:29:56]  Acc_iter 10600       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:54:40,290   INFO  Train:    9/80 ( 11%) [ 649/1250 ( 52%)]  Loss: 0.07839 (0.0778)  LR: 7.453e-04  Time cost: 03:42/03:25 [1:00:43/8:29:43]  Acc_iter 10650       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:54:40,534   INFO  indy-gpu                 Sat Jun  1 18:54:40 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  90 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 18:54:57,349   INFO  Train:    9/80 ( 11%) [ 699/1250 ( 56%)]  Loss: 0.09069 (0.0772)  LR: 7.492e-04  Time cost: 03:59/03:08 [1:01:00/8:29:19]  Acc_iter 10700       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:55:14,167   INFO  Train:    9/80 ( 11%) [ 749/1250 ( 60%)]  Loss: 0.05676 (0.0764)  LR: 7.532e-04  Time cost: 04:16/02:51 [1:01:17/8:28:27]  Acc_iter 10750       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:55:31,203   INFO  Train:    9/80 ( 11%) [ 799/1250 ( 64%)]  Loss: 0.05791 (0.0762)  LR: 7.571e-04  Time cost: 04:33/02:34 [1:01:34/8:28:04]  Acc_iter 10800       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:55:31,444   INFO  indy-gpu                 Sat Jun  1 18:55:31 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  65 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 18:55:48,358   INFO  Train:    9/80 ( 11%) [ 849/1250 ( 68%)]  Loss: 0.08085 (0.0758)  LR: 7.611e-04  Time cost: 04:50/02:17 [1:01:51/8:27:54]  Acc_iter 10850       Data time: 0.00(0.00)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:55:58,365   INFO  Save latest model to /home/ubuntu/omar/OpenPCDet/output/kitti_models/pointpillar/reconstructed_2205v001/ckpt/latest_model
+2024-06-01 18:56:05,767   INFO  Train:    9/80 ( 11%) [ 899/1250 ( 72%)]  Loss: 0.05932 (0.0749)  LR: 7.651e-04  Time cost: 05:07/02:00 [1:02:08/8:28:08]  Acc_iter 10900       Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:56:22,482   INFO  Train:    9/80 ( 11%) [ 949/1250 ( 76%)]  Loss: 0.05000 (0.0742)  LR: 7.691e-04  Time cost: 05:24/01:42 [1:02:25/8:27:14]  Acc_iter 10950       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:56:22,724   INFO  indy-gpu                 Sat Jun  1 18:56:22 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  60 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 18:56:39,441   INFO  Train:    9/80 ( 11%) [ 999/1250 ( 80%)]  Loss: 0.06508 (0.0743)  LR: 7.732e-04  Time cost: 05:41/01:25 [1:02:42/8:26:45]  Acc_iter 11000       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:56:56,353   INFO  Train:    9/80 ( 11%) [1049/1250 ( 84%)]  Loss: 0.09803 (0.0747)  LR: 7.772e-04  Time cost: 05:58/01:08 [1:02:59/8:26:14]  Acc_iter 11050       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:57:13,005   INFO  Train:    9/80 ( 11%) [1099/1250 ( 88%)]  Loss: 0.1173 (0.0744)  LR: 7.813e-04  Time cost: 06:15/00:51 [1:03:16/8:25:23]  Acc_iter 11100       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:57:13,249   INFO  indy-gpu                 Sat Jun  1 18:57:13 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  58 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 18:57:29,886   INFO  Train:    9/80 ( 11%) [1149/1250 ( 92%)]  Loss: 0.06964 (0.0741)  LR: 7.853e-04  Time cost: 06:32/00:34 [1:03:32/8:24:52]  Acc_iter 11150       Data time: 0.00(0.00)  Forward time: 0.35(0.34)  Batch time: 0.35(0.34)
+2024-06-01 18:57:46,657   INFO  Train:    9/80 ( 11%) [1199/1250 ( 96%)]  Loss: 0.04700 (0.0738)  LR: 7.894e-04  Time cost: 06:48/00:17 [1:03:49/8:24:15]  Acc_iter 11200       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:58:02,932   INFO  Train:    9/80 ( 11%) [1249/1250 (100%)]  Loss: 0.1501 (0.0736)  LR: 7.935e-04  Time cost: 07:05/00:00 [1:04:06/8:23:04]  Acc_iter 11250       Data time: 0.00(0.00)  Forward time: 0.10(0.34)  Batch time: 0.10(0.34)
+2024-06-01 18:58:03,175   INFO  indy-gpu                 Sat Jun  1 18:58:03 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  39 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 18:58:04,643   INFO  Train:   10/80 ( 12%) [   0/1250 (  0%)]  Loss: 0.08674 (0.0867)  LR: 7.936e-04  Time cost: 00:00/20:39 [1:04:07/24:26:19]  Acc_iter 11251       Data time: 0.52(0.52)  Forward time: 0.47(0.47)  Batch time: 0.99(0.99)
+2024-06-01 18:58:21,303   INFO  Train:   10/80 ( 12%) [  49/1250 (  4%)]  Loss: 0.2003 (0.0688)  LR: 7.976e-04  Time cost: 00:17/07:03 [1:04:24/8:41:53]  Acc_iter 11300       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 18:58:38,518   INFO  Train:   10/80 ( 12%) [  99/1250 (  8%)]  Loss: 0.1057 (0.0725)  LR: 8.017e-04  Time cost: 00:34/06:41 [1:04:41/8:35:09]  Acc_iter 11350       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.35)
+2024-06-01 18:58:55,402   INFO  Train:   10/80 ( 12%) [ 149/1250 ( 12%)]  Loss: 0.05766 (0.0740)  LR: 8.058e-04  Time cost: 00:51/06:19 [1:04:58/8:29:27]  Acc_iter 11400       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:58:55,644   INFO  indy-gpu                 Sat Jun  1 18:58:55 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  50 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 18:59:12,519   INFO  Train:   10/80 ( 12%) [ 199/1250 ( 16%)]  Loss: 0.06975 (0.0753)  LR: 8.100e-04  Time cost: 01:08/06:01 [1:05:15/8:28:11]  Acc_iter 11450       Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:59:29,260   INFO  Train:   10/80 ( 12%) [ 249/1250 ( 20%)]  Loss: 0.02327 (0.0739)  LR: 8.141e-04  Time cost: 01:25/05:42 [1:05:32/8:25:05]  Acc_iter 11500       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 18:59:46,052   INFO  Train:   10/80 ( 12%) [ 299/1250 ( 24%)]  Loss: 0.04184 (0.0719)  LR: 8.183e-04  Time cost: 01:42/05:24 [1:05:49/8:23:11]  Acc_iter 11550       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 18:59:46,298   INFO  indy-gpu                 Sat Jun  1 18:59:46 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  68 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:00:02,967   INFO  Train:   10/80 ( 12%) [ 349/1250 ( 28%)]  Loss: 0.02959 (0.0701)  LR: 8.225e-04  Time cost: 01:59/05:07 [1:06:06/8:22:16]  Acc_iter 11600       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:00:19,665   INFO  Train:   10/80 ( 12%) [ 399/1250 ( 32%)]  Loss: 0.1622 (0.0707)  LR: 8.267e-04  Time cost: 02:16/04:49 [1:06:22/8:20:42]  Acc_iter 11650       Data time: 0.00(0.01)  Forward time: 0.34(0.33)  Batch time: 0.34(0.34)
+2024-06-01 19:00:36,273   INFO  Train:   10/80 ( 12%) [ 449/1250 ( 36%)]  Loss: 0.06647 (0.0703)  LR: 8.309e-04  Time cost: 02:32/04:31 [1:06:39/8:19:08]  Acc_iter 11700       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:00:36,513   INFO  indy-gpu                 Sat Jun  1 19:00:36 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  90 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:00:53,225   INFO  Train:   10/80 ( 12%) [ 499/1250 ( 40%)]  Loss: 0.04033 (0.0698)  LR: 8.351e-04  Time cost: 02:49/04:14 [1:06:56/8:18:50]  Acc_iter 11750       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:01:09,939   INFO  Train:   10/80 ( 12%) [ 549/1250 ( 44%)]  Loss: 0.04965 (0.0702)  LR: 8.393e-04  Time cost: 03:06/03:57 [1:07:13/8:17:54]  Acc_iter 11800       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.34(0.34)
+2024-06-01 19:01:26,625   INFO  Train:   10/80 ( 12%) [ 599/1250 ( 48%)]  Loss: 0.05230 (0.0708)  LR: 8.436e-04  Time cost: 03:22/03:40 [1:07:29/8:17:00]  Acc_iter 11850       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:01:26,868   INFO  indy-gpu                 Sat Jun  1 19:01:26 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  95 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:01:43,550   INFO  Train:   10/80 ( 12%) [ 649/1250 ( 52%)]  Loss: 0.05474 (0.0707)  LR: 8.479e-04  Time cost: 03:39/03:23 [1:07:46/8:16:45]  Acc_iter 11900       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:02:00,328   INFO  Train:   10/80 ( 12%) [ 699/1250 ( 56%)]  Loss: 0.05790 (0.0705)  LR: 8.521e-04  Time cost: 03:56/03:06 [1:08:03/8:16:10]  Acc_iter 11950       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:02:17,252   INFO  Train:   10/80 ( 12%) [ 749/1250 ( 60%)]  Loss: 0.08259 (0.0711)  LR: 8.564e-04  Time cost: 04:13/02:49 [1:08:20/8:15:56]  Acc_iter 12000       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:02:17,493   INFO  indy-gpu                 Sat Jun  1 19:02:17 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  38 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:02:34,254   INFO  Train:   10/80 ( 12%) [ 799/1250 ( 64%)]  Loss: 0.05909 (0.0702)  LR: 8.607e-04  Time cost: 04:30/02:32 [1:08:37/8:15:49]  Acc_iter 12050       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:02:51,144   INFO  Train:   10/80 ( 12%) [ 849/1250 ( 68%)]  Loss: 0.08531 (0.0697)  LR: 8.650e-04  Time cost: 04:47/02:15 [1:08:54/8:15:30]  Acc_iter 12100       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:03:04,204   INFO  Save latest model to /home/ubuntu/omar/OpenPCDet/output/kitti_models/pointpillar/reconstructed_2205v001/ckpt/latest_model
+2024-06-01 19:03:08,217   INFO  Train:   10/80 ( 12%) [ 899/1250 ( 72%)]  Loss: 0.06609 (0.0692)  LR: 8.693e-04  Time cost: 05:04/01:58 [1:09:11/8:15:29]  Acc_iter 12150       Data time: 0.00(0.00)  Forward time: 0.34(0.33)  Batch time: 0.34(0.34)
+2024-06-01 19:03:08,459   INFO  indy-gpu                 Sat Jun  1 19:03:08 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  45 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:03:25,345   INFO  Train:   10/80 ( 12%) [ 949/1250 ( 76%)]  Loss: 0.06005 (0.0692)  LR: 8.737e-04  Time cost: 05:21/01:41 [1:09:28/8:15:31]  Acc_iter 12200       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:03:41,947   INFO  Train:   10/80 ( 12%) [ 999/1250 ( 80%)]  Loss: 0.03843 (0.0693)  LR: 8.780e-04  Time cost: 05:38/01:24 [1:09:45/8:14:45]  Acc_iter 12250       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:03:58,663   INFO  Train:   10/80 ( 12%) [1049/1250 ( 84%)]  Loss: 0.05449 (0.0688)  LR: 8.824e-04  Time cost: 05:55/01:07 [1:10:01/8:14:12]  Acc_iter 12300       Data time: 0.00(0.00)  Forward time: 0.35(0.33)  Batch time: 0.35(0.34)
+2024-06-01 19:03:58,902   INFO  indy-gpu                 Sat Jun  1 19:03:58 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C, 100 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:04:16,079   INFO  Train:   10/80 ( 12%) [1099/1250 ( 88%)]  Loss: 0.05882 (0.0685)  LR: 8.867e-04  Time cost: 06:12/00:51 [1:10:19/8:14:36]  Acc_iter 12350       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:04:32,766   INFO  Train:   10/80 ( 12%) [1149/1250 ( 92%)]  Loss: 0.1424 (0.0687)  LR: 8.911e-04  Time cost: 06:29/00:34 [1:10:35/8:14:00]  Acc_iter 12400       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:04:49,404   INFO  Train:   10/80 ( 12%) [1199/1250 ( 96%)]  Loss: 0.05042 (0.0687)  LR: 8.955e-04  Time cost: 06:45/00:17 [1:10:52/8:13:23]  Acc_iter 12450       Data time: 0.00(0.00)  Forward time: 0.34(0.33)  Batch time: 0.34(0.34)
+2024-06-01 19:04:49,647   INFO  indy-gpu                 Sat Jun  1 19:04:49 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  81 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:05:06,176   INFO  Train:   10/80 ( 12%) [1249/1250 (100%)]  Loss: 0.05161 (0.0688)  LR: 8.999e-04  Time cost: 07:02/00:00 [1:11:09/8:12:57]  Acc_iter 12500       Data time: 0.00(0.00)  Forward time: 0.09(0.33)  Batch time: 0.10(0.34)
+2024-06-01 19:05:07,552   INFO  Train:   11/80 ( 14%) [   0/1250 (  0%)]  Loss: 0.07133 (0.0713)  LR: 9.000e-04  Time cost: 00:00/18:49 [1:11:10/21:58:19]  Acc_iter 12501       Data time: 0.42(0.42)  Forward time: 0.48(0.48)  Batch time: 0.90(0.90)
+2024-06-01 19:05:24,216   INFO  Train:   11/80 ( 14%) [  49/1250 (  4%)]  Loss: 0.03728 (0.0730)  LR: 9.043e-04  Time cost: 00:17/07:01 [1:11:27/8:32:06]  Acc_iter 12550       Data time: 0.00(0.01)  Forward time: 0.36(0.34)  Batch time: 0.37(0.35)
+2024-06-01 19:05:41,356   INFO  Train:   11/80 ( 14%) [  99/1250 (  8%)]  Loss: 0.06014 (0.0710)  LR: 9.087e-04  Time cost: 00:34/06:39 [1:11:44/8:25:35]  Acc_iter 12600       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 19:05:41,597   INFO  indy-gpu                 Sat Jun  1 19:05:41 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 69°C,  79 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:05:58,757   INFO  Train:   11/80 ( 14%) [ 149/1250 ( 12%)]  Loss: 0.08789 (0.0676)  LR: 9.132e-04  Time cost: 00:52/06:22 [1:12:01/8:25:45]  Acc_iter 12650       Data time: 0.00(0.01)  Forward time: 0.35(0.34)  Batch time: 0.35(0.35)
+2024-06-01 19:06:15,990   INFO  Train:   11/80 ( 14%) [ 199/1250 ( 16%)]  Loss: 0.03935 (0.0704)  LR: 9.176e-04  Time cost: 01:09/06:04 [1:12:19/8:24:28]  Acc_iter 12700       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 19:06:33,234   INFO  Train:   11/80 ( 14%) [ 249/1250 ( 20%)]  Loss: 0.1247 (0.0706)  LR: 9.221e-04  Time cost: 01:26/05:46 [1:12:36/8:23:39]  Acc_iter 12750       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 19:06:33,479   INFO  indy-gpu                 Sat Jun  1 19:06:33 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  34 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:06:50,271   INFO  Train:   11/80 ( 14%) [ 299/1250 ( 24%)]  Loss: 0.1118 (0.0721)  LR: 9.265e-04  Time cost: 01:43/05:28 [1:12:53/8:22:00]  Acc_iter 12800       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.35)
+2024-06-01 19:07:06,858   INFO  Train:   11/80 ( 14%) [ 349/1250 ( 28%)]  Loss: 0.02573 (0.0715)  LR: 9.310e-04  Time cost: 02:00/05:09 [1:13:09/8:18:52]  Acc_iter 12850       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:07:23,942   INFO  Train:   11/80 ( 14%) [ 399/1250 ( 32%)]  Loss: 0.05125 (0.0704)  LR: 9.355e-04  Time cost: 02:17/04:52 [1:13:27/8:18:16]  Acc_iter 12900       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:07:24,184   INFO  indy-gpu                 Sat Jun  1 19:07:24 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  99 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:07:40,924   INFO  Train:   11/80 ( 14%) [ 449/1250 ( 36%)]  Loss: 0.06663 (0.0678)  LR: 9.400e-04  Time cost: 02:34/04:34 [1:13:44/8:17:24]  Acc_iter 12950       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:07:57,524   INFO  Train:   11/80 ( 14%) [ 499/1250 ( 40%)]  Loss: 0.03636 (0.0677)  LR: 9.445e-04  Time cost: 02:50/04:16 [1:14:00/8:15:32]  Acc_iter 13000       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:08:14,295   INFO  Train:   11/80 ( 14%) [ 549/1250 ( 44%)]  Loss: 0.04990 (0.0675)  LR: 9.491e-04  Time cost: 03:07/03:59 [1:14:17/8:14:25]  Acc_iter 13050       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:08:14,537   INFO  indy-gpu                 Sat Jun  1 19:08:14 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  84 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:08:31,332   INFO  Train:   11/80 ( 14%) [ 599/1250 ( 48%)]  Loss: 0.06847 (0.0681)  LR: 9.536e-04  Time cost: 03:24/03:42 [1:14:34/8:14:05]  Acc_iter 13100       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 19:08:48,358   INFO  Train:   11/80 ( 14%) [ 649/1250 ( 52%)]  Loss: 0.04583 (0.0678)  LR: 9.581e-04  Time cost: 03:41/03:24 [1:14:51/8:13:44]  Acc_iter 13150       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:09:05,419   INFO  Train:   11/80 ( 14%) [ 699/1250 ( 56%)]  Loss: 0.05455 (0.0683)  LR: 9.627e-04  Time cost: 03:58/03:07 [1:15:08/8:13:28]  Acc_iter 13200       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:09:05,664   INFO  indy-gpu                 Sat Jun  1 19:09:05 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  88 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:09:22,403   INFO  Train:   11/80 ( 14%) [ 749/1250 ( 60%)]  Loss: 0.05539 (0.0679)  LR: 9.673e-04  Time cost: 04:15/02:50 [1:15:25/8:13:02]  Acc_iter 13250       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:09:39,690   INFO  Train:   11/80 ( 14%) [ 799/1250 ( 64%)]  Loss: 0.04367 (0.0680)  LR: 9.718e-04  Time cost: 04:33/02:33 [1:15:42/8:13:11]  Acc_iter 13300       Data time: 0.00(0.00)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 19:09:56,658   INFO  Train:   11/80 ( 14%) [ 849/1250 ( 68%)]  Loss: 0.04980 (0.0678)  LR: 9.764e-04  Time cost: 04:50/02:16 [1:15:59/8:12:44]  Acc_iter 13350       Data time: 0.00(0.00)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 19:09:56,901   INFO  indy-gpu                 Sat Jun  1 19:09:56 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  54 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:10:07,216   INFO  Save latest model to /home/ubuntu/omar/OpenPCDet/output/kitti_models/pointpillar/reconstructed_2205v001/ckpt/latest_model
+2024-06-01 19:10:14,569   INFO  Train:   11/80 ( 14%) [ 899/1250 ( 72%)]  Loss: 0.04287 (0.0679)  LR: 9.810e-04  Time cost: 05:07/02:00 [1:16:17/8:13:49]  Acc_iter 13400       Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 19:10:31,173   INFO  Train:   11/80 ( 14%) [ 949/1250 ( 76%)]  Loss: 0.06251 (0.0672)  LR: 9.856e-04  Time cost: 05:24/01:42 [1:16:34/8:12:46]  Acc_iter 13450       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:10:48,151   INFO  Train:   11/80 ( 14%) [ 999/1250 ( 80%)]  Loss: 0.03748 (0.0671)  LR: 9.903e-04  Time cost: 05:41/01:25 [1:16:51/8:12:20]  Acc_iter 13500       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:10:48,397   INFO  indy-gpu                 Sat Jun  1 19:10:48 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  84 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:11:05,372   INFO  Train:   11/80 ( 14%) [1049/1250 ( 84%)]  Loss: 0.03771 (0.0668)  LR: 9.949e-04  Time cost: 05:58/01:08 [1:17:08/8:12:15]  Acc_iter 13550       Data time: 0.00(0.00)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 19:11:22,226   INFO  Train:   11/80 ( 14%) [1099/1250 ( 88%)]  Loss: 0.09890 (0.0675)  LR: 9.995e-04  Time cost: 06:15/00:51 [1:17:25/8:11:40]  Acc_iter 13600       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 19:11:39,425   INFO  Train:   11/80 ( 14%) [1149/1250 ( 92%)]  Loss: 0.04146 (0.0681)  LR: 1.004e-03  Time cost: 06:32/00:34 [1:17:42/8:11:32]  Acc_iter 13650       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:11:39,665   INFO  indy-gpu                 Sat Jun  1 19:11:39 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  95 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:11:56,527   INFO  Train:   11/80 ( 14%) [1199/1250 ( 96%)]  Loss: 0.03333 (0.0680)  LR: 1.009e-03  Time cost: 06:49/00:17 [1:17:59/8:11:17]  Acc_iter 13700       Data time: 0.00(0.00)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 19:12:13,354   INFO  Train:   11/80 ( 14%) [1249/1250 (100%)]  Loss: 0.03347 (0.0680)  LR: 1.014e-03  Time cost: 07:06/00:00 [1:18:16/8:10:43]  Acc_iter 13750       Data time: 0.00(0.00)  Forward time: 0.10(0.34)  Batch time: 0.10(0.34)
+2024-06-01 19:12:14,661   INFO  Train:   12/80 ( 15%) [   0/1250 (  0%)]  Loss: 0.06583 (0.0658)  LR: 1.014e-03  Time cost: 00:00/17:51 [1:18:17/20:32:06]  Acc_iter 13751       Data time: 0.44(0.44)  Forward time: 0.42(0.42)  Batch time: 0.86(0.86)
+2024-06-01 19:12:31,309   INFO  Train:   12/80 ( 15%) [  49/1250 (  4%)]  Loss: 0.1259 (0.0589)  LR: 1.018e-03  Time cost: 00:17/07:00 [1:18:34/8:22:59]  Acc_iter 13800       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 19:12:31,550   INFO  indy-gpu                 Sat Jun  1 19:12:31 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  86 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:12:48,730   INFO  Train:   12/80 ( 15%) [  99/1250 (  8%)]  Loss: 0.02516 (0.0602)  LR: 1.023e-03  Time cost: 00:34/06:41 [1:18:51/8:21:29]  Acc_iter 13850       Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.35)
+2024-06-01 19:13:05,897   INFO  Train:   12/80 ( 15%) [ 149/1250 ( 12%)]  Loss: 0.08406 (0.0671)  LR: 1.028e-03  Time cost: 00:52/06:22 [1:19:08/8:18:21]  Acc_iter 13900       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 19:13:22,975   INFO  Train:   12/80 ( 15%) [ 199/1250 ( 16%)]  Loss: 0.06687 (0.0675)  LR: 1.032e-03  Time cost: 01:09/06:03 [1:19:26/8:16:01]  Acc_iter 13950       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 19:13:23,219   INFO  indy-gpu                 Sat Jun  1 19:13:23 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C, 100 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:13:39,995   INFO  Train:   12/80 ( 15%) [ 249/1250 ( 20%)]  Loss: 0.07210 (0.0681)  LR: 1.037e-03  Time cost: 01:26/05:45 [1:19:43/8:14:10]  Acc_iter 14000       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:13:56,832   INFO  Train:   12/80 ( 15%) [ 299/1250 ( 24%)]  Loss: 0.05191 (0.0668)  LR: 1.042e-03  Time cost: 01:43/05:26 [1:19:59/8:11:58]  Acc_iter 14050       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:14:13,382   INFO  Train:   12/80 ( 15%) [ 349/1250 ( 28%)]  Loss: 0.07141 (0.0659)  LR: 1.046e-03  Time cost: 01:59/05:07 [1:20:16/8:09:08]  Acc_iter 14100       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:14:13,624   INFO  indy-gpu                 Sat Jun  1 19:14:13 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  84 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:14:30,634   INFO  Train:   12/80 ( 15%) [ 399/1250 ( 32%)]  Loss: 0.03977 (0.0658)  LR: 1.051e-03  Time cost: 02:16/04:51 [1:20:33/8:09:27]  Acc_iter 14150       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:14:47,253   INFO  Train:   12/80 ( 15%) [ 449/1250 ( 36%)]  Loss: 0.06973 (0.0659)  LR: 1.056e-03  Time cost: 02:33/04:33 [1:20:50/8:07:38]  Acc_iter 14200       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:15:03,932   INFO  Train:   12/80 ( 15%) [ 499/1250 ( 40%)]  Loss: 0.04563 (0.0663)  LR: 1.061e-03  Time cost: 02:50/04:15 [1:21:07/8:06:17]  Acc_iter 14250       Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 19:15:04,176   INFO  indy-gpu                 Sat Jun  1 19:15:04 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C, 100 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:15:21,010   INFO  Train:   12/80 ( 15%) [ 549/1250 ( 44%)]  Loss: 0.04536 (0.0664)  LR: 1.066e-03  Time cost: 03:07/03:58 [1:21:24/8:06:10]  Acc_iter 14300       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:15:37,770   INFO  Train:   12/80 ( 15%) [ 599/1250 ( 48%)]  Loss: 0.05451 (0.0669)  LR: 1.070e-03  Time cost: 03:23/03:41 [1:21:40/8:05:16]  Acc_iter 14350       Data time: 0.00(0.01)  Forward time: 0.34(0.33)  Batch time: 0.34(0.34)
+2024-06-01 19:15:54,481   INFO  Train:   12/80 ( 15%) [ 649/1250 ( 52%)]  Loss: 0.05198 (0.0662)  LR: 1.075e-03  Time cost: 03:40/03:24 [1:21:57/8:04:21]  Acc_iter 14400       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:15:54,722   INFO  indy-gpu                 Sat Jun  1 19:15:54 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  63 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:16:11,973   INFO  Train:   12/80 ( 15%) [ 699/1250 ( 56%)]  Loss: 0.03722 (0.0654)  LR: 1.080e-03  Time cost: 03:58/03:07 [1:22:15/8:05:08]  Acc_iter 14450       Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.35(0.34)
+2024-06-01 19:16:28,927   INFO  Train:   12/80 ( 15%) [ 749/1250 ( 60%)]  Loss: 0.03106 (0.0650)  LR: 1.085e-03  Time cost: 04:15/02:50 [1:22:32/8:04:44]  Acc_iter 14500       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 19:16:45,745   INFO  Train:   12/80 ( 15%) [ 799/1250 ( 64%)]  Loss: 0.1410 (0.0647)  LR: 1.090e-03  Time cost: 04:31/02:33 [1:22:48/8:04:07]  Acc_iter 14550       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:16:45,986   INFO  indy-gpu                 Sat Jun  1 19:16:45 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  50 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:17:02,819   INFO  Train:   12/80 ( 15%) [ 849/1250 ( 68%)]  Loss: 0.05617 (0.0646)  LR: 1.094e-03  Time cost: 04:49/02:16 [1:23:05/8:03:57]  Acc_iter 14600       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:17:14,437   INFO  Save latest model to /home/ubuntu/omar/OpenPCDet/output/kitti_models/pointpillar/reconstructed_2205v001/ckpt/latest_model
+2024-06-01 19:17:20,069   INFO  Train:   12/80 ( 15%) [ 899/1250 ( 72%)]  Loss: 0.03445 (0.0645)  LR: 1.099e-03  Time cost: 05:06/01:59 [1:23:23/8:04:04]  Acc_iter 14650       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:17:36,654   INFO  Train:   12/80 ( 15%) [ 949/1250 ( 76%)]  Loss: 0.06175 (0.0650)  LR: 1.104e-03  Time cost: 05:22/01:42 [1:23:39/8:03:08]  Acc_iter 14700       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:17:36,896   INFO  indy-gpu                 Sat Jun  1 19:17:36 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  98 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:17:53,600   INFO  Train:   12/80 ( 15%) [ 999/1250 ( 80%)]  Loss: 0.04281 (0.0654)  LR: 1.109e-03  Time cost: 05:39/01:25 [1:23:56/8:02:48]  Acc_iter 14750       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:18:10,621   INFO  Train:   12/80 ( 15%) [1049/1250 ( 84%)]  Loss: 0.08130 (0.0655)  LR: 1.114e-03  Time cost: 05:56/01:08 [1:24:13/8:02:33]  Acc_iter 14800       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:18:27,364   INFO  Train:   12/80 ( 15%) [1099/1250 ( 88%)]  Loss: 0.02908 (0.0653)  LR: 1.119e-03  Time cost: 06:13/00:51 [1:24:30/8:01:57]  Acc_iter 14850       Data time: 0.00(0.00)  Forward time: 0.34(0.33)  Batch time: 0.34(0.34)
+2024-06-01 19:18:27,608   INFO  indy-gpu                 Sat Jun  1 19:18:27 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 69°C,  40 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:18:44,202   INFO  Train:   12/80 ( 15%) [1149/1250 ( 92%)]  Loss: 0.04452 (0.0656)  LR: 1.123e-03  Time cost: 06:30/00:34 [1:24:47/8:01:29]  Acc_iter 14900       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:19:00,784   INFO  Train:   12/80 ( 15%) [1199/1250 ( 96%)]  Loss: 0.08874 (0.0658)  LR: 1.128e-03  Time cost: 06:46/00:17 [1:25:03/8:00:45]  Acc_iter 14950       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:19:17,155   INFO  Train:   12/80 ( 15%) [1249/1250 (100%)]  Loss: 0.06595 (0.0655)  LR: 1.133e-03  Time cost: 07:03/00:00 [1:25:20/7:59:48]  Acc_iter 15000       Data time: 0.00(0.00)  Forward time: 0.11(0.33)  Batch time: 0.11(0.34)
+2024-06-01 19:19:17,399   INFO  indy-gpu                 Sat Jun  1 19:19:17 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  37 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:19:18,624   INFO  Train:   13/80 ( 16%) [   0/1250 (  0%)]  Loss: 0.04304 (0.0430)  LR: 1.133e-03  Time cost: 00:00/16:18 [1:25:21/18:29:05]  Acc_iter 15001       Data time: 0.37(0.37)  Forward time: 0.41(0.41)  Batch time: 0.78(0.78)
+2024-06-01 19:19:35,490   INFO  Train:   13/80 ( 16%) [  49/1250 (  4%)]  Loss: 0.04281 (0.0606)  LR: 1.138e-03  Time cost: 00:17/07:03 [1:25:38/8:19:46]  Acc_iter 15050       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.35)
+2024-06-01 19:19:52,467   INFO  Train:   13/80 ( 16%) [  99/1250 (  8%)]  Loss: 0.04021 (0.0596)  LR: 1.143e-03  Time cost: 00:34/06:38 [1:25:55/8:09:57]  Acc_iter 15100       Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.35)
+2024-06-01 19:20:09,739   INFO  Train:   13/80 ( 16%) [ 149/1250 ( 12%)]  Loss: 0.05066 (0.0588)  LR: 1.148e-03  Time cost: 00:51/06:20 [1:26:12/8:09:17]  Acc_iter 15150       Data time: 0.00(0.01)  Forward time: 0.35(0.34)  Batch time: 0.35(0.35)
+2024-06-01 19:20:09,980   INFO  indy-gpu                 Sat Jun  1 19:20:09 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C, 100 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:20:27,503   INFO  Train:   13/80 ( 16%) [ 199/1250 ( 16%)]  Loss: 0.06673 (0.0614)  LR: 1.153e-03  Time cost: 01:09/06:06 [1:26:30/8:12:17]  Acc_iter 15200       Data time: 0.00(0.01)  Forward time: 0.40(0.34)  Batch time: 0.40(0.35)
+2024-06-01 19:20:44,397   INFO  Train:   13/80 ( 16%) [ 249/1250 ( 20%)]  Loss: 0.05948 (0.0620)  LR: 1.158e-03  Time cost: 01:26/05:46 [1:26:47/8:09:03]  Acc_iter 15250       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 19:21:01,533   INFO  Train:   13/80 ( 16%) [ 299/1250 ( 24%)]  Loss: 0.02748 (0.0630)  LR: 1.163e-03  Time cost: 01:43/05:28 [1:27:04/8:07:56]  Acc_iter 15300       Data time: 0.00(0.00)  Forward time: 0.40(0.34)  Batch time: 0.40(0.35)
+2024-06-01 19:21:01,775   INFO  indy-gpu                 Sat Jun  1 19:21:01 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C, 100 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:21:18,904   INFO  Train:   13/80 ( 16%) [ 349/1250 ( 28%)]  Loss: 0.1436 (0.0645)  LR: 1.168e-03  Time cost: 02:01/05:11 [1:27:22/8:08:00]  Acc_iter 15350       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 19:21:35,531   INFO  Train:   13/80 ( 16%) [ 399/1250 ( 32%)]  Loss: 0.09958 (0.0648)  LR: 1.173e-03  Time cost: 02:17/04:52 [1:27:38/8:05:21]  Acc_iter 15400       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:21:52,156   INFO  Train:   13/80 ( 16%) [ 449/1250 ( 36%)]  Loss: 0.03469 (0.0641)  LR: 1.178e-03  Time cost: 02:34/04:34 [1:27:55/8:03:14]  Acc_iter 15450       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:21:52,401   INFO  indy-gpu                 Sat Jun  1 19:21:52 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  65 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:22:09,070   INFO  Train:   13/80 ( 16%) [ 499/1250 ( 40%)]  Loss: 0.03976 (0.0628)  LR: 1.183e-03  Time cost: 02:51/04:17 [1:28:12/8:02:18]  Acc_iter 15500       Data time: 0.00(0.00)  Forward time: 0.36(0.34)  Batch time: 0.37(0.34)
+2024-06-01 19:22:25,860   INFO  Train:   13/80 ( 16%) [ 549/1250 ( 44%)]  Loss: 0.03975 (0.0629)  LR: 1.188e-03  Time cost: 03:08/03:59 [1:28:28/8:01:09]  Acc_iter 15550       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:22:42,545   INFO  Train:   13/80 ( 16%) [ 599/1250 ( 48%)]  Loss: 0.07472 (0.0625)  LR: 1.193e-03  Time cost: 03:24/03:42 [1:28:45/7:59:55]  Acc_iter 15600       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:22:42,788   INFO  indy-gpu                 Sat Jun  1 19:22:42 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  42 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:22:59,979   INFO  Train:   13/80 ( 16%) [ 649/1250 ( 52%)]  Loss: 0.06790 (0.0624)  LR: 1.198e-03  Time cost: 03:42/03:25 [1:29:03/8:00:27]  Acc_iter 15650       Data time: 0.00(0.00)  Forward time: 0.35(0.34)  Batch time: 0.35(0.34)
+2024-06-01 19:23:17,018   INFO  Train:   13/80 ( 16%) [ 699/1250 ( 56%)]  Loss: 0.1483 (0.0630)  LR: 1.203e-03  Time cost: 03:59/03:08 [1:29:20/8:00:04]  Acc_iter 15700       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 19:23:34,220   INFO  Train:   13/80 ( 16%) [ 749/1250 ( 60%)]  Loss: 0.04567 (0.0635)  LR: 1.208e-03  Time cost: 04:16/02:51 [1:29:37/8:00:00]  Acc_iter 15750       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:23:34,463   INFO  indy-gpu                 Sat Jun  1 19:23:34 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  74 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:23:51,097   INFO  Train:   13/80 ( 16%) [ 799/1250 ( 64%)]  Loss: 0.03843 (0.0634)  LR: 1.213e-03  Time cost: 04:33/02:34 [1:29:54/7:59:20]  Acc_iter 15800       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:24:08,117   INFO  Train:   13/80 ( 16%) [ 849/1250 ( 68%)]  Loss: 0.06672 (0.0634)  LR: 1.218e-03  Time cost: 04:50/02:16 [1:30:11/7:58:57]  Acc_iter 15850       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:24:18,588   INFO  Save latest model to /home/ubuntu/omar/OpenPCDet/output/kitti_models/pointpillar/reconstructed_2205v001/ckpt/latest_model
+2024-06-01 19:24:25,336   INFO  Train:   13/80 ( 16%) [ 899/1250 ( 72%)]  Loss: 0.1171 (0.0631)  LR: 1.223e-03  Time cost: 05:07/01:59 [1:30:28/7:58:54]  Acc_iter 15900       Data time: 0.00(0.00)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 19:24:25,581   INFO  indy-gpu                 Sat Jun  1 19:24:25 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  68 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:24:42,481   INFO  Train:   13/80 ( 16%) [ 949/1250 ( 76%)]  Loss: 0.06727 (0.0636)  LR: 1.228e-03  Time cost: 05:24/01:42 [1:30:45/7:58:42]  Acc_iter 15950       Data time: 0.00(0.01)  Forward time: 0.39(0.34)  Batch time: 0.39(0.34)
+2024-06-01 19:24:59,926   INFO  Train:   13/80 ( 16%) [ 999/1250 ( 80%)]  Loss: 0.03465 (0.0635)  LR: 1.233e-03  Time cost: 05:42/01:25 [1:31:03/7:58:55]  Acc_iter 16000       Data time: 0.00(0.00)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 19:25:16,780   INFO  Train:   13/80 ( 16%) [1049/1250 ( 84%)]  Loss: 0.03046 (0.0628)  LR: 1.238e-03  Time cost: 05:58/01:08 [1:31:19/7:58:18]  Acc_iter 16050       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:25:17,021   INFO  indy-gpu                 Sat Jun  1 19:25:16 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 69°C,  79 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:25:33,839   INFO  Train:   13/80 ( 16%) [1099/1250 ( 88%)]  Loss: 0.05031 (0.0630)  LR: 1.243e-03  Time cost: 06:15/00:51 [1:31:36/7:57:58]  Acc_iter 16100       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:25:50,535   INFO  Train:   13/80 ( 16%) [1149/1250 ( 92%)]  Loss: 0.05511 (0.0629)  LR: 1.248e-03  Time cost: 06:32/00:34 [1:31:53/7:57:12]  Acc_iter 16150       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 19:26:07,538   INFO  Train:   13/80 ( 16%) [1199/1250 ( 96%)]  Loss: 0.05035 (0.0631)  LR: 1.253e-03  Time cost: 06:49/00:17 [1:32:10/7:56:50]  Acc_iter 16200       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:26:07,780   INFO  indy-gpu                 Sat Jun  1 19:26:07 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C, 100 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:26:24,377   INFO  Train:   13/80 ( 16%) [1249/1250 (100%)]  Loss: 0.07942 (0.0634)  LR: 1.258e-03  Time cost: 07:06/00:00 [1:32:27/7:56:18]  Acc_iter 16250       Data time: 0.00(0.00)  Forward time: 0.10(0.34)  Batch time: 0.11(0.34)
+2024-06-01 19:26:25,760   INFO  Train:   14/80 ( 18%) [   0/1250 (  0%)]  Loss: 0.03987 (0.0399)  LR: 1.258e-03  Time cost: 00:00/19:37 [1:32:28/21:55:06]  Acc_iter 16251       Data time: 0.56(0.56)  Forward time: 0.38(0.38)  Batch time: 0.94(0.94)
+2024-06-01 19:26:42,570   INFO  Train:   14/80 ( 18%) [  49/1250 (  4%)]  Loss: 0.02543 (0.0586)  LR: 1.263e-03  Time cost: 00:17/07:06 [1:32:45/8:15:17]  Acc_iter 16300       Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.36)
+2024-06-01 19:26:59,866   INFO  Train:   14/80 ( 18%) [  99/1250 (  8%)]  Loss: 0.1179 (0.0672)  LR: 1.268e-03  Time cost: 00:35/06:43 [1:33:02/8:08:37]  Acc_iter 16350       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 19:27:00,112   INFO  indy-gpu                 Sat Jun  1 19:27:00 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  97 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:27:16,867   INFO  Train:   14/80 ( 18%) [ 149/1250 ( 12%)]  Loss: 0.05923 (0.0636)  LR: 1.273e-03  Time cost: 00:52/06:22 [1:33:19/8:03:29]  Acc_iter 16400       Data time: 0.00(0.01)  Forward time: 0.38(0.34)  Batch time: 0.39(0.35)
+2024-06-01 19:27:33,628   INFO  Train:   14/80 ( 18%) [ 199/1250 ( 16%)]  Loss: 0.03503 (0.0632)  LR: 1.278e-03  Time cost: 01:08/06:01 [1:33:36/7:59:05]  Acc_iter 16450       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:27:50,450   INFO  Train:   14/80 ( 18%) [ 249/1250 ( 20%)]  Loss: 0.02575 (0.0614)  LR: 1.283e-03  Time cost: 01:25/05:42 [1:33:53/7:56:41]  Acc_iter 16500       Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 19:27:50,693   INFO  indy-gpu                 Sat Jun  1 19:27:50 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C, 100 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:28:07,793   INFO  Train:   14/80 ( 18%) [ 299/1250 ( 24%)]  Loss: 0.04878 (0.0643)  LR: 1.289e-03  Time cost: 01:42/05:26 [1:34:10/7:57:24]  Acc_iter 16550       Data time: 0.01(0.01)  Forward time: 0.40(0.34)  Batch time: 0.41(0.34)
+2024-06-01 19:28:24,611   INFO  Train:   14/80 ( 18%) [ 349/1250 ( 28%)]  Loss: 0.04391 (0.0627)  LR: 1.294e-03  Time cost: 01:59/05:08 [1:34:27/7:55:45]  Acc_iter 16600       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:28:41,897   INFO  Train:   14/80 ( 18%) [ 399/1250 ( 32%)]  Loss: 0.05077 (0.0623)  LR: 1.299e-03  Time cost: 02:17/04:51 [1:34:44/7:56:04]  Acc_iter 16650       Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 19:28:42,141   INFO  indy-gpu                 Sat Jun  1 19:28:42 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 69°C, 100 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:28:58,825   INFO  Train:   14/80 ( 18%) [ 449/1250 ( 36%)]  Loss: 0.06393 (0.0631)  LR: 1.304e-03  Time cost: 02:34/04:34 [1:35:01/7:55:08]  Acc_iter 16700       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:29:15,904   INFO  Train:   14/80 ( 18%) [ 499/1250 ( 40%)]  Loss: 0.05614 (0.0638)  LR: 1.309e-03  Time cost: 02:51/04:16 [1:35:19/7:54:46]  Acc_iter 16750       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:29:32,666   INFO  Train:   14/80 ( 18%) [ 549/1250 ( 44%)]  Loss: 0.02783 (0.0631)  LR: 1.314e-03  Time cost: 03:07/03:59 [1:35:35/7:53:36]  Acc_iter 16800       Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 19:29:32,911   INFO  indy-gpu                 Sat Jun  1 19:29:32 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  50 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:29:49,956   INFO  Train:   14/80 ( 18%) [ 599/1250 ( 48%)]  Loss: 0.05090 (0.0630)  LR: 1.319e-03  Time cost: 03:25/03:42 [1:35:53/7:53:49]  Acc_iter 16850       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:30:06,700   INFO  Train:   14/80 ( 18%) [ 649/1250 ( 52%)]  Loss: 0.05538 (0.0629)  LR: 1.324e-03  Time cost: 03:41/03:25 [1:36:09/7:52:47]  Acc_iter 16900       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:30:23,537   INFO  Train:   14/80 ( 18%) [ 699/1250 ( 56%)]  Loss: 0.05665 (0.0633)  LR: 1.330e-03  Time cost: 03:58/03:07 [1:36:26/7:52:02]  Acc_iter 16950       Data time: 0.00(0.00)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 19:30:23,782   INFO  indy-gpu                 Sat Jun  1 19:30:23 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C, 100 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:30:40,810   INFO  Train:   14/80 ( 18%) [ 749/1250 ( 60%)]  Loss: 0.05410 (0.0627)  LR: 1.335e-03  Time cost: 04:15/02:51 [1:36:43/7:52:10]  Acc_iter 17000       Data time: 0.00(0.01)  Forward time: 0.35(0.34)  Batch time: 0.36(0.34)
+2024-06-01 19:30:57,823   INFO  Train:   14/80 ( 18%) [ 799/1250 ( 64%)]  Loss: 0.03769 (0.0621)  LR: 1.340e-03  Time cost: 04:33/02:33 [1:37:00/7:51:47]  Acc_iter 17050       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:31:14,975   INFO  Train:   14/80 ( 18%) [ 849/1250 ( 68%)]  Loss: 0.1129 (0.0623)  LR: 1.345e-03  Time cost: 04:50/02:16 [1:37:18/7:51:39]  Acc_iter 17100       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:31:15,220   INFO  indy-gpu                 Sat Jun  1 19:31:15 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  94 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:31:25,452   INFO  Save latest model to /home/ubuntu/omar/OpenPCDet/output/kitti_models/pointpillar/reconstructed_2205v001/ckpt/latest_model
+2024-06-01 19:31:32,845   INFO  Train:   14/80 ( 18%) [ 899/1250 ( 72%)]  Loss: 0.05592 (0.0626)  LR: 1.350e-03  Time cost: 05:08/02:00 [1:37:35/7:52:36]  Acc_iter 17150       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:31:49,804   INFO  Train:   14/80 ( 18%) [ 949/1250 ( 76%)]  Loss: 0.04195 (0.0625)  LR: 1.355e-03  Time cost: 05:24/01:42 [1:37:52/7:52:05]  Acc_iter 17200       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:32:06,924   INFO  Train:   14/80 ( 18%) [ 999/1250 ( 80%)]  Loss: 0.04222 (0.0631)  LR: 1.361e-03  Time cost: 05:42/01:25 [1:38:10/7:51:49]  Acc_iter 17250       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:32:07,169   INFO  indy-gpu                 Sat Jun  1 19:32:07 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 66°C,  91 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:32:24,091   INFO  Train:   14/80 ( 18%) [1049/1250 ( 84%)]  Loss: 0.02754 (0.0631)  LR: 1.366e-03  Time cost: 05:59/01:08 [1:38:27/7:51:37]  Acc_iter 17300       Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 19:32:40,932   INFO  Train:   14/80 ( 18%) [1099/1250 ( 88%)]  Loss: 0.1732 (0.0629)  LR: 1.371e-03  Time cost: 06:16/00:51 [1:38:44/7:51:00]  Acc_iter 17350       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:32:57,774   INFO  Train:   14/80 ( 18%) [1149/1250 ( 92%)]  Loss: 0.1134 (0.0629)  LR: 1.376e-03  Time cost: 06:32/00:34 [1:39:00/7:50:24]  Acc_iter 17400       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:32:58,020   INFO  indy-gpu                 Sat Jun  1 19:32:57 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  89 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:33:14,774   INFO  Train:   14/80 ( 18%) [1199/1250 ( 96%)]  Loss: 0.06056 (0.0629)  LR: 1.381e-03  Time cost: 06:49/00:17 [1:39:17/7:50:01]  Acc_iter 17450       Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 19:33:31,560   INFO  Train:   14/80 ( 18%) [1249/1250 (100%)]  Loss: 0.02966 (0.0627)  LR: 1.387e-03  Time cost: 07:06/00:00 [1:39:34/7:49:25]  Acc_iter 17500       Data time: 0.00(0.01)  Forward time: 0.10(0.34)  Batch time: 0.10(0.34)
+2024-06-01 19:33:32,936   INFO  Train:   15/80 ( 19%) [   0/1250 (  0%)]  Loss: 0.06499 (0.0650)  LR: 1.387e-03  Time cost: 00:00/19:08 [1:39:36/21:03:39]  Acc_iter 17501       Data time: 0.51(0.51)  Forward time: 0.41(0.41)  Batch time: 0.92(0.92)
+2024-06-01 19:33:49,749   INFO  Train:   15/80 ( 19%) [  49/1250 (  4%)]  Loss: 0.04340 (0.0635)  LR: 1.392e-03  Time cost: 00:17/07:05 [1:39:52/8:07:20]  Acc_iter 17550       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.35)
+2024-06-01 19:33:49,990   INFO  indy-gpu                 Sat Jun  1 19:33:49 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 69°C,  99 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:34:06,736   INFO  Train:   15/80 ( 19%) [  99/1250 (  8%)]  Loss: 0.1427 (0.0628)  LR: 1.397e-03  Time cost: 00:34/06:39 [1:40:09/7:56:48]  Acc_iter 17600       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 19:34:23,828   INFO  Train:   15/80 ( 19%) [ 149/1250 ( 12%)]  Loss: 0.06107 (0.0653)  LR: 1.402e-03  Time cost: 00:51/06:20 [1:40:26/7:54:04]  Acc_iter 17650       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.35)
+2024-06-01 19:34:40,984   INFO  Train:   15/80 ( 19%) [ 199/1250 ( 16%)]  Loss: 0.03097 (0.0649)  LR: 1.407e-03  Time cost: 01:08/06:02 [1:40:44/7:53:00]  Acc_iter 17700       Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.35(0.34)
+2024-06-01 19:34:41,224   INFO  indy-gpu                 Sat Jun  1 19:34:41 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  70 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:34:57,891   INFO  Train:   15/80 ( 19%) [ 249/1250 ( 20%)]  Loss: 0.06976 (0.0644)  LR: 1.413e-03  Time cost: 01:25/05:43 [1:41:00/7:50:52]  Acc_iter 17750       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:35:14,570   INFO  Train:   15/80 ( 19%) [ 299/1250 ( 24%)]  Loss: 0.08421 (0.0631)  LR: 1.418e-03  Time cost: 01:42/05:25 [1:41:17/7:48:19]  Acc_iter 17800       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:35:31,154   INFO  Train:   15/80 ( 19%) [ 349/1250 ( 28%)]  Loss: 0.06831 (0.0637)  LR: 1.423e-03  Time cost: 01:59/05:06 [1:41:34/7:46:03]  Acc_iter 17850       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:35:31,395   INFO  indy-gpu                 Sat Jun  1 19:35:31 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C, 100 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:35:48,422   INFO  Train:   15/80 ( 19%) [ 399/1250 ( 32%)]  Loss: 0.04781 (0.0632)  LR: 1.428e-03  Time cost: 02:16/04:50 [1:41:51/7:46:37]  Acc_iter 17900       Data time: 0.00(0.01)  Forward time: 0.38(0.34)  Batch time: 0.38(0.34)
+2024-06-01 19:36:05,403   INFO  Train:   15/80 ( 19%) [ 449/1250 ( 36%)]  Loss: 0.04574 (0.0611)  LR: 1.433e-03  Time cost: 02:33/04:33 [1:42:08/7:46:07]  Acc_iter 17950       Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 19:36:22,107   INFO  Train:   15/80 ( 19%) [ 499/1250 ( 40%)]  Loss: 0.05213 (0.0611)  LR: 1.439e-03  Time cost: 02:50/04:15 [1:42:25/7:44:55]  Acc_iter 18000       Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 19:36:22,350   INFO  indy-gpu                 Sat Jun  1 19:36:22 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  50 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:36:39,143   INFO  Train:   15/80 ( 19%) [ 549/1250 ( 44%)]  Loss: 0.04257 (0.0609)  LR: 1.444e-03  Time cost: 03:07/03:58 [1:42:42/7:44:42]  Acc_iter 18050       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:36:55,823   INFO  Train:   15/80 ( 19%) [ 599/1250 ( 48%)]  Loss: 0.02683 (0.0605)  LR: 1.449e-03  Time cost: 03:23/03:41 [1:42:58/7:43:39]  Acc_iter 18100       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:37:12,804   INFO  Train:   15/80 ( 19%) [ 649/1250 ( 52%)]  Loss: 0.08568 (0.0610)  LR: 1.454e-03  Time cost: 03:40/03:24 [1:43:15/7:43:22]  Acc_iter 18150       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:37:13,047   INFO  indy-gpu                 Sat Jun  1 19:37:13 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C, 100 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:37:29,773   INFO  Train:   15/80 ( 19%) [ 699/1250 ( 56%)]  Loss: 0.05871 (0.0606)  LR: 1.460e-03  Time cost: 03:57/03:07 [1:43:32/7:43:03]  Acc_iter 18200       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:37:46,431   INFO  Train:   15/80 ( 19%) [ 749/1250 ( 60%)]  Loss: 0.06884 (0.0603)  LR: 1.465e-03  Time cost: 04:14/02:49 [1:43:49/7:42:11]  Acc_iter 18250       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:38:03,242   INFO  Train:   15/80 ( 19%) [ 799/1250 ( 64%)]  Loss: 0.06786 (0.0603)  LR: 1.470e-03  Time cost: 04:31/02:32 [1:44:06/7:41:39]  Acc_iter 18300       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:38:03,486   INFO  indy-gpu                 Sat Jun  1 19:38:03 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 69°C, 100 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:38:20,453   INFO  Train:   15/80 ( 19%) [ 849/1250 ( 68%)]  Loss: 0.02358 (0.0600)  LR: 1.475e-03  Time cost: 04:48/02:16 [1:44:23/7:41:47]  Acc_iter 18350       Data time: 0.00(0.00)  Forward time: 0.34(0.33)  Batch time: 0.34(0.34)
+2024-06-01 19:38:32,953   INFO  Save latest model to /home/ubuntu/omar/OpenPCDet/output/kitti_models/pointpillar/reconstructed_2205v001/ckpt/latest_model
+2024-06-01 19:38:38,116   INFO  Train:   15/80 ( 19%) [ 899/1250 ( 72%)]  Loss: 0.05700 (0.0600)  LR: 1.481e-03  Time cost: 05:06/01:59 [1:44:41/7:42:33]  Acc_iter 18400       Data time: 0.00(0.01)  Forward time: 0.34(0.33)  Batch time: 0.35(0.34)
+2024-06-01 19:38:55,061   INFO  Train:   15/80 ( 19%) [ 949/1250 ( 76%)]  Loss: 0.04691 (0.0607)  LR: 1.486e-03  Time cost: 05:23/01:42 [1:44:58/7:42:11]  Acc_iter 18450       Data time: 0.00(0.01)  Forward time: 0.34(0.33)  Batch time: 0.34(0.34)
+2024-06-01 19:38:55,304   INFO  indy-gpu                 Sat Jun  1 19:38:55 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  97 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:39:12,584   INFO  Train:   15/80 ( 19%) [ 999/1250 ( 80%)]  Loss: 0.07686 (0.0605)  LR: 1.491e-03  Time cost: 05:40/01:25 [1:45:15/7:42:36]  Acc_iter 18500       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:39:29,824   INFO  Train:   15/80 ( 19%) [1049/1250 ( 84%)]  Loss: 0.1203 (0.0607)  LR: 1.496e-03  Time cost: 05:57/01:08 [1:45:32/7:42:35]  Acc_iter 18550       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:39:47,049   INFO  Train:   15/80 ( 19%) [1099/1250 ( 88%)]  Loss: 0.04658 (0.0607)  LR: 1.502e-03  Time cost: 06:15/00:51 [1:45:50/7:42:32]  Acc_iter 18600       Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 19:39:47,297   INFO  indy-gpu                 Sat Jun  1 19:39:47 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  62 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:40:04,330   INFO  Train:   15/80 ( 19%) [1149/1250 ( 92%)]  Loss: 0.06365 (0.0614)  LR: 1.507e-03  Time cost: 06:32/00:34 [1:46:07/7:42:32]  Acc_iter 18650       Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 19:40:21,313   INFO  Train:   15/80 ( 19%) [1199/1250 ( 96%)]  Loss: 0.03727 (0.0614)  LR: 1.512e-03  Time cost: 06:49/00:17 [1:46:24/7:42:10]  Acc_iter 18700       Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.35(0.34)
+2024-06-01 19:40:38,005   INFO  Train:   15/80 ( 19%) [1249/1250 (100%)]  Loss: 0.1040 (0.0607)  LR: 1.518e-03  Time cost: 07:05/00:00 [1:46:41/7:41:29]  Acc_iter 18750       Data time: 0.00(0.01)  Forward time: 0.10(0.34)  Batch time: 0.10(0.34)
+2024-06-01 19:40:38,251   INFO  indy-gpu                 Sat Jun  1 19:40:38 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  87 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:40:39,569   INFO  Train:   16/80 ( 20%) [   0/1250 (  0%)]  Loss: 0.06263 (0.0626)  LR: 1.518e-03  Time cost: 00:00/18:03 [1:46:42/19:34:11]  Acc_iter 18751       Data time: 0.41(0.41)  Forward time: 0.46(0.46)  Batch time: 0.87(0.87)
+2024-06-01 19:40:56,239   INFO  Train:   16/80 ( 20%) [  49/1250 (  4%)]  Loss: 0.08440 (0.0599)  LR: 1.523e-03  Time cost: 00:17/07:01 [1:46:59/7:54:40]  Acc_iter 18800       Data time: 0.00(0.01)  Forward time: 0.35(0.34)  Batch time: 0.35(0.35)
+2024-06-01 19:41:13,302   INFO  Train:   16/80 ( 20%) [  99/1250 (  8%)]  Loss: 0.09101 (0.0602)  LR: 1.528e-03  Time cost: 00:34/06:38 [1:47:16/7:47:58]  Acc_iter 18850       Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.35)
+2024-06-01 19:41:30,084   INFO  Train:   16/80 ( 20%) [ 149/1250 ( 12%)]  Loss: 0.03947 (0.0616)  LR: 1.533e-03  Time cost: 00:51/06:17 [1:47:33/7:43:00]  Acc_iter 18900       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:41:30,324   INFO  indy-gpu                 Sat Jun  1 19:41:30 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  83 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:41:47,142   INFO  Train:   16/80 ( 20%) [ 199/1250 ( 16%)]  Loss: 0.06244 (0.0604)  LR: 1.539e-03  Time cost: 01:08/05:59 [1:47:50/7:42:15]  Acc_iter 18950       Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.35(0.34)
+2024-06-01 19:42:03,879   INFO  Train:   16/80 ( 20%) [ 249/1250 ( 20%)]  Loss: 0.07586 (0.0600)  LR: 1.544e-03  Time cost: 01:25/05:41 [1:48:06/7:39:57]  Acc_iter 19000       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:42:20,716   INFO  Train:   16/80 ( 20%) [ 299/1250 ( 24%)]  Loss: 0.09301 (0.0596)  LR: 1.549e-03  Time cost: 01:42/05:23 [1:48:23/7:38:47]  Acc_iter 19050       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:42:20,959   INFO  indy-gpu                 Sat Jun  1 19:42:20 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  89 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:42:37,765   INFO  Train:   16/80 ( 20%) [ 349/1250 ( 28%)]  Loss: 0.05351 (0.0607)  LR: 1.555e-03  Time cost: 01:59/05:06 [1:48:40/7:38:40]  Acc_iter 19100       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:42:54,381   INFO  Train:   16/80 ( 20%) [ 399/1250 ( 32%)]  Loss: 0.05530 (0.0609)  LR: 1.560e-03  Time cost: 02:15/04:48 [1:48:57/7:37:04]  Acc_iter 19150       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:43:11,235   INFO  Train:   16/80 ( 20%) [ 449/1250 ( 36%)]  Loss: 0.02716 (0.0596)  LR: 1.565e-03  Time cost: 02:32/04:31 [1:49:14/7:36:28]  Acc_iter 19200       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:43:11,475   INFO  indy-gpu                 Sat Jun  1 19:43:11 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  96 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:43:28,076   INFO  Train:   16/80 ( 20%) [ 499/1250 ( 40%)]  Loss: 0.07658 (0.0593)  LR: 1.570e-03  Time cost: 02:49/04:14 [1:49:31/7:35:54]  Acc_iter 19250       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:43:45,021   INFO  Train:   16/80 ( 20%) [ 549/1250 ( 44%)]  Loss: 0.01851 (0.0584)  LR: 1.576e-03  Time cost: 03:06/03:57 [1:49:48/7:35:38]  Acc_iter 19300       Data time: 0.00(0.00)  Forward time: 0.39(0.33)  Batch time: 0.39(0.34)
+2024-06-01 19:44:01,813   INFO  Train:   16/80 ( 20%) [ 599/1250 ( 48%)]  Loss: 0.07735 (0.0585)  LR: 1.581e-03  Time cost: 03:23/03:40 [1:50:04/7:35:01]  Acc_iter 19350       Data time: 0.00(0.00)  Forward time: 0.34(0.33)  Batch time: 0.34(0.34)
+2024-06-01 19:44:02,055   INFO  indy-gpu                 Sat Jun  1 19:44:02 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  67 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:44:18,983   INFO  Train:   16/80 ( 20%) [ 649/1250 ( 52%)]  Loss: 0.02834 (0.0582)  LR: 1.586e-03  Time cost: 03:40/03:23 [1:50:22/7:35:15]  Acc_iter 19400       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:44:35,764   INFO  Train:   16/80 ( 20%) [ 699/1250 ( 56%)]  Loss: 0.09520 (0.0574)  LR: 1.592e-03  Time cost: 03:57/03:06 [1:50:38/7:34:39]  Acc_iter 19450       Data time: 0.00(0.00)  Forward time: 0.35(0.33)  Batch time: 0.35(0.34)
+2024-06-01 19:44:52,543   INFO  Train:   16/80 ( 20%) [ 749/1250 ( 60%)]  Loss: 0.1118 (0.0572)  LR: 1.597e-03  Time cost: 04:13/02:49 [1:50:55/7:34:05]  Acc_iter 19500       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:44:52,783   INFO  indy-gpu                 Sat Jun  1 19:44:52 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  35 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:45:09,354   INFO  Train:   16/80 ( 20%) [ 799/1250 ( 64%)]  Loss: 0.06972 (0.0575)  LR: 1.602e-03  Time cost: 04:30/02:32 [1:51:12/7:33:37]  Acc_iter 19550       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:45:26,067   INFO  Train:   16/80 ( 20%) [ 849/1250 ( 68%)]  Loss: 0.03031 (0.0577)  LR: 1.607e-03  Time cost: 04:47/02:15 [1:51:29/7:33:01]  Acc_iter 19600       Data time: 0.00(0.00)  Forward time: 0.34(0.33)  Batch time: 0.34(0.34)
+2024-06-01 19:45:39,706   INFO  Save latest model to /home/ubuntu/omar/OpenPCDet/output/kitti_models/pointpillar/reconstructed_2205v001/ckpt/latest_model
+2024-06-01 19:45:43,692   INFO  Train:   16/80 ( 20%) [ 899/1250 ( 72%)]  Loss: 0.04099 (0.0575)  LR: 1.613e-03  Time cost: 05:04/01:58 [1:51:46/7:33:49]  Acc_iter 19650       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:45:43,933   INFO  indy-gpu                 Sat Jun  1 19:45:43 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  51 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:46:00,534   INFO  Train:   16/80 ( 20%) [ 949/1250 ( 76%)]  Loss: 0.09787 (0.0585)  LR: 1.618e-03  Time cost: 05:21/01:41 [1:52:03/7:33:23]  Acc_iter 19700       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.34(0.34)
+2024-06-01 19:46:17,395   INFO  Train:   16/80 ( 20%) [ 999/1250 ( 80%)]  Loss: 0.04683 (0.0584)  LR: 1.623e-03  Time cost: 05:38/01:25 [1:52:20/7:33:00]  Acc_iter 19750       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:46:33,974   INFO  Train:   16/80 ( 20%) [1049/1250 ( 84%)]  Loss: 0.06368 (0.0585)  LR: 1.629e-03  Time cost: 05:55/01:08 [1:52:37/7:32:16]  Acc_iter 19800       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:46:34,216   INFO  indy-gpu                 Sat Jun  1 19:46:34 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  51 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:46:50,812   INFO  Train:   16/80 ( 20%) [1099/1250 ( 88%)]  Loss: 0.02805 (0.0585)  LR: 1.634e-03  Time cost: 06:12/00:51 [1:52:53/7:31:53]  Acc_iter 19850       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:47:07,488   INFO  Train:   16/80 ( 20%) [1149/1250 ( 92%)]  Loss: 0.05108 (0.0585)  LR: 1.639e-03  Time cost: 06:28/00:34 [1:53:10/7:31:20]  Acc_iter 19900       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:47:24,376   INFO  Train:   16/80 ( 20%) [1199/1250 ( 96%)]  Loss: 0.03671 (0.0588)  LR: 1.645e-03  Time cost: 06:45/00:17 [1:53:27/7:31:02]  Acc_iter 19950       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:47:24,619   INFO  indy-gpu                 Sat Jun  1 19:47:24 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  83 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:47:40,996   INFO  Train:   16/80 ( 20%) [1249/1250 (100%)]  Loss: 0.01740 (0.0589)  LR: 1.650e-03  Time cost: 07:02/00:00 [1:53:44/7:30:27]  Acc_iter 20000       Data time: 0.00(0.01)  Forward time: 0.10(0.33)  Batch time: 0.10(0.34)
+2024-06-01 19:47:42,402   INFO  Train:   17/80 ( 21%) [   0/1250 (  0%)]  Loss: 0.1246 (0.125)  LR: 1.650e-03  Time cost: 00:00/19:25 [1:53:45/20:43:30]  Acc_iter 20001       Data time: 0.44(0.44)  Forward time: 0.49(0.49)  Batch time: 0.93(0.93)
+2024-06-01 19:47:58,992   INFO  Train:   17/80 ( 21%) [  49/1250 (  4%)]  Loss: 0.02998 (0.0714)  LR: 1.655e-03  Time cost: 00:17/07:00 [1:54:02/7:46:59]  Acc_iter 20050       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.35)
+2024-06-01 19:48:15,788   INFO  Train:   17/80 ( 21%) [  99/1250 (  8%)]  Loss: 0.05602 (0.0660)  LR: 1.660e-03  Time cost: 00:34/06:35 [1:54:18/7:37:00]  Acc_iter 20100       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 19:48:16,027   INFO  indy-gpu                 Sat Jun  1 19:48:15 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  61 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:48:33,031   INFO  Train:   17/80 ( 21%) [ 149/1250 ( 12%)]  Loss: 0.09875 (0.0676)  LR: 1.666e-03  Time cost: 00:51/06:18 [1:54:36/7:37:28]  Acc_iter 20150       Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 19:48:50,307   INFO  Train:   17/80 ( 21%) [ 199/1250 ( 16%)]  Loss: 0.04808 (0.0645)  LR: 1.671e-03  Time cost: 01:08/06:01 [1:54:53/7:37:46]  Acc_iter 20200       Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.34)
+2024-06-01 19:49:07,153   INFO  Train:   17/80 ( 21%) [ 249/1250 ( 20%)]  Loss: 0.02308 (0.0604)  LR: 1.676e-03  Time cost: 01:25/05:43 [1:55:10/7:35:33]  Acc_iter 20250       Data time: 0.00(0.01)  Forward time: 0.35(0.34)  Batch time: 0.35(0.34)
+2024-06-01 19:49:07,393   INFO  indy-gpu                 Sat Jun  1 19:49:07 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C, 100 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:49:24,206   INFO  Train:   17/80 ( 21%) [ 299/1250 ( 24%)]  Loss: 0.04876 (0.0591)  LR: 1.682e-03  Time cost: 01:42/05:25 [1:55:27/7:34:54]  Acc_iter 20300       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 19:49:41,079   INFO  Train:   17/80 ( 21%) [ 349/1250 ( 28%)]  Loss: 0.05242 (0.0597)  LR: 1.687e-03  Time cost: 01:59/05:07 [1:55:44/7:33:40]  Acc_iter 20350       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:49:57,917   INFO  Train:   17/80 ( 21%) [ 399/1250 ( 32%)]  Loss: 0.06773 (0.0589)  LR: 1.692e-03  Time cost: 02:16/04:50 [1:56:01/7:32:33]  Acc_iter 20400       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:49:58,155   INFO  indy-gpu                 Sat Jun  1 19:49:58 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  95 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:50:14,900   INFO  Train:   17/80 ( 21%) [ 449/1250 ( 36%)]  Loss: 0.03771 (0.0588)  LR: 1.698e-03  Time cost: 02:33/04:33 [1:56:17/7:32:03]  Acc_iter 20450       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:50:31,479   INFO  Train:   17/80 ( 21%) [ 499/1250 ( 40%)]  Loss: 0.08849 (0.0584)  LR: 1.703e-03  Time cost: 02:50/04:15 [1:56:34/7:30:31]  Acc_iter 20500       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.34(0.34)
+2024-06-01 19:50:48,261   INFO  Train:   17/80 ( 21%) [ 549/1250 ( 44%)]  Loss: 0.08659 (0.0583)  LR: 1.708e-03  Time cost: 03:06/03:58 [1:56:51/7:29:43]  Acc_iter 20550       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:50:48,506   INFO  indy-gpu                 Sat Jun  1 19:50:48 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  91 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:51:05,115   INFO  Train:   17/80 ( 21%) [ 599/1250 ( 48%)]  Loss: 0.03725 (0.0588)  LR: 1.713e-03  Time cost: 03:23/03:40 [1:57:08/7:29:09]  Acc_iter 20600       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:51:21,689   INFO  Train:   17/80 ( 21%) [ 649/1250 ( 52%)]  Loss: 0.1231 (0.0587)  LR: 1.719e-03  Time cost: 03:40/03:23 [1:57:24/7:28:04]  Acc_iter 20650       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:51:38,459   INFO  Train:   17/80 ( 21%) [ 699/1250 ( 56%)]  Loss: 0.04618 (0.0589)  LR: 1.724e-03  Time cost: 03:56/03:06 [1:57:41/7:27:27]  Acc_iter 20700       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:51:38,702   INFO  indy-gpu                 Sat Jun  1 19:51:38 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 69°C,  41 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:51:55,607   INFO  Train:   17/80 ( 21%) [ 749/1250 ( 60%)]  Loss: 0.09056 (0.0590)  LR: 1.729e-03  Time cost: 04:14/02:49 [1:57:58/7:27:34]  Acc_iter 20750       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.34(0.34)
+2024-06-01 19:52:12,441   INFO  Train:   17/80 ( 21%) [ 799/1250 ( 64%)]  Loss: 0.06243 (0.0584)  LR: 1.735e-03  Time cost: 04:30/02:32 [1:58:15/7:27:06]  Acc_iter 20800       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.34(0.34)
+2024-06-01 19:52:29,278   INFO  Train:   17/80 ( 21%) [ 849/1250 ( 68%)]  Loss: 0.03948 (0.0580)  LR: 1.740e-03  Time cost: 04:47/02:15 [1:58:32/7:26:40]  Acc_iter 20850       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:52:29,520   INFO  indy-gpu                 Sat Jun  1 19:52:29 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  62 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:52:42,516   INFO  Save latest model to /home/ubuntu/omar/OpenPCDet/output/kitti_models/pointpillar/reconstructed_2205v001/ckpt/latest_model
+2024-06-01 19:52:47,220   INFO  Train:   17/80 ( 21%) [ 899/1250 ( 72%)]  Loss: 0.08528 (0.0581)  LR: 1.745e-03  Time cost: 05:05/01:59 [1:58:50/7:27:52]  Acc_iter 20900       Data time: 0.00(0.01)  Forward time: 0.34(0.33)  Batch time: 0.35(0.34)
+2024-06-01 19:53:04,034   INFO  Train:   17/80 ( 21%) [ 949/1250 ( 76%)]  Loss: 0.09326 (0.0579)  LR: 1.751e-03  Time cost: 05:22/01:42 [1:59:07/7:27:21]  Acc_iter 20950       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:53:20,867   INFO  Train:   17/80 ( 21%) [ 999/1250 ( 80%)]  Loss: 0.05136 (0.0574)  LR: 1.756e-03  Time cost: 05:39/01:25 [1:59:23/7:26:52]  Acc_iter 21000       Data time: 0.00(0.01)  Forward time: 0.34(0.33)  Batch time: 0.34(0.34)
+2024-06-01 19:53:21,112   INFO  indy-gpu                 Sat Jun  1 19:53:21 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  40 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:53:38,529   INFO  Train:   17/80 ( 21%) [1049/1250 ( 84%)]  Loss: 0.03598 (0.0574)  LR: 1.761e-03  Time cost: 05:57/01:08 [1:59:41/7:27:27]  Acc_iter 21050       Data time: 0.00(0.01)  Forward time: 0.34(0.33)  Batch time: 0.35(0.34)
+2024-06-01 19:53:55,216   INFO  Train:   17/80 ( 21%) [1099/1250 ( 88%)]  Loss: 0.07293 (0.0573)  LR: 1.766e-03  Time cost: 06:13/00:51 [1:59:58/7:26:48]  Acc_iter 21100       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:54:11,912   INFO  Train:   17/80 ( 21%) [1149/1250 ( 92%)]  Loss: 0.02606 (0.0573)  LR: 1.772e-03  Time cost: 06:30/00:34 [2:00:15/7:26:11]  Acc_iter 21150       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:54:12,154   INFO  indy-gpu                 Sat Jun  1 19:54:12 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  45 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:54:29,274   INFO  Train:   17/80 ( 21%) [1199/1250 ( 96%)]  Loss: 0.05726 (0.0577)  LR: 1.777e-03  Time cost: 06:47/00:17 [2:00:32/7:26:19]  Acc_iter 21200       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:54:45,857   INFO  Train:   17/80 ( 21%) [1249/1250 (100%)]  Loss: 0.2044 (0.0575)  LR: 1.782e-03  Time cost: 07:04/00:00 [2:00:48/7:25:36]  Acc_iter 21250       Data time: 0.00(0.01)  Forward time: 0.10(0.33)  Batch time: 0.10(0.34)
+2024-06-01 19:54:47,312   INFO  Train:   18/80 ( 22%) [   0/1250 (  0%)]  Loss: 0.03588 (0.0359)  LR: 1.782e-03  Time cost: 00:00/19:39 [2:00:50/20:38:19]  Acc_iter 21251       Data time: 0.55(0.55)  Forward time: 0.39(0.39)  Batch time: 0.94(0.94)
+2024-06-01 19:55:03,922   INFO  Train:   18/80 ( 22%) [  49/1250 (  4%)]  Loss: 0.03431 (0.0479)  LR: 1.787e-03  Time cost: 00:17/07:01 [2:01:07/7:40:30]  Acc_iter 21300       Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.34(0.35)
+2024-06-01 19:55:04,167   INFO  indy-gpu                 Sat Jun  1 19:55:04 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  83 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:55:20,901   INFO  Train:   18/80 ( 22%) [  99/1250 (  8%)]  Loss: 0.07515 (0.0495)  LR: 1.793e-03  Time cost: 00:34/06:37 [2:01:24/7:32:40]  Acc_iter 21350       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.35)
+2024-06-01 19:55:37,776   INFO  Train:   18/80 ( 22%) [ 149/1250 ( 12%)]  Loss: 0.03993 (0.0499)  LR: 1.798e-03  Time cost: 00:51/06:17 [2:01:40/7:28:58]  Acc_iter 21400       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.34(0.34)
+2024-06-01 19:55:55,204   INFO  Train:   18/80 ( 22%) [ 199/1250 ( 16%)]  Loss: 0.03477 (0.0508)  LR: 1.803e-03  Time cost: 01:08/06:01 [2:01:58/7:30:35]  Acc_iter 21450       Data time: 0.00(0.01)  Forward time: 0.40(0.34)  Batch time: 0.41(0.34)
+2024-06-01 19:55:55,448   INFO  indy-gpu                 Sat Jun  1 19:55:55 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  82 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:56:12,552   INFO  Train:   18/80 ( 22%) [ 249/1250 ( 20%)]  Loss: 0.04415 (0.0510)  LR: 1.809e-03  Time cost: 01:26/05:45 [2:02:15/7:31:02]  Acc_iter 21500       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:56:29,189   INFO  Train:   18/80 ( 22%) [ 299/1250 ( 24%)]  Loss: 0.04839 (0.0504)  LR: 1.814e-03  Time cost: 01:42/05:25 [2:02:32/7:28:07]  Acc_iter 21550       Data time: 0.00(0.01)  Forward time: 0.35(0.34)  Batch time: 0.35(0.34)
+2024-06-01 19:56:46,149   INFO  Train:   18/80 ( 22%) [ 349/1250 ( 28%)]  Loss: 0.04907 (0.0533)  LR: 1.819e-03  Time cost: 01:59/05:08 [2:02:49/7:27:11]  Acc_iter 21600       Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.35(0.34)
+2024-06-01 19:56:46,391   INFO  indy-gpu                 Sat Jun  1 19:56:46 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  75 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:57:03,118   INFO  Train:   18/80 ( 22%) [ 399/1250 ( 32%)]  Loss: 0.03904 (0.0539)  LR: 1.824e-03  Time cost: 02:16/04:50 [2:03:06/7:26:26]  Acc_iter 21650       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.34(0.34)
+2024-06-01 19:57:19,861   INFO  Train:   18/80 ( 22%) [ 449/1250 ( 36%)]  Loss: 0.04261 (0.0550)  LR: 1.830e-03  Time cost: 02:33/04:33 [2:03:22/7:25:08]  Acc_iter 21700       Data time: 0.00(0.01)  Forward time: 0.35(0.34)  Batch time: 0.35(0.34)
+2024-06-01 19:57:36,587   INFO  Train:   18/80 ( 22%) [ 499/1250 ( 40%)]  Loss: 0.03037 (0.0551)  LR: 1.835e-03  Time cost: 02:50/04:15 [2:03:39/7:23:59]  Acc_iter 21750       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 19:57:36,829   INFO  indy-gpu                 Sat Jun  1 19:57:36 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  92 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:57:53,553   INFO  Train:   18/80 ( 22%) [ 549/1250 ( 44%)]  Loss: 0.03042 (0.0558)  LR: 1.840e-03  Time cost: 03:07/03:58 [2:03:56/7:23:34]  Acc_iter 21800       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:58:10,113   INFO  Train:   18/80 ( 22%) [ 599/1250 ( 48%)]  Loss: 0.05505 (0.0559)  LR: 1.845e-03  Time cost: 03:23/03:41 [2:04:13/7:22:18]  Acc_iter 21850       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:58:26,673   INFO  Train:   18/80 ( 22%) [ 649/1250 ( 52%)]  Loss: 0.05907 (0.0556)  LR: 1.851e-03  Time cost: 03:40/03:23 [2:04:29/7:21:10]  Acc_iter 21900       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:58:26,918   INFO  indy-gpu                 Sat Jun  1 19:58:26 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C, 100 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:58:43,743   INFO  Train:   18/80 ( 22%) [ 699/1250 ( 56%)]  Loss: 0.03262 (0.0552)  LR: 1.856e-03  Time cost: 03:57/03:06 [2:04:46/7:21:07]  Acc_iter 21950       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:59:00,428   INFO  Train:   18/80 ( 22%) [ 749/1250 ( 60%)]  Loss: 0.02718 (0.0551)  LR: 1.861e-03  Time cost: 04:14/02:49 [2:05:03/7:20:22]  Acc_iter 22000       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:59:17,025   INFO  Train:   18/80 ( 22%) [ 799/1250 ( 64%)]  Loss: 0.03854 (0.0546)  LR: 1.866e-03  Time cost: 04:30/02:32 [2:05:20/7:19:32]  Acc_iter 22050       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 19:59:17,271   INFO  indy-gpu                 Sat Jun  1 19:59:17 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 66°C,  51 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 19:59:34,339   INFO  Train:   18/80 ( 22%) [ 849/1250 ( 68%)]  Loss: 0.09253 (0.0558)  LR: 1.872e-03  Time cost: 04:47/02:15 [2:05:37/7:19:51]  Acc_iter 22100       Data time: 0.00(0.00)  Forward time: 0.34(0.33)  Batch time: 0.34(0.34)
+2024-06-01 19:59:48,266   INFO  Save latest model to /home/ubuntu/omar/OpenPCDet/output/kitti_models/pointpillar/reconstructed_2205v001/ckpt/latest_model
+2024-06-01 19:59:52,907   INFO  Train:   18/80 ( 22%) [ 899/1250 ( 72%)]  Loss: 0.08180 (0.0561)  LR: 1.877e-03  Time cost: 05:06/01:59 [2:05:56/7:21:55]  Acc_iter 22150       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 20:00:09,583   INFO  Train:   18/80 ( 22%) [ 949/1250 ( 76%)]  Loss: 0.02636 (0.0562)  LR: 1.882e-03  Time cost: 05:23/01:42 [2:06:12/7:21:09]  Acc_iter 22200       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 20:00:09,827   INFO  indy-gpu                 Sat Jun  1 20:00:09 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 69°C, 100 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 20:00:26,684   INFO  Train:   18/80 ( 22%) [ 999/1250 ( 80%)]  Loss: 0.06355 (0.0556)  LR: 1.887e-03  Time cost: 05:40/01:25 [2:06:29/7:20:59]  Acc_iter 22250       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 20:00:43,323   INFO  Train:   18/80 ( 22%) [1049/1250 ( 84%)]  Loss: 0.03383 (0.0554)  LR: 1.892e-03  Time cost: 05:56/01:08 [2:06:46/7:20:14]  Acc_iter 22300       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 20:00:59,877   INFO  Train:   18/80 ( 22%) [1099/1250 ( 88%)]  Loss: 0.1200 (0.0551)  LR: 1.898e-03  Time cost: 06:13/00:51 [2:07:02/7:19:26]  Acc_iter 22350       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 20:01:00,120   INFO  indy-gpu                 Sat Jun  1 20:01:00 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  99 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 20:01:16,864   INFO  Train:   18/80 ( 22%) [1149/1250 ( 92%)]  Loss: 0.04812 (0.0555)  LR: 1.903e-03  Time cost: 06:30/00:34 [2:07:19/7:19:10]  Acc_iter 22400       Data time: 0.00(0.01)  Forward time: 0.34(0.33)  Batch time: 0.34(0.34)
+2024-06-01 20:01:33,474   INFO  Train:   18/80 ( 22%) [1199/1250 ( 96%)]  Loss: 0.07381 (0.0554)  LR: 1.908e-03  Time cost: 06:47/00:17 [2:07:36/7:18:29]  Acc_iter 22450       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.34(0.34)
+2024-06-01 20:01:49,866   INFO  Train:   18/80 ( 22%) [1249/1250 (100%)]  Loss: 0.01833 (0.0549)  LR: 1.913e-03  Time cost: 07:03/00:00 [2:07:52/7:17:37]  Acc_iter 22500       Data time: 0.00(0.01)  Forward time: 0.10(0.33)  Batch time: 0.10(0.34)
+2024-06-01 20:01:50,109   INFO  indy-gpu                 Sat Jun  1 20:01:50 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 69°C,  88 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 20:01:52,894   INFO  Train:   19/80 ( 24%) [   0/1250 (  0%)]  Loss: 0.08815 (0.0882)  LR: 1.913e-03  Time cost: 00:00/20:49 [2:07:55/21:31:28]  Acc_iter 22501       Data time: 0.61(0.61)  Forward time: 0.39(0.39)  Batch time: 1.00(1.00)
+2024-06-01 20:02:09,524   INFO  Train:   19/80 ( 24%) [  49/1250 (  4%)]  Loss: 0.1097 (0.0569)  LR: 1.918e-03  Time cost: 00:17/07:03 [2:08:12/7:35:08]  Acc_iter 22550       Data time: 0.00(0.02)  Forward time: 0.33(0.34)  Batch time: 0.33(0.35)
+2024-06-01 20:02:26,290   INFO  Train:   19/80 ( 24%) [  99/1250 (  8%)]  Loss: 0.1105 (0.0567)  LR: 1.924e-03  Time cost: 00:34/06:35 [2:08:29/7:23:42]  Acc_iter 22600       Data time: 0.00(0.01)  Forward time: 0.34(0.34)  Batch time: 0.35(0.34)
+2024-06-01 20:02:43,310   INFO  Train:   19/80 ( 24%) [ 149/1250 ( 12%)]  Loss: 0.02750 (0.0552)  LR: 1.929e-03  Time cost: 00:51/06:17 [2:08:46/7:21:53]  Acc_iter 22650       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 20:02:43,554   INFO  indy-gpu                 Sat Jun  1 20:02:43 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  87 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 20:03:00,233   INFO  Train:   19/80 ( 24%) [ 199/1250 ( 16%)]  Loss: 0.04391 (0.0579)  LR: 1.934e-03  Time cost: 01:08/05:59 [2:09:03/7:20:13]  Acc_iter 22700       Data time: 0.00(0.01)  Forward time: 0.34(0.33)  Batch time: 0.34(0.34)
+2024-06-01 20:03:17,052   INFO  Train:   19/80 ( 24%) [ 249/1250 ( 20%)]  Loss: 0.05522 (0.0570)  LR: 1.939e-03  Time cost: 01:25/05:40 [2:09:20/7:18:34]  Acc_iter 22750       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 20:03:33,853   INFO  Train:   19/80 ( 24%) [ 299/1250 ( 24%)]  Loss: 0.03103 (0.0550)  LR: 1.944e-03  Time cost: 01:41/05:23 [2:09:36/7:17:17]  Acc_iter 22800       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 20:03:34,100   INFO  indy-gpu                 Sat Jun  1 20:03:34 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  41 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 20:03:50,779   INFO  Train:   19/80 ( 24%) [ 349/1250 ( 28%)]  Loss: 0.03821 (0.0547)  LR: 1.950e-03  Time cost: 01:58/05:06 [2:09:53/7:16:45]  Acc_iter 22850       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 20:04:07,356   INFO  Train:   19/80 ( 24%) [ 399/1250 ( 32%)]  Loss: 0.07377 (0.0573)  LR: 1.955e-03  Time cost: 02:15/04:48 [2:10:10/7:15:10]  Acc_iter 22900       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 20:04:23,946   INFO  Train:   19/80 ( 24%) [ 449/1250 ( 36%)]  Loss: 0.03868 (0.0577)  LR: 1.960e-03  Time cost: 02:32/04:30 [2:10:27/7:13:54]  Acc_iter 22950       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 20:04:24,194   INFO  indy-gpu                 Sat Jun  1 20:04:24 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  98 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 20:04:41,089   INFO  Train:   19/80 ( 24%) [ 499/1250 ( 40%)]  Loss: 0.04589 (0.0566)  LR: 1.965e-03  Time cost: 02:49/04:14 [2:10:44/7:14:16]  Acc_iter 23000       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 20:04:58,179   INFO  Train:   19/80 ( 24%) [ 549/1250 ( 44%)]  Loss: 0.07191 (0.0574)  LR: 1.970e-03  Time cost: 03:06/03:57 [2:11:01/7:14:23]  Acc_iter 23050       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 20:05:15,297   INFO  Train:   19/80 ( 24%) [ 599/1250 ( 48%)]  Loss: 0.1038 (0.0583)  LR: 1.975e-03  Time cost: 03:23/03:40 [2:11:18/7:14:29]  Acc_iter 23100       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 20:05:15,538   INFO  indy-gpu                 Sat Jun  1 20:05:15 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 67°C,  99 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 20:05:33,001   INFO  Train:   19/80 ( 24%) [ 649/1250 ( 52%)]  Loss: 0.04102 (0.0584)  LR: 1.980e-03  Time cost: 03:41/03:24 [2:11:36/7:15:42]  Acc_iter 23150       Data time: 0.00(0.01)  Forward time: 0.35(0.33)  Batch time: 0.35(0.34)
+2024-06-01 20:05:49,957   INFO  Train:   19/80 ( 24%) [ 699/1250 ( 56%)]  Loss: 0.03454 (0.0580)  LR: 1.986e-03  Time cost: 03:58/03:07 [2:11:53/7:15:19]  Acc_iter 23200       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 20:06:06,905   INFO  Train:   19/80 ( 24%) [ 749/1250 ( 60%)]  Loss: 0.04173 (0.0576)  LR: 1.991e-03  Time cost: 04:15/02:50 [2:12:10/7:14:56]  Acc_iter 23250       Data time: 0.00(0.00)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 20:06:07,147   INFO  indy-gpu                 Sat Jun  1 20:06:07 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 69°C, 100 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 20:06:24,047   INFO  Train:   19/80 ( 24%) [ 799/1250 ( 64%)]  Loss: 0.06733 (0.0567)  LR: 1.996e-03  Time cost: 04:32/02:33 [2:12:27/7:14:53]  Acc_iter 23300       Data time: 0.00(0.01)  Forward time: 0.33(0.34)  Batch time: 0.33(0.34)
+2024-06-01 20:06:40,634   INFO  Train:   19/80 ( 24%) [ 849/1250 ( 68%)]  Loss: 0.1059 (0.0567)  LR: 2.001e-03  Time cost: 04:48/02:16 [2:12:43/7:13:57]  Acc_iter 23350       Data time: 0.00(0.00)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 20:06:53,740   INFO  Save latest model to /home/ubuntu/omar/OpenPCDet/output/kitti_models/pointpillar/reconstructed_2205v001/ckpt/latest_model
+2024-06-01 20:06:59,047   INFO  Train:   19/80 ( 24%) [ 899/1250 ( 72%)]  Loss: 0.04889 (0.0566)  LR: 2.006e-03  Time cost: 05:07/01:59 [2:13:02/7:15:42]  Acc_iter 23400       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 20:06:59,291   INFO  indy-gpu                 Sat Jun  1 20:06:59 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  99 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 20:07:16,357   INFO  Train:   19/80 ( 24%) [ 949/1250 ( 76%)]  Loss: 0.03269 (0.0567)  LR: 2.011e-03  Time cost: 05:24/01:42 [2:13:19/7:15:45]  Acc_iter 23450       Data time: 0.00(0.01)  Forward time: 0.34(0.33)  Batch time: 0.34(0.34)
+2024-06-01 20:07:33,097   INFO  Train:   19/80 ( 24%) [ 999/1250 ( 80%)]  Loss: 0.05608 (0.0562)  LR: 2.016e-03  Time cost: 05:41/01:25 [2:13:36/7:15:02]  Acc_iter 23500       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 20:07:49,947   INFO  Train:   19/80 ( 24%) [1049/1250 ( 84%)]  Loss: 0.09227 (0.0563)  LR: 2.021e-03  Time cost: 05:58/01:08 [2:13:53/7:14:30]  Acc_iter 23550       Data time: 0.00(0.01)  Forward time: 0.39(0.33)  Batch time: 0.40(0.34)
+2024-06-01 20:07:50,192   INFO  indy-gpu                 Sat Jun  1 20:07:50 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 68°C,  90 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 20:08:07,417   INFO  Train:   19/80 ( 24%) [1099/1250 ( 88%)]  Loss: 0.05405 (0.0560)  LR: 2.027e-03  Time cost: 06:15/00:51 [2:14:10/7:14:42]  Acc_iter 23600       Data time: 0.00(0.01)  Forward time: 0.34(0.33)  Batch time: 0.34(0.34)
+2024-06-01 20:08:24,427   INFO  Train:   19/80 ( 24%) [1149/1250 ( 92%)]  Loss: 0.06350 (0.0555)  LR: 2.032e-03  Time cost: 06:32/00:34 [2:14:27/7:14:21]  Acc_iter 23650       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 20:08:41,376   INFO  Train:   19/80 ( 24%) [1199/1250 ( 96%)]  Loss: 0.07119 (0.0553)  LR: 2.037e-03  Time cost: 06:49/00:17 [2:14:44/7:13:56]  Acc_iter 23700       Data time: 0.00(0.01)  Forward time: 0.33(0.33)  Batch time: 0.33(0.34)
+2024-06-01 20:08:41,622   INFO  indy-gpu                 Sat Jun  1 20:08:41 2024  515.65.01
+[0] Tesla V100-PCIE-16GB | 66°C,  96 % | 15581 / 16384 MB | ubuntu(15577M)
+
+2024-06-01 20:08:58,058   INFO  Train:   19/80 ( 24%) [1249/1250 (100%)]  Loss: 0.03421 (0.0550)  LR: 2.042e-03  Time cost: 07:06/00:00 [2:15:01/7:13:16]  Acc_iter 23750       Data time: 0.00(0.01)  Forward time: 0.10(0.33)  Batch time: 0.10(0.34)

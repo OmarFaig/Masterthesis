@@ -58,7 +58,7 @@ logging.info(f"Using device: {device}")
 model.to(device)
 
 # Define DataLoader
-dataset = RacingDataset(root_dir="/dev/shm/IAC/SeedFormer_2602_npy/cropped/real")
+dataset = RacingDataset(root_dir="Data/SeedFormer_2602_npy/cropped/real")
 dataloader = DataLoader(dataset, batch_size=4, shuffle=True, num_workers=8, collate_fn=utils.collate_fn)
 
 # Define optimizer and scheduler
