@@ -21,7 +21,7 @@ To run this project locally, follow these steps:
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/yourusername/thesis-repo.git
+   git clone https://github.com/OmarFaig/Masterarbeit
    cd thesis-repo
    ```
 
@@ -47,6 +47,3 @@ To run this project locally, follow these steps:
    ```bash
    pip install -r requirements.txt
    ```
-
-5. **Run the code**:
-   Now you can run the scripts provided in this repository as described in the [Usage](#usage) section.
