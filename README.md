@@ -10,37 +10,43 @@ After extensive research the choice of network for this task was [SeedFormer](ht
 
 The results and reductions of domain gap is evaluated with 3D object detectors. For this [OpenPcDet](https://github.com/open-mmlab/OpenPCDet) is utilized. [PointPillars](https://arxiv.org/abs/1812.05784) and [PointRCNN](https://github.com/sshaoshuai/PointRCNN) networks from this repository are implemented with minor adjustments.
 
-The quantitative results are listed below. PointRCNN detection results are superior to the results of PointsPillars network. This can be explained with the high sparsity of the point clouds in the dataset. These networks are trained with real,sim and adapted datasets but evaluated only with the validation set from real data. Nevertheless, with both networks it can be seen that the domain gap between real and simulated data is reduced in the best case by 1%.  For more information on the implementation and evaluation, please see the masther thesis.
+The quantitative results are listed below. PointRCNN detection results are superior to the results of PointsPillars network. This can be explained with the high sparsity of the point clouds in the dataset. These networks are trained with real,sim and adapted datasets but evaluated only with the validation set from real data. Nevertheless, with both networks it can be seen that the domain gap between real and simulated data is reduced in the best case by 1%. For more information on the implementation and evaluation, please see the masther thesis.
 ![alt text](imgs/PointRCNN.png)
 ![alt text](imgs/PointPillars.png)
 
-Running the Code Locally
+## Running the Code Locally
+
 To run this project locally, follow these steps:
 
-Clone the repository:
+1. **Clone the repository**:
 
-bash
-Code kopieren
-git clone https://github.com/yourusername/thesis-repo.git
-cd thesis-repo
-Create a virtual environment (optional but recommended):
+   ```bash
+   git clone https://github.com/yourusername/thesis-repo.git
+   cd thesis-repo
+   ```
 
-bash
-Code kopieren
-python3 -m venv env
-Activate the virtual environment:
+2. **Create a virtual environment** (optional but recommended):
 
-On Windows:
-bash
-Code kopieren
-.\env\Scripts\activate
-On macOS/Linux:
-bash
-Code kopieren
-source env/bin/activate
-Install the required libraries:
+   ```bash
+   python3 -m venv env
+   ```
 
-bash
-Code kopieren
-pip install -r requirements.txt
-Run the code: Now you can run the scripts provided in this repository as described in the Usage section.
+3. **Activate the virtual environment**:
+
+   - On Windows:
+     ```bash
+     .\env\Scripts\activate
+     ```
+   - On macOS/Linux:
+     ```bash
+     source env/bin/activate
+     ```
+
+4. **Install the required libraries**:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+5. **Run the code**:
+   Now you can run the scripts provided in this repository as described in the [Usage](#usage) section.
